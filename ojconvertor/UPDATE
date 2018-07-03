@@ -1,0 +1,15 @@
+//解决_命名冲突问题
+1. 在JPContext中，JPCommonContext 为属性的单_转为__
+2. 在JPContext中，JPMsgContext 为消息传递的单_转为__
+
+//解决动态属性get和set
+1. get只支持了lazy loading中(get)、return get两种形式
+2. 在JPScriptProcessor添加uglyDynamicPropertyGetter
+3. 在JPObjCListener.prototype.enterAssignment_expression 与 JPObjCListener.prototype.exitAssignment_expression中
+   添加对首字母是_的特殊判断，认定这是一个动态调用
+4. JPAssignContext中做了相应处理
+5. JPMsgContext.prototype.parse中，解决了[_dynamicProp method];
+
+
+//关于@
+1. 在在JPScriptProcessor中，更改stripSymbolAt，对@+数字的形式，替换掉@
