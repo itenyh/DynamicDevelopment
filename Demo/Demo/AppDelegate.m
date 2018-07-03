@@ -25,6 +25,7 @@
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:[ViewController new]];
     navController.navigationBar.hidden = YES;
     self.window.rootViewController = navController;
+    [self.window makeKeyAndVisible];
     
     [[HotComplileEngine sharedInstance] startEngine:@"ViewController.m"];
     

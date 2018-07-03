@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		731667DD20EBCF5A00E36FB9 /* VCTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 731667DC20EBCF5A00E36FB9 /* VCTableViewCell.m */; };
 		AE40BFB38E170D0FB9EB7205 /* libPods-Demo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6ECA50D021CECD28D041DFC1 /* libPods-Demo.a */; };
 		FC67496720EB29CD0075F4C4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FC67496620EB29CD0075F4C4 /* AppDelegate.m */; };
 		FC67496A20EB29CD0075F4C4 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FC67496920EB29CD0075F4C4 /* ViewController.m */; };
@@ -35,6 +36,8 @@
 /* Begin PBXFileReference section */
 		23F8B04A667D49CB3F0F0296 /* Pods-Demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Demo.release.xcconfig"; path = "Pods/Target Support Files/Pods-Demo/Pods-Demo.release.xcconfig"; sourceTree = "<group>"; };
 		6ECA50D021CECD28D041DFC1 /* libPods-Demo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Demo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		731667DB20EBCF5A00E36FB9 /* VCTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VCTableViewCell.h; sourceTree = "<group>"; };
+		731667DC20EBCF5A00E36FB9 /* VCTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VCTableViewCell.m; sourceTree = "<group>"; };
 		F5EF3A1DA4BDB2A3D82912F7 /* Pods-Demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Demo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Demo/Pods-Demo.debug.xcconfig"; sourceTree = "<group>"; };
 		FC67496220EB29CD0075F4C4 /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FC67496520EB29CD0075F4C4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -144,6 +147,8 @@
 				FC67496620EB29CD0075F4C4 /* AppDelegate.m */,
 				FC67496820EB29CD0075F4C4 /* ViewController.h */,
 				FC67496920EB29CD0075F4C4 /* ViewController.m */,
+				731667DB20EBCF5A00E36FB9 /* VCTableViewCell.h */,
+				731667DC20EBCF5A00E36FB9 /* VCTableViewCell.m */,
 			);
 			path = Demo;
 			sourceTree = "<group>";
@@ -368,6 +373,7 @@
 				FC6749B420EB2A060075F4C4 /* JPMethodSignature.m in Sources */,
 				FC6749AE20EB2A060075F4C4 /* JPBlockWrapper.m in Sources */,
 				FC67497520EB29D60075F4C4 /* main.m in Sources */,
+				731667DD20EBCF5A00E36FB9 /* VCTableViewCell.m in Sources */,
 				FC67496720EB29CD0075F4C4 /* AppDelegate.m in Sources */,
 				FC6749B120EB2A060075F4C4 /* JPStructPointer.m in Sources */,
 			);

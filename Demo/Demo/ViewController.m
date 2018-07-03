@@ -7,10 +7,11 @@
 //
 
 #import "ViewController.h"
+#import "VCTableViewCell.h"
 
-@interface ViewController ()
+@interface ViewController () <UITableViewDataSource, UITableViewDelegate>
 
-@property (nonatomic, strong) UILabel *test;
+@property (nonatomic, strong) UITableView *tableView;
 
 @end
 
@@ -19,19 +20,30 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self.view addSubview:self.test];
-    [self.test mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.equalTo(self.view);
+    [self.view addSubview:self.tableView];
+    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(self.view);
     }];
 }
 
-- (UILabel *)test {
-    if (!_test) {
-        _test = [UILabel new];
-        _test.text = @"测试";
-        _test.textColor = [UIColor whiteColor];
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 10;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    VCTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"test"];
+    cell.textLabel.text = @"123";
+    return cell;
+}
+
+- (UITableView *)tableView {
+    if (!_tableView) {
+        _tableView = [UITableView new];
+        _tableView.delegate = self;
+        _tableView.dataSource = self;
+        [_tableView registerClass:VCTableViewCell.class forCellReuseIdentifier:@"test"];
     }
-    return _test;
+    return _tableView;
 }
 
 @end

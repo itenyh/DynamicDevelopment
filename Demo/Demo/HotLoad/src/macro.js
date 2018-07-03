@@ -1,6 +1,13 @@
 global.UIControlStateNormal = 0;
 global.UIControlStateHighlighted  = 1;
-global.UICollectionElementKindSectionHeader = "UICollectionElementKindSectionHeader"
+global.UICollectionElementKindSectionHeader = "UICollectionElementKindSectionHeader";
+
+//TableViewCellStyle
+global.UITableViewCellStyleDefault = 0;
+global.UITableViewCellStyleValue1 = 1;
+global.UITableViewCellStyleValue2 = 2;
+global.UITableViewCellStyleSubtitle = 3;
+
 
 global.NSLog = function () {
     console.log(arguments);
