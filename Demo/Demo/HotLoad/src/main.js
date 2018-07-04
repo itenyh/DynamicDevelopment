@@ -1,5 +1,5 @@
 include('macro.js');
-require('UITableView, VCTableViewCell');
+require('UITableView,VCTableViewCell');
 defineClass('ViewController', {
     viewDidLoad: function() {
         self.super().viewDidLoad();
@@ -14,7 +14,7 @@ defineClass('ViewController', {
     },
     tableView_cellForRowAtIndexPath: function(tableView, indexPath) {
         var cell = tableView.dequeueReusableCellWithIdentifier("test");
-        cell.textLabel().setText("123");
+        cell.textLabel().setText("000123");
         return cell;
     },
     tableView: function() {

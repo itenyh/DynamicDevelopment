@@ -553,13 +553,6 @@ JPObjCListener.prototype.exitMessage_expression = function(ctx) {
 
 JPObjCListener.prototype.enterReceiver = function(ctx) {
 	if (ctx.start.text != '[') {
-		var receiverName = ctx.start.text;
-		if (receiverName[0] >= 'A' && receiverName[0] <= 'Z') {
-			// if the first letter is upper case, we take it as a class name
-			if (excludeClassNames.indexOf(receiverName) == -1 && this.requireClasses.indexOf(receiverName) == -1) {
-				this.requireClasses.push(receiverName);
-			}
-		}
 		this.currContext.receiver = this.ocScript.substring(ctx.start.start, ctx.stop.stop + 1);
 	}
 };
@@ -567,8 +560,17 @@ JPObjCListener.prototype.enterReceiver = function(ctx) {
 JPObjCListener.prototype.exitReceiver = function(ctx) {
 };
 
-
 JPObjCListener.prototype.enterMessage_selector = function(ctx) {
+
+    var receiverName = this.currContext.receiver;
+    var selectorName = ctx.children[0].start.text;
+    if ((receiverName[0] >= 'A' && receiverName[0] <= 'Z') || selectorName == 'new' || selectorName == 'alloc') {
+        // if the first letter is upper case or selector is new or alloc, we take it as a class name
+        if (excludeClassNames.indexOf(receiverName) == -1 && this.requireClasses.indexOf(receiverName) == -1) {
+            this.requireClasses.push(receiverName);
+        }
+    }
+
 	for (var i = 0; i < ctx.children.length; i ++) {
 		this.currContext.selector.push({
 			name: ctx.children[i].start.text,
@@ -615,12 +617,11 @@ JPObjCListener.prototype.enterDeclaration = function(ctx) {
 		return;
 	}
 
-	var strContext = this.addStrContext(ctx.start.start)
+	var strContext = this.addStrContext(ctx.start.start);
 
 	var declarationContext = new JPDeclarationContext();
 	strContext.setNext(declarationContext);
 	this.currContext = declarationContext;
-
 	if (ctx.children[1].start.text.indexOf('*') > -1) {
 		this.currContext.currIdx = ctx.children[1].start.start + 1
 	} else {

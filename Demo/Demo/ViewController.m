@@ -7,7 +7,6 @@
 //
 
 #import "ViewController.h"
-#import "VCTableViewCell.h"
 
 @interface ViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -32,7 +31,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     VCTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"test"];
-    cell.textLabel.text = @"123";
+    cell.textLabel.text = @"000123";
     return cell;
 }
 
@@ -41,7 +40,7 @@
         _tableView = [UITableView new];
         _tableView.delegate = self;
         _tableView.dataSource = self;
-        [_tableView registerClass:VCTableViewCell.class forCellReuseIdentifier:@"test"];
+        [_tableView registerClass:[VCTableViewCell class] forCellReuseIdentifier:@"test"];
     }
     return _tableView;
 }

@@ -14,5 +14,7 @@
 //关于@
 1. 在在JPScriptProcessor中，更改stripSymbolAt，对@+数字的形式，替换掉@
 
-//为requier增加来源
-1. 在JPObjCListener.prototype.enterDeclaration中将declara时第一个词加入
+//为require增加来源
+1. 在JPObjCListener.prototype.enterMessage_selector中将首字母为大写字母的Receiver和selector为new、alloc的Receiver
+   添加进require
+2. 去掉enterReceiver里的require来源

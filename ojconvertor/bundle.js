@@ -1,7 +1,5 @@
-var global = {};
+var global = {}
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-
-},{}],2:[function(require,module,exports){
 /////////////////Base
 var JPContext = function() {
 	this.next = null;
@@ -262,7 +260,7 @@ exports.JPDeclarationContext = JPDeclarationContext;
 exports.JPClassContext = JPClassContext;
 exports.JPMethodContext = JPMethodContext;
 
-},{}],3:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 (function (global){
 var antlr4 = require('./parser/antlr4/index');
 var ObjCLexer = require('./parser/ObjCLexer').ObjCLexer
@@ -314,7 +312,7 @@ global.convertor = convertor;
 exports.convertor = convertor;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./JPErrorListener":4,"./JPObjCListener":5,"./JPScriptProcessor":6,"./parser/ObjCLexer":8,"./parser/ObjCParser":10,"./parser/antlr4/index":51}],4:[function(require,module,exports){
+},{"./JPErrorListener":3,"./JPObjCListener":4,"./JPScriptProcessor":5,"./parser/ObjCLexer":7,"./parser/ObjCParser":9,"./parser/antlr4/index":50}],3:[function(require,module,exports){
 var ErrorListener = require('./parser/antlr4/error/ErrorListener').ErrorListener;
 
 function JPErrorListener(errorCallback) {
@@ -340,7 +338,7 @@ JPErrorListener.prototype.reportContextSensitivity = function(recognizer, dfa, s
 };
 
 exports.JPErrorListener = JPErrorListener;
-},{"./parser/antlr4/error/ErrorListener":47}],5:[function(require,module,exports){
+},{"./parser/antlr4/error/ErrorListener":46}],4:[function(require,module,exports){
 var ObjCListener = require('./parser/ObjCListener').ObjCListener
 var c = require('./JPContext')
 var JPCommonContext = c.JPCommonContext,
@@ -555,13 +553,6 @@ JPObjCListener.prototype.exitMessage_expression = function(ctx) {
 
 JPObjCListener.prototype.enterReceiver = function(ctx) {
 	if (ctx.start.text != '[') {
-		var receiverName = ctx.start.text;
-		if (receiverName[0] >= 'A' && receiverName[0] <= 'Z') {
-			// if the first letter is upper case, we take it as a class name
-			if (excludeClassNames.indexOf(receiverName) == -1 && this.requireClasses.indexOf(receiverName) == -1) {
-				this.requireClasses.push(receiverName);
-			}
-		}
 		this.currContext.receiver = this.ocScript.substring(ctx.start.start, ctx.stop.stop + 1);
 	}
 };
@@ -569,8 +560,17 @@ JPObjCListener.prototype.enterReceiver = function(ctx) {
 JPObjCListener.prototype.exitReceiver = function(ctx) {
 };
 
-
 JPObjCListener.prototype.enterMessage_selector = function(ctx) {
+
+    var receiverName = this.currContext.receiver;
+    var selectorName = ctx.children[0].start.text;
+    if ((receiverName[0] >= 'A' && receiverName[0] <= 'Z') || selectorName == 'new' || selectorName == 'alloc') {
+        // if the first letter is upper case or selector is new or alloc, we take it as a class name
+        if (excludeClassNames.indexOf(receiverName) == -1 && this.requireClasses.indexOf(receiverName) == -1) {
+            this.requireClasses.push(receiverName);
+        }
+    }
+
 	for (var i = 0; i < ctx.children.length; i ++) {
 		this.currContext.selector.push({
 			name: ctx.children[i].start.text,
@@ -617,12 +617,7 @@ JPObjCListener.prototype.enterDeclaration = function(ctx) {
 		return;
 	}
 
-	var strContext = this.addStrContext(ctx.start.start)
-
-    var className = ctx.children[0].start.text;
-    if (excludeClassNames.indexOf(className) == -1 && this.requireClasses.indexOf(className) == -1) {
-        this.requireClasses.push(className);
-    }
+	var strContext = this.addStrContext(ctx.start.start);
 
 	var declarationContext = new JPDeclarationContext();
 	strContext.setNext(declarationContext);
@@ -754,7 +749,7 @@ ObjCListener.prototype.exitFor_statement = function(ctx) {
 
 
 exports.JPObjCListener = JPObjCListener;
-},{"./JPContext":2,"./parser/ObjCListener":9}],6:[function(require,module,exports){
+},{"./JPContext":1,"./parser/ObjCListener":8}],5:[function(require,module,exports){
 var beautify = require('./lib/beautify').js_beautify
 
 var JPScriptProcessor = function(script) {
@@ -819,7 +814,7 @@ JPScriptProcessor.prototype = {
 
 
 exports.JPScriptProcessor = JPScriptProcessor;
-},{"./lib/beautify":7}],7:[function(require,module,exports){
+},{"./lib/beautify":6}],6:[function(require,module,exports){
 (function (global){
 /*jshint curly:true, eqeqeq:true, laxbreak:true, noempty:false */
 /*
@@ -2917,7 +2912,7 @@ exports.JPScriptProcessor = JPScriptProcessor;
 
 }());
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],8:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 // Generated from ObjC.g4 by ANTLR 4.5.1
 // jshint ignore: start
 var antlr4 = require('./antlr4/index');
@@ -4014,7 +4009,7 @@ ObjCLexer.grammarFileName = "ObjC.g4";
 exports.ObjCLexer = ObjCLexer;
 
 
-},{"./antlr4/index":51}],9:[function(require,module,exports){
+},{"./antlr4/index":50}],8:[function(require,module,exports){
 // Generated from ObjC.g4 by ANTLR 4.5.1
 // jshint ignore: start
 var antlr4 = require('./antlr4/index');
@@ -5146,7 +5141,7 @@ ObjCListener.prototype.exitConstant = function(ctx) {
 
 
 exports.ObjCListener = ObjCListener;
-},{"./antlr4/index":51}],10:[function(require,module,exports){
+},{"./antlr4/index":50}],9:[function(require,module,exports){
 // Generated from ObjC.g4 by ANTLR 4.5.1
 // jshint ignore: start
 var antlr4 = require('./antlr4/index');
@@ -17413,7 +17408,7 @@ ObjCParser.prototype.constant = function() {
 
 exports.ObjCParser = ObjCParser;
 
-},{"./ObjCListener":9,"./antlr4/index":51}],11:[function(require,module,exports){
+},{"./ObjCListener":8,"./antlr4/index":50}],10:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -17814,7 +17809,7 @@ BufferedTokenStream.prototype.fill = function() {
 
 exports.BufferedTokenStream = BufferedTokenStream;
 
-},{"./IntervalSet":16,"./Lexer":18,"./Token":24}],12:[function(require,module,exports){
+},{"./IntervalSet":15,"./Lexer":17,"./Token":23}],11:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -17909,7 +17904,7 @@ CommonTokenFactory.prototype.createThin = function(type, text) {
 
 exports.CommonTokenFactory = CommonTokenFactory;
 
-},{"./Token":24}],13:[function(require,module,exports){
+},{"./Token":23}],12:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -18038,7 +18033,7 @@ CommonTokenStream.prototype.getNumberOfOnChannelTokens = function() {
 };
 
 exports.CommonTokenStream = CommonTokenStream;
-},{"./BufferedTokenStream":11,"./Token":24}],14:[function(require,module,exports){
+},{"./BufferedTokenStream":10,"./Token":23}],13:[function(require,module,exports){
 //
 //  [The "BSD license"]
 //   Copyright (c) 2012 Terence Parr
@@ -18093,7 +18088,7 @@ FileStream.prototype.constructor = FileStream;
 
 exports.FileStream = FileStream;
 
-},{"./InputStream":15,"fs":1}],15:[function(require,module,exports){
+},{"./InputStream":14,"fs":54}],14:[function(require,module,exports){
 // 
 //  [The "BSD license"]
 //   Copyright (c) 2012 Terence Parr
@@ -18229,7 +18224,7 @@ InputStream.prototype.toString = function() {
 
 exports.InputStream = InputStream;
 
-},{"./Token":24}],16:[function(require,module,exports){
+},{"./Token":23}],15:[function(require,module,exports){
 /*jslint smarttabs:true */
 
 var Token = require('./Token').Token;
@@ -18524,7 +18519,7 @@ IntervalSet.prototype.elementName = function(literalNames, symbolicNames, a) {
 exports.Interval = Interval;
 exports.IntervalSet = IntervalSet;
 
-},{"./Token":24}],17:[function(require,module,exports){
+},{"./Token":23}],16:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -18749,7 +18744,7 @@ LL1Analyzer.prototype._LOOK = function(s, stopState , ctx, look, lookBusy, calle
 exports.LL1Analyzer = LL1Analyzer;
 
 
-},{"./IntervalSet":16,"./PredictionContext":21,"./Token":24,"./Utils":25,"./atn/ATNConfig":27,"./atn/ATNState":32,"./atn/Transition":40}],18:[function(require,module,exports){
+},{"./IntervalSet":15,"./PredictionContext":20,"./Token":23,"./Utils":24,"./atn/ATNConfig":26,"./atn/ATNState":31,"./atn/Transition":39}],17:[function(require,module,exports){
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
 //  Copyright (c) 2012 Sam Harwell
@@ -19142,7 +19137,7 @@ Lexer.prototype.recover = function(re) {
 
 exports.Lexer = Lexer;
 
-},{"./CommonTokenFactory":12,"./Recognizer":22,"./Token":24,"./error/Errors":49}],19:[function(require,module,exports){
+},{"./CommonTokenFactory":11,"./Recognizer":21,"./Token":23,"./error/Errors":48}],18:[function(require,module,exports){
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
 //  Copyright (c) 2012 Sam Harwell
@@ -19833,7 +19828,7 @@ Parser.prototype.setTrace = function(trace) {
 };
 
 exports.Parser = Parser;
-},{"./Lexer":18,"./Recognizer":22,"./Token":24,"./atn/ATNDeserializationOptions":29,"./atn/ATNDeserializer":30,"./error/ErrorStrategy":48,"./tree/Tree":52}],20:[function(require,module,exports){
+},{"./Lexer":17,"./Recognizer":21,"./Token":23,"./atn/ATNDeserializationOptions":28,"./atn/ATNDeserializer":29,"./error/ErrorStrategy":47,"./tree/Tree":51}],19:[function(require,module,exports){
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
 //  Copyright (c) 2012 Sam Harwell
@@ -20066,7 +20061,7 @@ InterpreterRuleContext.prototype = Object.create(ParserRuleContext.prototype);
 InterpreterRuleContext.prototype.constructor = InterpreterRuleContext;
 
 exports.ParserRuleContext = ParserRuleContext;
-},{"./IntervalSet":16,"./RuleContext":23,"./tree/Tree":52}],21:[function(require,module,exports){
+},{"./IntervalSet":15,"./RuleContext":22,"./tree/Tree":51}],20:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -20818,7 +20813,7 @@ exports.SingletonPredictionContext = SingletonPredictionContext;
 exports.predictionContextFromRuleContext = predictionContextFromRuleContext;
 exports.getCachedPredictionContext = getCachedPredictionContext;
 
-},{"./RuleContext":23}],22:[function(require,module,exports){
+},{"./RuleContext":22}],21:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -20991,7 +20986,7 @@ Object.defineProperty(Recognizer.prototype, "state", {
 
 exports.Recognizer = Recognizer;
 
-},{"./Token":24,"./error/ErrorListener":47}],23:[function(require,module,exports){
+},{"./Token":23,"./error/ErrorListener":46}],22:[function(require,module,exports){
 // [The "BSD license"]
 //  Copyright (c) 2013 Terence Parr
 //  Copyright (c) 2013 Sam Harwell
@@ -21158,7 +21153,7 @@ RuleContext.prototype.toString = function(ruleNames, stop) {
 };
 
 
-},{"./tree/Tree":52,"./tree/Trees":53}],24:[function(require,module,exports){
+},{"./tree/Tree":51,"./tree/Trees":52}],23:[function(require,module,exports){
 //[The "BSD license"]
 // Copyright (c) 2012 Terence Parr
 // Copyright (c) 2012 Sam Harwell
@@ -21335,7 +21330,7 @@ CommonToken.prototype.toString = function() {
 exports.Token = Token;
 exports.CommonToken = CommonToken;
 
-},{}],25:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 function arrayToString(a) {
 	return "[" + a.join(", ") + "]";
 }
@@ -21537,7 +21532,7 @@ exports.DoubleDict = DoubleDict;
 exports.escapeWhitespace = escapeWhitespace;
 exports.arrayToString = arrayToString;
 
-},{}],26:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 // [The "BSD license"]
 //  Copyright (c) 2013 Terence Parr
 //  Copyright (c) 2013 Sam Harwell
@@ -21704,7 +21699,7 @@ ATN.prototype.getExpectedTokens = function( stateNumber, ctx ) {
 ATN.INVALID_ALT_NUMBER = 0;
 
 exports.ATN = ATN;
-},{"./../IntervalSet":16,"./../LL1Analyzer":17,"./../Token":24}],27:[function(require,module,exports){
+},{"./../IntervalSet":15,"./../LL1Analyzer":16,"./../Token":23}],26:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -21883,7 +21878,7 @@ LexerATNConfig.prototype.checkNonGreedyDecision = function(source, target) {
 
 exports.ATNConfig = ATNConfig;
 exports.LexerATNConfig = LexerATNConfig;
-},{"./ATNState":32,"./SemanticContext":39}],28:[function(require,module,exports){
+},{"./ATNState":31,"./SemanticContext":38}],27:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -22166,7 +22161,7 @@ OrderedATNConfigSet.prototype.constructor = OrderedATNConfigSet;
 exports.ATNConfigSet = ATNConfigSet;
 exports.OrderedATNConfigSet = OrderedATNConfigSet;
 
-},{"./../PredictionContext":21,"./../Utils":25,"./ATN":26,"./SemanticContext":39}],29:[function(require,module,exports){
+},{"./../PredictionContext":20,"./../Utils":24,"./ATN":25,"./SemanticContext":38}],28:[function(require,module,exports){
 //[The "BSD license"]
 // Copyright (c) 2013 Terence Parr
 // Copyright (c) 2013 Sam Harwell
@@ -22217,7 +22212,7 @@ ATNDeserializationOptions.defaultOptions.readOnly = true;
 
 exports.ATNDeserializationOptions = ATNDeserializationOptions;
 
-},{}],30:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 // [The "BSD license"]
 //  Copyright (c) 2013 Terence Parr
 //  Copyright (c) 2013 Sam Harwell
@@ -22908,7 +22903,7 @@ ATNDeserializer.prototype.lexerActionFactory = function(type, data1, data2) {
    
 
 exports.ATNDeserializer = ATNDeserializer;
-},{"./../IntervalSet":16,"./../Token":24,"./ATN":26,"./ATNDeserializationOptions":29,"./ATNState":32,"./ATNType":33,"./LexerAction":35,"./Transition":40}],31:[function(require,module,exports){
+},{"./../IntervalSet":15,"./../Token":23,"./ATN":25,"./ATNDeserializationOptions":28,"./ATNState":31,"./ATNType":32,"./LexerAction":34,"./Transition":39}],30:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2013 Terence Parr
@@ -22985,7 +22980,7 @@ ATNSimulator.prototype.getCachedContext = function(context) {
 
 exports.ATNSimulator = ATNSimulator;
 
-},{"./../PredictionContext":21,"./../dfa/DFAState":44,"./ATNConfigSet":28}],32:[function(require,module,exports){
+},{"./../PredictionContext":20,"./../dfa/DFAState":43,"./ATNConfigSet":27}],31:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -23337,7 +23332,7 @@ exports.PlusBlockStartState = PlusBlockStartState;
 exports.StarBlockStartState = StarBlockStartState;
 exports.BasicBlockStartState = BasicBlockStartState;
 
-},{}],33:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 // [The "BSD license"]
 //  Copyright (c) 2013 Terence Parr
 //  Copyright (c) 2013 Sam Harwell
@@ -23380,7 +23375,7 @@ ATNType.PARSER = 1;
 exports.ATNType = ATNType;
 
 
-},{}],34:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -24043,7 +24038,7 @@ LexerATNSimulator.prototype.getTokenName = function(tt) {
 
 exports.LexerATNSimulator = LexerATNSimulator;
 
-},{"./../Lexer":18,"./../PredictionContext":21,"./../Token":24,"./../dfa/DFAState":44,"./../error/Errors":49,"./ATN":26,"./ATNConfig":27,"./ATNConfigSet":28,"./ATNSimulator":31,"./ATNState":32,"./LexerActionExecutor":36,"./Transition":40}],35:[function(require,module,exports){
+},{"./../Lexer":17,"./../PredictionContext":20,"./../Token":23,"./../dfa/DFAState":43,"./../error/Errors":48,"./ATN":25,"./ATNConfig":26,"./ATNConfigSet":27,"./ATNSimulator":30,"./ATNState":31,"./LexerActionExecutor":35,"./Transition":39}],34:[function(require,module,exports){
 //
  //[The "BSD license"]
  // Copyright (c) 2013 Terence Parr
@@ -24428,7 +24423,7 @@ exports.LexerTypeAction = LexerTypeAction;
 exports.LexerPushModeAction = LexerPushModeAction;
 exports.LexerPopModeAction = LexerPopModeAction;
 exports.LexerModeAction = LexerModeAction;
-},{}],36:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2013 Terence Parr
@@ -24605,7 +24600,7 @@ LexerActionExecutor.prototype.equals = function(other) {
 
 exports.LexerActionExecutor = LexerActionExecutor;
 
-},{"./LexerAction":35}],37:[function(require,module,exports){
+},{"./LexerAction":34}],36:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -26292,7 +26287,7 @@ ParserATNSimulator.prototype.reportAmbiguity = function(dfa, D, startIndex, stop
 };
             
 exports.ParserATNSimulator = ParserATNSimulator;
-},{"./../IntervalSet":16,"./../ParserRuleContext":20,"./../PredictionContext":21,"./../RuleContext":23,"./../Token":24,"./../Utils":25,"./../dfa/DFAState":44,"./../error/Errors":49,"./ATN":26,"./ATNConfig":27,"./ATNConfigSet":28,"./ATNSimulator":31,"./ATNState":32,"./PredictionMode":38,"./SemanticContext":39,"./Transition":40}],38:[function(require,module,exports){
+},{"./../IntervalSet":15,"./../ParserRuleContext":19,"./../PredictionContext":20,"./../RuleContext":22,"./../Token":23,"./../Utils":24,"./../dfa/DFAState":43,"./../error/Errors":48,"./ATN":25,"./ATNConfig":26,"./ATNConfigSet":27,"./ATNSimulator":30,"./ATNState":31,"./PredictionMode":37,"./SemanticContext":38,"./Transition":39}],37:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -26876,7 +26871,7 @@ PredictionMode.getSingleViableAlt = function(altsets) {
 };
 
 exports.PredictionMode = PredictionMode;
-},{"./../Utils":25,"./ATN":26,"./ATNState":32}],39:[function(require,module,exports){
+},{"./../Utils":24,"./ATN":25,"./ATNState":31}],38:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -27299,7 +27294,7 @@ exports.SemanticContext = SemanticContext;
 exports.PrecedencePredicate = PrecedencePredicate;
 exports.Predicate = Predicate;
 
-},{"./../Utils":25}],40:[function(require,module,exports){
+},{"./../Utils":24}],39:[function(require,module,exports){
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
 //  Copyright (c) 2012 Sam Harwell
@@ -27640,13 +27635,13 @@ exports.WildcardTransition = WildcardTransition;
 exports.PredicateTransition = PredicateTransition;
 exports.PrecedencePredicateTransition = PrecedencePredicateTransition;
 exports.AbstractPredicateTransition = AbstractPredicateTransition;
-},{"./../IntervalSet":16,"./../Token":24,"./SemanticContext":39}],41:[function(require,module,exports){
+},{"./../IntervalSet":15,"./../Token":23,"./SemanticContext":38}],40:[function(require,module,exports){
 exports.ATN = require('./ATN').ATN;
 exports.ATNDeserializer = require('./ATNDeserializer').ATNDeserializer;
 exports.LexerATNSimulator = require('./LexerATNSimulator').LexerATNSimulator;
 exports.ParserATNSimulator = require('./ParserATNSimulator').ParserATNSimulator;
 exports.PredictionMode = require('./PredictionMode').PredictionMode;
-},{"./ATN":26,"./ATNDeserializer":30,"./LexerATNSimulator":34,"./ParserATNSimulator":37,"./PredictionMode":38}],42:[function(require,module,exports){
+},{"./ATN":25,"./ATNDeserializer":29,"./LexerATNSimulator":33,"./ParserATNSimulator":36,"./PredictionMode":37}],41:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -27825,7 +27820,7 @@ DFA.prototype.toLexerString = function() {
 
 exports.DFA = DFA;
 
-},{"./../atn/ATNConfigSet":28,"./DFASerializer":43,"./DFAState":44}],43:[function(require,module,exports){
+},{"./../atn/ATNConfigSet":27,"./DFASerializer":42,"./DFAState":43}],42:[function(require,module,exports){
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
 //  Copyright (c) 2012 Sam Harwell
@@ -27930,7 +27925,7 @@ exports.DFASerializer = DFASerializer;
 exports.LexerDFASerializer = LexerDFASerializer;
 
 
-},{}],44:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -28097,13 +28092,13 @@ DFAState.prototype.hashString = function() {
 
 exports.DFAState = DFAState;
 exports.PredPrediction = PredPrediction;
-},{"./../atn/ATNConfigSet":28}],45:[function(require,module,exports){
+},{"./../atn/ATNConfigSet":27}],44:[function(require,module,exports){
 exports.DFA = require('./DFA').DFA;
 exports.DFASerializer = require('./DFASerializer').DFASerializer;
 exports.LexerDFASerializer = require('./DFASerializer').LexerDFASerializer;
 exports.PredPrediction = require('./DFAState').PredPrediction;
 
-},{"./DFA":42,"./DFASerializer":43,"./DFAState":44}],46:[function(require,module,exports){
+},{"./DFA":41,"./DFASerializer":42,"./DFAState":43}],45:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -28239,7 +28234,7 @@ DiagnosticErrorListener.prototype.getConflictingAlts = function(reportedAlts, co
 };
 
 exports.DiagnosticErrorListener = DiagnosticErrorListener;
-},{"./../IntervalSet":16,"./../Utils":25,"./ErrorListener":47}],47:[function(require,module,exports){
+},{"./../IntervalSet":15,"./../Utils":24,"./ErrorListener":46}],46:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -28352,7 +28347,7 @@ exports.ConsoleErrorListener = ConsoleErrorListener;
 exports.ProxyErrorListener = ProxyErrorListener;
 
 
-},{}],48:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -29135,7 +29130,7 @@ BailErrorStrategy.prototype.sync = function(recognizer) {
 
 exports.BailErrorStrategy = BailErrorStrategy;
 exports.DefaultErrorStrategy = DefaultErrorStrategy;
-},{"./../IntervalSet":16,"./../Token":24,"./../atn/ATNState":32,"./Errors":49}],49:[function(require,module,exports){
+},{"./../IntervalSet":15,"./../Token":23,"./../atn/ATNState":31,"./Errors":48}],48:[function(require,module,exports){
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
 //  Copyright (c) 2012 Sam Harwell
@@ -29329,7 +29324,7 @@ exports.LexerNoViableAltException = LexerNoViableAltException;
 exports.InputMismatchException = InputMismatchException;
 exports.FailedPredicateException = FailedPredicateException;
 
-},{"./../atn/Transition":40}],50:[function(require,module,exports){
+},{"./../atn/Transition":39}],49:[function(require,module,exports){
 exports.RecognitionException = require('./Errors').RecognitionException;
 exports.NoViableAltException = require('./Errors').NoViableAltException;
 exports.LexerNoViableAltException = require('./Errors').LexerNoViableAltException;
@@ -29338,7 +29333,7 @@ exports.FailedPredicateException = require('./Errors').FailedPredicateException;
 exports.DiagnosticErrorListener = require('./DiagnosticErrorListener').DiagnosticErrorListener;
 exports.BailErrorStrategy = require('./ErrorStrategy').BailErrorStrategy;
 exports.ErrorListener = require('./ErrorListener').ErrorListener;
-},{"./DiagnosticErrorListener":46,"./ErrorListener":47,"./ErrorStrategy":48,"./Errors":49}],51:[function(require,module,exports){
+},{"./DiagnosticErrorListener":45,"./ErrorListener":46,"./ErrorStrategy":47,"./Errors":48}],50:[function(require,module,exports){
 exports.atn = require('./atn/index');
 exports.dfa = require('./dfa/index');
 exports.tree = require('./tree/index');
@@ -29356,7 +29351,7 @@ exports.ParserRuleContext = require('./ParserRuleContext').ParserRuleContext;
 exports.Interval = require('./IntervalSet').Interval;
 exports.Utils = require('./Utils');
 
-},{"./CommonTokenStream":13,"./FileStream":14,"./InputStream":15,"./IntervalSet":16,"./Lexer":18,"./Parser":19,"./ParserRuleContext":20,"./PredictionContext":21,"./Token":24,"./Utils":25,"./atn/index":41,"./dfa/index":45,"./error/index":50,"./tree/index":54}],52:[function(require,module,exports){
+},{"./CommonTokenStream":12,"./FileStream":13,"./InputStream":14,"./IntervalSet":15,"./Lexer":17,"./Parser":18,"./ParserRuleContext":19,"./PredictionContext":20,"./Token":23,"./Utils":24,"./atn/index":40,"./dfa/index":44,"./error/index":49,"./tree/index":53}],51:[function(require,module,exports){
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
 //  Copyright (c) 2012 Sam Harwell
@@ -29584,7 +29579,7 @@ exports.ParseTreeListener = ParseTreeListener;
 exports.ParseTreeVisitor = ParseTreeVisitor;
 exports.ParseTreeWalker = ParseTreeWalker;
 exports.INVALID_INTERVAL = INVALID_INTERVAL;
-},{"./../IntervalSet":16,"./../Token":24}],53:[function(require,module,exports){
+},{"./../IntervalSet":15,"./../Token":23}],52:[function(require,module,exports){
 /*
  * [The "BSD license"]
  *  Copyright (c) 2012 Terence Parr
@@ -29744,11 +29739,13 @@ Trees.descendants = function(t) {
 
 
 exports.Trees = Trees;
-},{"./../ParserRuleContext":20,"./../Token":24,"./../Utils":25,"./Tree":52}],54:[function(require,module,exports){
+},{"./../ParserRuleContext":19,"./../Token":23,"./../Utils":24,"./Tree":51}],53:[function(require,module,exports){
 var Tree = require('./Tree');
 exports.Trees = require('./Tree').Trees;
 exports.RuleNode = Tree.RuleNode;
 exports.ParseTreeListener = Tree.ParseTreeListener;
 exports.ParseTreeVisitor = Tree.ParseTreeVisitor;
 exports.ParseTreeWalker = Tree.ParseTreeWalker;
-},{"./Tree":52}]},{},[3]);
+},{"./Tree":51}],54:[function(require,module,exports){
+
+},{}]},{},[2]);

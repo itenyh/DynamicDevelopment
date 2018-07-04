@@ -4,7 +4,7 @@ require('./JPConvertor')
 //    console.log(result);
 // });
 
-var content = 'iCMTimeSerial *a = [iCMTimeSerial new];';
+var content = 'VCTableViewCell.class;';
 // var content = 'UITableView *a = [UITableView new]';
 
 convertor(content, function (result) {
