@@ -276,10 +276,14 @@ JPObjCListener.prototype.enterDeclaration = function(ctx) {
 
 	var strContext = this.addStrContext(ctx.start.start)
 
+    var className = ctx.children[0].start.text;
+    if (excludeClassNames.indexOf(className) == -1 && this.requireClasses.indexOf(className) == -1) {
+        this.requireClasses.push(className);
+    }
+
 	var declarationContext = new JPDeclarationContext();
 	strContext.setNext(declarationContext);
 	this.currContext = declarationContext;
-
 	if (ctx.children[1].start.text.indexOf('*') > -1) {
 		this.currContext.currIdx = ctx.children[1].start.start + 1
 	} else {

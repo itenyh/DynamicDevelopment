@@ -13,3 +13,6 @@
 
 //关于@
 1. 在在JPScriptProcessor中，更改stripSymbolAt，对@+数字的形式，替换掉@
+
+//为requier增加来源
+1. 在JPObjCListener.prototype.enterDeclaration中将declara时第一个词加入
