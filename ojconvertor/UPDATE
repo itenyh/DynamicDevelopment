@@ -10,11 +10,5 @@
 4. JPAssignContext中做了相应处理
 5. JPMsgContext.prototype.parse中，解决了[_dynamicProp method];
 
-
 //关于@
 1. 在在JPScriptProcessor中，更改stripSymbolAt，对@+数字的形式，替换掉@
-
-//为require增加来源
-1. 在JPObjCListener.prototype.enterMessage_selector中将首字母为大写字母的Receiver和selector为new、alloc的Receiver
-   添加进require
-2. 去掉enterReceiver里的require来源
