@@ -67,10 +67,17 @@ var global = this
           return false
         }
       }
+  
       if (slf[methodName]) {
+        //针对struct的处理
+        if (typeof slf[methodName] !== "function") {
+            return function() {
+                return slf[methodName]
+            }
+        }
         return slf[methodName].bind(slf);
       }
-
+  
       if (!slf.__obj && !slf.__clsName) {
         throw new Error(slf + '.' + methodName + ' is undefined')
       }
