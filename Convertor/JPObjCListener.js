@@ -401,7 +401,4 @@ ObjCListener.prototype.enterFor_statement = function(ctx) {
 ObjCListener.prototype.exitFor_statement = function(ctx) {
 };
 
-
-
-
 exports.JPObjCListener = JPObjCListener;
