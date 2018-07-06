@@ -360,7 +360,6 @@ JPObjCListener.prototype.enterAssignment_operator = function(ctx) {
 // Enter a parse tree produced by ObjCParser#for_in_statement.
 ObjCListener.prototype.enterFor_in_statement = function(ctx) {
 	if (ctx.children[2].ruleIndex == 57) {
-		console.log(ctx)
 		//is Type_variable_declaratorContext
 		var typeVariableDeclaratorCtx = ctx.children[2];
 	
@@ -400,5 +399,6 @@ ObjCListener.prototype.enterFor_statement = function(ctx) {
 
 ObjCListener.prototype.exitFor_statement = function(ctx) {
 };
+
 
 exports.JPObjCListener = JPObjCListener;

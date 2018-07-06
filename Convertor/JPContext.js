@@ -83,7 +83,7 @@ JPClassContext.prototype.parse = function(){
 	}
 	script += this.ignore ? '' : ');';
 	return script;
-}
+ }
 
 
 /////////////////JPMethodContext
