@@ -1,4 +1,4 @@
-include('macro.js');
+include('system_macro.js');
 require('UITableView,VCTableViewCell');
 defineClass('ViewController', {
     viewDidLoad: function() {
@@ -14,7 +14,7 @@ defineClass('ViewController', {
     },
     tableView_cellForRowAtIndexPath: function(tableView, indexPath) {
         var cell = tableView.dequeueReusableCellWithIdentifier("test");
-        cell.textLabel().setText("000123");
+        cell.textLabel().setText("000");
         return cell;
     },
     tableView: function() {
@@ -22,6 +22,7 @@ defineClass('ViewController', {
             self.setProp_forKey(UITableView.new(), 'tableView');
             self.getProp('tableView').setDelegate(self);
             self.getProp('tableView').setDataSource(self);
+            self.getProp('tableView.description()').hasSuffix("123");
             self.getProp('tableView').registerClass_forCellReuseIdentifier(VCTableViewCell.class(), "test");
         }
         return self.getProp('tableView');

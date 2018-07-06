@@ -133,7 +133,7 @@ typedef void (^TranslateCallBack)(NSString *result);
 }
 
 - (NSString *)loadMacro:(NSString *)script {
-    NSString *macroString = @"include('macro.js');";
+    NSString *macroString = @"include('system_macro.js');";
     return [NSString stringWithFormat:@"%@\n%@", macroString, script];
 }
 

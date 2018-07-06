@@ -192,11 +192,9 @@ static void (^_exceptionBlock)(NSString *log) = ^void(NSString *log) {
     };
     
     context[@"_OC_callI"] = ^id(JSValue *obj, NSString *selectorName, JSValue *arguments, BOOL isSuper) {
-//        NSLog(@"selectorName:%@ arguments:%@ obj:%@ obj_class:%@ isSuper:%d", selectorName, arguments, obj, obj.class, isSuper);
         return callSelector(nil, selectorName, arguments, obj, isSuper);
     };
     context[@"_OC_callC"] = ^id(NSString *className, NSString *selectorName, JSValue *arguments) {
-//        NSLog(@"selectorName:%@ arguments:%@ className:%@", selectorName, arguments, className);
         return callSelector(className, selectorName, arguments, nil, NO);
     };
     context[@"_OC_formatJSToOC"] = ^id(JSValue *obj) {
