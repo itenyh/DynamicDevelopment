@@ -124,6 +124,20 @@ JPObjCListener.prototype.enterBlock_expression = function(ctx) {
 	this.currContext = strContext;
 
 	var blockContext = new JPBlockContext();
+
+	var isParamBlock = true;
+    var preContext = this.currContext;
+    while (!(preContext instanceof JPParamContext)) {
+        preContext = preContext.pre;
+        if (!preContext) {
+            isParamBlock = false;
+            break;
+        }
+    }
+    if (isParamBlock) {
+        blockContext.msg = preContext.parent;
+    }
+
 	this.currContext.setNext(blockContext);
 	blockContext.currIdx = ctx.start.stop + 1
 

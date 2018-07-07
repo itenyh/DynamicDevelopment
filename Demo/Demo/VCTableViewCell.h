@@ -10,4 +10,6 @@
 
 @interface VCTableViewCell : UITableViewCell
 
+- (void)testBlock:(void(^)(NSString *param))blockParam;
+
 @end

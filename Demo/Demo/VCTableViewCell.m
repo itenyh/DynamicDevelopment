@@ -21,4 +21,8 @@
     // Configure the view for the selected state
 }
 
+- (void)testBlock:(void(^)(NSString *param))blockParam {
+    blockParam(@"someParam");
+}
+
 @end

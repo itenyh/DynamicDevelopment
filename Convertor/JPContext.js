@@ -1,3 +1,7 @@
+var allParesedLocalSelectors = [];
+var delayParsedContexts = [];	//{locationMark:"###1###", context:context}
+var isFinishedParsed = false;
+
 /////////////////Base
 var JPContext = function() {
 	this.next = null;
@@ -82,6 +86,14 @@ JPClassContext.prototype.parse = function(){
 		script += this.ignore ? '' : '}'
 	}
 	script += this.ignore ? '' : ');';
+
+	isFinishedParsed = true;
+	for (var i in delayParsedContexts) {
+		var locationMark = delayParsedContexts[i]['locationMark'];
+		var context = delayParsedContexts[i]['context'];
+        script = script.replace(locationMark, context.parse());
+	}
+
 	return script;
  }
 
@@ -120,6 +132,7 @@ JPMethodContext.prototype.parse = function(){
 var JPMsgContext = function() {
 	this.receiver = null;
 	this.selector = [];
+	this.parsedSelector = null;
 	this.preMsg = null;
 
 	this.argumentIndex = 0;
@@ -155,7 +168,12 @@ JPMsgContext.prototype.parse = function() {
 			params.push(this.selector[i].param.parse());
 		}
 	}
-	code += '|__dot__|' + funcName.join('_') + '(' + params.join(',') + ')';
+
+	this.parsedSelector = funcName.join('_');
+	if (this.receiver === 'self') {
+		allParesedLocalSelectors.push(this.parsedSelector);
+    }
+	code += '|__dot__|' + this.parsedSelector + '(' + params.join(',') + ')';
 	return code;
 }
 
@@ -173,14 +191,39 @@ JPParamContext.prototype = Object.create(JPBridgeContext.prototype);
 var JPBlockContext = function() {
 	this.types = [];
 	this.names = [];
+	this.msg = null;
 	this.content = null;
 }
 
 JPBlockContext.prototype = Object.create(JPContext.prototype);
 JPBlockContext.prototype.parse = function(){
-	var paramTypes = this.types.length ? "'void, " + this.types.join(',') + "', " : '';
-	var script = 'block(' + paramTypes + 'function(' + this.names.join(',') + ') {';
-	return script + this.content.parse() + "})";
+
+	//如果作为参数的block，要等所有的解析完成后，再解析
+	if (this.msg && !isFinishedParsed) {
+		var locationMark = '####' + delayParsedContexts.length + '####';
+		delayParsedContexts.push({locationMark:locationMark, context:this});
+		return locationMark;
+	}
+
+    var blockSelector = this.msg.parsedSelector;
+	var isLocalMethod = false;
+	for (var i in allParesedLocalSelectors) {
+		var selector = allParesedLocalSelectors[i];
+		if (selector === blockSelector) {
+			isLocalMethod = true;
+			break;
+		}
+	}
+
+	if (isLocalMethod) {
+        var script = 'function(' + this.names.join(',') + ') {';
+        return script + this.content.parse() + "}";
+	}
+	else {
+        var paramTypes = this.types.length ? "'void, " + this.types.join(',') + "', " : '';
+        var script = 'block(' + paramTypes + 'function(' + this.names.join(',') + ') {';
+        return script + this.content.parse() + "})";
+	}
 }
 
 

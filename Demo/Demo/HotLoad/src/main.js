@@ -1,30 +1,34 @@
 include('system_macro.js');
-require('UITableView,VCTableViewCell');
+require('VCTableViewCell,NSDate');
 defineClass('ViewController', {
     viewDidLoad: function() {
         self.super().viewDidLoad();
 
-        self.view().addSubview(self.tableView());
-        self.tableView().mas__makeConstraints(block('void, MASConstraintMaker*', function(make) {
-            make.edges().equalTo()(self.view());
+        //    [self.view() addSubview:self.tableView]();
+        //    [self.tableView() mas__makeConstraints:^(MASConstraintMaker *make) {
+        //        make.edges().equalTo()(self.view());
+        //    }];
+
+        var c = VCTableViewCell.new();
+        c.testBlock(block('void, NSString*', function(param) {
+            NSLog("cell block param: %", param);
         }));
+
+        //    [self testBlock:^(NSDate *param) {
+        //        NSLog("param:%", param);
+        //    }];
+
+        void( ^ BK)(NSString * ) = block('void, NSString*', function(a) {
+            NSLog("%", a);
+        });
+
+        BK("");
+
     },
-    tableView_numberOfRowsInSection: function(tableView, section) {
-        return 10;
+    testBlock: function() {
+
     },
-    tableView_cellForRowAtIndexPath: function(tableView, indexPath) {
-        var cell = tableView.dequeueReusableCellWithIdentifier("test");
-        cell.textLabel().setText("000");
-        return cell;
-    },
-    tableView: function() {
-        if (!self.getProp('tableView')) {
-            self.setProp_forKey(UITableView.new(), 'tableView');
-            self.getProp('tableView').setDelegate(self);
-            self.getProp('tableView').setDataSource(self);
-            self.getProp('tableView.description()').hasSuffix("123");
-            self.getProp('tableView').registerClass_forCellReuseIdentifier(VCTableViewCell.class(), "test");
-        }
-        return self.getProp('tableView');
+    testBlock: function(blockParam) {
+        blockParam(NSDate.date());
     },
 });

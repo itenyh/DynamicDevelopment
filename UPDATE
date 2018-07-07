@@ -1,4 +1,4 @@
-﻿//解决_命名冲突问题
+//解决_命名冲突问题
 1. 在JPContext中，JPCommonContext 为属性的单_转为__
 2. 在JPContext中，JPMsgContext 为消息传递的单_转为__
 
@@ -17,3 +17,7 @@
 
 //关于@
 1. 在在JPScriptProcessor中，更改stripSymbolAt，对@+数字的形式，替换掉@
+
+//在js中调用本地方法，参数在oc中为block的，convertor不用加block()
+1.JPContext中增加 allParesedLocalSelectors，delayParsedContexts，isFinishedParsed来在第一次parse完成后，获取所有的allParesedLocalSelectors，然后再根据是否是本地方法来对block进行解析
+2. JPClassContext.prototype.parse、JPMsgContext、JPMsgContext.prototype.parse、JPBlockContext、JPBlockContext.prototype.parse、PObjCListener.prototype.enterBlock_expression均有改动

@@ -4,22 +4,15 @@ require('./JPConvertor')
 //    console.log(result);
 // });
 
-var content = '@implementation VCTableViewCell\n' +
-    '\n' +
-    '#pragma mark - Public Method\n' +
-    '- (void)awakeFromNib {\n' +
-    '    [super awakeFromNib];\n' +
-    '    // Initialization code\n' +
-    '}\n' +
-    '\n' +
-    '- (void)setSelected:(BOOL)selected animated:(BOOL)animated {\n' +
-    '    [super setSelected:selected animated:animated];\n' +
-    '\n' +
-    '    // Configure the view for the selected state\n' +
-    '}\n' +
-    '\n' +
-    '@end';
+// var content = '- (void)testBlock:(NSString *)string block:(void(^)(NSDate *param))blockParam {\n' +
+//     '    blockParam([NSDate date]);\n' +
+//     '}';
+// var content = '[NSDate date:@"today" endDate:@"tomrrow"];';
+// var content = '[self.car test:[UIView new] block:^(NSDate *param) {\n' +
+//     '        NSLog(@"param:%@", param);\n' +
+//     '    }];';
+var content = ''
 
 convertor(content, function (result) {
-    // console.log(result);
+    console.log(result);
 });
