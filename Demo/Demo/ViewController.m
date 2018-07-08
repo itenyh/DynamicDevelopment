@@ -16,60 +16,15 @@
 
 @implementation ViewController
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-//    [self.view addSubview:self.tableView];
-//    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.edges.equalTo(self.view);
-//    }];
-
-    VCTableViewCell *c = [VCTableViewCell new];
-    [c testBlock:^(NSString *param) {
-        NSLog(@"cell block param: %@", param);
-    }];
-
-//    [self testBlock:^(NSDate *param) {
-//        NSLog(@"param:%@", param);
-//    }];
-    
-    void (^BK)(NSString *) = ^(NSString *a) {
-        NSLog(@"%@", a);
-    };
-    
-    BK(@"");
+   
     
 }
-
+#pragma mark - MASConstraintDelegate
 - (void)testBlock {
     
 }
-
-- (void)testBlock:(void(^)(NSDate *param))blockParam {
-    blockParam([NSDate date]);
-}
-
-//#pragma - mark tableview delegate
-//
-//- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-//    return 10;
-//}
-//
-//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    VCTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"test"];
-//    cell.textLabel.text = @"123000";
-//    return cell;
-//}
-//
-//- (UITableView *)tableView {
-//    if (!_tableView) {
-//        _tableView = [UITableView new];
-//        _tableView.delegate = self;
-//        _tableView.dataSource = self;
-//        [_tableView.description hasSuffix:@"123"];
-//        [_tableView registerClass:[VCTableViewCell class] forCellReuseIdentifier:@"test"];
-//    }
-//    return _tableView;
-//}
 
 @end
