@@ -12,21 +12,12 @@ require('./JPConvertor')
 //     '        NSLog(@"param:%@", param);\n' +
 //     '    }];';
 var content = '@implementation ViewController\n' +
-    '//comment\n'+
-    '/*mult line\n' +
-    'line \n' +
-    'test */' +
-    '#pragma hotdev exclusive\n' +
     '+ (void)viewDidLoad {\n' +
     '    [super viewDidLoad];\n' +
     '   \n' +
     '    \n' +
     '}\n' +
-    '//comment\n'+
-    '/*mult line\n' +
-    'line \n' +
-    'test */' +
-    '\n' +
+    '#pragma hotdev exclusive\n' +
     '- (void)testBlock {\n' +
     '    \n' +
     '}\n' +

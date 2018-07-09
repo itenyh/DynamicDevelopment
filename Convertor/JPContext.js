@@ -74,19 +74,21 @@ var JPClassContext = function(className) {
 JPClassContext.prototype = Object.create(JPContext.prototype);
 JPClassContext.prototype.parse = function(){
 
-    for (var i = 0; i < this.instanceMethods.length; i ++) {
-        if (this.instanceMethods[i].exclusive) {
+	//Traverse method list to find out if hasExclusiveMethod
+	var firstMethodContext = null;
+	if (this.instanceMethods.length) {
+		firstMethodContext = this.instanceMethods[0].preMethod ? null : this.instanceMethods[0];
+	}
+	if (!firstMethodContext && this.classMethods.length) {
+		firstMethodContext = this.classMethods[0];
+	}
+	while (firstMethodContext) {
+        if (firstMethodContext.exclusive) {
             hasExclusiveMethod = true;
             break;
         }
-    }
-
-    for (var i = 0; i < this.classMethods.length; i ++) {
-        if (this.classMethods[i].exclusive) {
-            hasExclusiveMethod = true;
-            break;
-        }
-    }
+        firstMethodContext = firstMethodContext.nextMethod;
+	}
 
 	var script = this.ignore ? '' : "defineClass('" + this.className + "', {";
 	for (var i = 0; i < this.instanceMethods.length; i ++) {
