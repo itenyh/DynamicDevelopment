@@ -31,6 +31,9 @@
 		FC7A4F3720EE122E00C138C9 /* bundle.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7A4F2720EE122D00C138C9 /* bundle.js */; };
 		FC7A4F3820EE122E00C138C9 /* main.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7A4F2820EE122D00C138C9 /* main.js */; };
 		FC7A4F3920EE122E00C138C9 /* system_macro.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7A4F2920EE122D00C138C9 /* system_macro.js */; };
+		FCD0140920F895B9004484B5 /* Documentation.html in Resources */ = {isa = PBXBuildFile; fileRef = FCD0140420F895B9004484B5 /* Documentation.html */; };
+		FCD0140A20F895B9004484B5 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = FCD0140620F895B9004484B5 /* GCDAsyncSocket.m */; };
+		FCD0140B20F895B9004484B5 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = FCD0140820F895B9004484B5 /* GCDAsyncUdpSocket.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -87,6 +90,11 @@
 		FC7A4F2720EE122D00C138C9 /* bundle.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = bundle.js; sourceTree = "<group>"; };
 		FC7A4F2820EE122D00C138C9 /* main.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = main.js; sourceTree = "<group>"; };
 		FC7A4F2920EE122D00C138C9 /* system_macro.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = system_macro.js; sourceTree = "<group>"; };
+		FCD0140420F895B9004484B5 /* Documentation.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Documentation.html; sourceTree = "<group>"; };
+		FCD0140520F895B9004484B5 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
+		FCD0140620F895B9004484B5 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
+		FCD0140720F895B9004484B5 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
+		FCD0140820F895B9004484B5 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -181,6 +189,7 @@
 				FC7A4EFF20EE122D00C138C9 /* JSPatch */,
 				FC7A4F2120EE122D00C138C9 /* libs */,
 				FC7A4F2620EE122D00C138C9 /* src */,
+				FCD0140320F895B9004484B5 /* AsyncSocket */,
 			);
 			path = HotLoad;
 			sourceTree = "<group>";
@@ -281,6 +290,18 @@
 			path = src;
 			sourceTree = "<group>";
 		};
+		FCD0140320F895B9004484B5 /* AsyncSocket */ = {
+			isa = PBXGroup;
+			children = (
+				FCD0140420F895B9004484B5 /* Documentation.html */,
+				FCD0140520F895B9004484B5 /* GCDAsyncSocket.h */,
+				FCD0140620F895B9004484B5 /* GCDAsyncSocket.m */,
+				FCD0140720F895B9004484B5 /* GCDAsyncUdpSocket.h */,
+				FCD0140820F895B9004484B5 /* GCDAsyncUdpSocket.m */,
+			);
+			path = AsyncSocket;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -346,6 +367,7 @@
 				FC7A4F3820EE122E00C138C9 /* main.js in Resources */,
 				FC7A4F3320EE122E00C138C9 /* JSPatch.js in Resources */,
 				FC67496D20EB29CD0075F4C4 /* Main.storyboard in Resources */,
+				FCD0140920F895B9004484B5 /* Documentation.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -377,10 +399,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FCD0140A20F895B9004484B5 /* GCDAsyncSocket.m in Sources */,
 				FC7A4F3520EE122E00C138C9 /* FileSystemWatch.m in Sources */,
 				FC7A4F3420EE122E00C138C9 /* JPCleaner.m in Sources */,
 				FC7A4F3020EE122E00C138C9 /* JPMethodSignature.m in Sources */,
 				FC67496A20EB29CD0075F4C4 /* ViewController.m in Sources */,
+				FCD0140B20F895B9004484B5 /* GCDAsyncUdpSocket.m in Sources */,
 				FC7A4F2E20EE122E00C138C9 /* JPMemory.m in Sources */,
 				FC67497520EB29D60075F4C4 /* main.m in Sources */,
 				FC7A4F2C20EE122D00C138C9 /* JPBlockWrapper.m in Sources */,
@@ -534,8 +558,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 428CL6K7KT;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/HotLoad/CDEvent/";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/Demo/SupportFiles/PrefixHeader.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/Masonry\"",
+					"\"${PODS_ROOT}/Headers/Public/ReactiveObjC\"",
+				);
 				INFOPLIST_FILE = "$(SRCROOT)/Demo/SupportFiles/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -560,8 +591,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 428CL6K7KT;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/HotLoad/CDEvent/";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/Demo/SupportFiles/PrefixHeader.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/Masonry\"",
+					"\"${PODS_ROOT}/Headers/Public/ReactiveObjC\"",
+				);
 				INFOPLIST_FILE = "$(SRCROOT)/Demo/SupportFiles/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = (

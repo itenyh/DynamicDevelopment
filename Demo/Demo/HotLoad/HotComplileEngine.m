@@ -49,7 +49,7 @@ typedef void (^TranslateCallBack)(NSString *result);
         [JPEngine startEngine];
         
         //add extensions after startEngine
-//        [JPEngine addExtensions:@[@"JPBlock", @"JPCFunction"]];
+        [JPEngine addExtensions:@[@"JPBlock", @"JPCFunction"]];
         
         [JPEngine handleException:^(NSString *msg) {
             NSLog(@"JPEngine Exception: %@", msg);
