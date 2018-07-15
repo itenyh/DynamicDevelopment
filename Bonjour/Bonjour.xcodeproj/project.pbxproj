@@ -7,32 +7,105 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		FC0F989A20F74C3B00462C12 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FC0F989920F74C3B00462C12 /* AppDelegate.m */; };
-		FC0F989C20F74C4000462C12 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FC0F989B20F74C4000462C12 /* Assets.xcassets */; };
-		FC0F989F20F74C4000462C12 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = FC0F989D20F74C4000462C12 /* MainMenu.xib */; };
-		FC0F98A220F74C4000462C12 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FC0F98A120F74C4000462C12 /* main.m */; };
-		FCD0140020F8945F004484B5 /* Documentation.html in Resources */ = {isa = PBXBuildFile; fileRef = FCD013FB20F8945F004484B5 /* Documentation.html */; };
-		FCD0140120F8945F004484B5 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = FCD013FD20F8945F004484B5 /* GCDAsyncSocket.m */; };
-		FCD0140220F8945F004484B5 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = FCD013FF20F8945F004484B5 /* GCDAsyncUdpSocket.m */; };
+		D51D71B720FA3F8100A27174 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D51D71B620FA3F8100A27174 /* Cocoa.framework */; };
+		D51D71BB20FA3F8100A27174 /* SourceEditorExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71BA20FA3F8100A27174 /* SourceEditorExtension.m */; };
+		D51D71BE20FA3F8100A27174 /* SourceEditorCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71BD20FA3F8100A27174 /* SourceEditorCommand.m */; };
+		D51D71C320FA3F8100A27174 /* CodeTransport.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = D51D71B420FA3F8100A27174 /* CodeTransport.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D51D71F220FAE4C900A27174 /* FileTransferService.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71DA20FAE4C900A27174 /* FileTransferService.m */; };
+		D51D71F320FAE4C900A27174 /* FileTransferService.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71DA20FAE4C900A27174 /* FileTransferService.m */; };
+		D51D71F420FAE4C900A27174 /* Documentation.html in Resources */ = {isa = PBXBuildFile; fileRef = D51D71DD20FAE4C900A27174 /* Documentation.html */; };
+		D51D71F520FAE4C900A27174 /* Documentation.html in Resources */ = {isa = PBXBuildFile; fileRef = D51D71DD20FAE4C900A27174 /* Documentation.html */; };
+		D51D71F620FAE4C900A27174 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71DE20FAE4C900A27174 /* GCDAsyncUdpSocket.m */; };
+		D51D71F720FAE4C900A27174 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71DE20FAE4C900A27174 /* GCDAsyncUdpSocket.m */; };
+		D51D71F820FAE4C900A27174 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71DF20FAE4C900A27174 /* GCDAsyncSocket.m */; };
+		D51D71F920FAE4C900A27174 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71DF20FAE4C900A27174 /* GCDAsyncSocket.m */; };
+		D51D71FA20FAE4C900A27174 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D51D71E220FAE4C900A27174 /* Assets.xcassets */; };
+		D51D71FB20FAE4C900A27174 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D51D71E220FAE4C900A27174 /* Assets.xcassets */; };
+		D51D71FC20FAE4C900A27174 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = D51D71E320FAE4C900A27174 /* MainMenu.xib */; };
+		D51D71FD20FAE4C900A27174 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = D51D71E320FAE4C900A27174 /* MainMenu.xib */; };
+		D51D71FE20FAE4C900A27174 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71E520FAE4C900A27174 /* main.m */; };
+		D51D71FF20FAE4C900A27174 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71E520FAE4C900A27174 /* main.m */; };
+		D51D720020FAE4C900A27174 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71E620FAE4C900A27174 /* AppDelegate.m */; };
+		D51D720120FAE4C900A27174 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71E620FAE4C900A27174 /* AppDelegate.m */; };
+		D51D720220FAE4C900A27174 /* Packet.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71EB20FAE4C900A27174 /* Packet.m */; };
+		D51D720320FAE4C900A27174 /* Packet.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71EB20FAE4C900A27174 /* Packet.m */; };
+		D51D720420FAE4C900A27174 /* PersonPacket.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71EC20FAE4C900A27174 /* PersonPacket.m */; };
+		D51D720520FAE4C900A27174 /* PersonPacket.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71EC20FAE4C900A27174 /* PersonPacket.m */; };
+		D51D720620FAE4C900A27174 /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71ED20FAE4C900A27174 /* Person.m */; };
+		D51D720720FAE4C900A27174 /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71ED20FAE4C900A27174 /* Person.m */; };
+		D51D720820FAE4C900A27174 /* SourceCode.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71EF20FAE4C900A27174 /* SourceCode.m */; };
+		D51D720920FAE4C900A27174 /* SourceCode.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71EF20FAE4C900A27174 /* SourceCode.m */; };
+		D51D720A20FAE4C900A27174 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D51D71F120FAE4C900A27174 /* Info.plist */; };
+		D51D720B20FAE4C900A27174 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D51D71F120FAE4C900A27174 /* Info.plist */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		D51D71C120FA3F8100A27174 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FC0F988D20F74C3B00462C12 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D51D71B320FA3F8100A27174;
+			remoteInfo = CodeTransport;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		D51D71C720FA3F8100A27174 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				D51D71C320FA3F8100A27174 /* CodeTransport.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		D51D71B420FA3F8100A27174 /* CodeTransport.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CodeTransport.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		D51D71B620FA3F8100A27174 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		D51D71B920FA3F8100A27174 /* SourceEditorExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SourceEditorExtension.h; sourceTree = "<group>"; };
+		D51D71BA20FA3F8100A27174 /* SourceEditorExtension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SourceEditorExtension.m; sourceTree = "<group>"; };
+		D51D71BC20FA3F8100A27174 /* SourceEditorCommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SourceEditorCommand.h; sourceTree = "<group>"; };
+		D51D71BD20FA3F8100A27174 /* SourceEditorCommand.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SourceEditorCommand.m; sourceTree = "<group>"; };
+		D51D71BF20FA3F8100A27174 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D51D71C020FA3F8100A27174 /* CodeTransport.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CodeTransport.entitlements; sourceTree = "<group>"; };
+		D51D71D920FAE4C900A27174 /* Bonjour.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = Bonjour.entitlements; sourceTree = "<group>"; };
+		D51D71DA20FAE4C900A27174 /* FileTransferService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileTransferService.m; sourceTree = "<group>"; };
+		D51D71DB20FAE4C900A27174 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		D51D71DD20FAE4C900A27174 /* Documentation.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Documentation.html; sourceTree = "<group>"; };
+		D51D71DE20FAE4C900A27174 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
+		D51D71DF20FAE4C900A27174 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
+		D51D71E020FAE4C900A27174 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
+		D51D71E120FAE4C900A27174 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
+		D51D71E220FAE4C900A27174 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		D51D71E420FAE4C900A27174 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		D51D71E520FAE4C900A27174 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		D51D71E620FAE4C900A27174 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		D51D71E720FAE4C900A27174 /* FileTransferService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileTransferService.h; sourceTree = "<group>"; };
+		D51D71E920FAE4C900A27174 /* Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Person.h; sourceTree = "<group>"; };
+		D51D71EA20FAE4C900A27174 /* SourceCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourceCode.h; sourceTree = "<group>"; };
+		D51D71EB20FAE4C900A27174 /* Packet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Packet.m; sourceTree = "<group>"; };
+		D51D71EC20FAE4C900A27174 /* PersonPacket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersonPacket.m; sourceTree = "<group>"; };
+		D51D71ED20FAE4C900A27174 /* Person.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Person.m; sourceTree = "<group>"; };
+		D51D71EE20FAE4C900A27174 /* Packet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Packet.h; sourceTree = "<group>"; };
+		D51D71EF20FAE4C900A27174 /* SourceCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SourceCode.m; sourceTree = "<group>"; };
+		D51D71F020FAE4C900A27174 /* PersonPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersonPacket.h; sourceTree = "<group>"; };
+		D51D71F120FAE4C900A27174 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FC0F989520F74C3B00462C12 /* Bonjour.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bonjour.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		FC0F989820F74C3B00462C12 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		FC0F989920F74C3B00462C12 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		FC0F989B20F74C4000462C12 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		FC0F989E20F74C4000462C12 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		FC0F98A020F74C4000462C12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		FC0F98A120F74C4000462C12 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		FC0F98A320F74C4000462C12 /* Bonjour.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Bonjour.entitlements; sourceTree = "<group>"; };
-		FCD013FB20F8945F004484B5 /* Documentation.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Documentation.html; sourceTree = "<group>"; };
-		FCD013FC20F8945F004484B5 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
-		FCD013FD20F8945F004484B5 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
-		FCD013FE20F8945F004484B5 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
-		FCD013FF20F8945F004484B5 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		D51D71B120FA3F8100A27174 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D51D71B720FA3F8100A27174 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FC0F989220F74C3B00462C12 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -43,10 +116,78 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D51D71B520FA3F8100A27174 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D51D71B620FA3F8100A27174 /* Cocoa.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D51D71B820FA3F8100A27174 /* CodeTransport */ = {
+			isa = PBXGroup;
+			children = (
+				D51D71B920FA3F8100A27174 /* SourceEditorExtension.h */,
+				D51D71BA20FA3F8100A27174 /* SourceEditorExtension.m */,
+				D51D71BC20FA3F8100A27174 /* SourceEditorCommand.h */,
+				D51D71BD20FA3F8100A27174 /* SourceEditorCommand.m */,
+				D51D71BF20FA3F8100A27174 /* Info.plist */,
+				D51D71C020FA3F8100A27174 /* CodeTransport.entitlements */,
+			);
+			path = CodeTransport;
+			sourceTree = "<group>";
+		};
+		D51D71D820FAE4C900A27174 /* Bonjour */ = {
+			isa = PBXGroup;
+			children = (
+				D51D71D920FAE4C900A27174 /* Bonjour.entitlements */,
+				D51D71DC20FAE4C900A27174 /* AsyncSocket */,
+				D51D71E220FAE4C900A27174 /* Assets.xcassets */,
+				D51D71E320FAE4C900A27174 /* MainMenu.xib */,
+				D51D71E520FAE4C900A27174 /* main.m */,
+				D51D71E620FAE4C900A27174 /* AppDelegate.m */,
+				D51D71DB20FAE4C900A27174 /* AppDelegate.h */,
+				D51D71DA20FAE4C900A27174 /* FileTransferService.m */,
+				D51D71E720FAE4C900A27174 /* FileTransferService.h */,
+				D51D71E820FAE4C900A27174 /* TransferDatas */,
+				D51D71F120FAE4C900A27174 /* Info.plist */,
+			);
+			path = Bonjour;
+			sourceTree = "<group>";
+		};
+		D51D71DC20FAE4C900A27174 /* AsyncSocket */ = {
+			isa = PBXGroup;
+			children = (
+				D51D71DD20FAE4C900A27174 /* Documentation.html */,
+				D51D71DE20FAE4C900A27174 /* GCDAsyncUdpSocket.m */,
+				D51D71DF20FAE4C900A27174 /* GCDAsyncSocket.m */,
+				D51D71E020FAE4C900A27174 /* GCDAsyncUdpSocket.h */,
+				D51D71E120FAE4C900A27174 /* GCDAsyncSocket.h */,
+			);
+			path = AsyncSocket;
+			sourceTree = "<group>";
+		};
+		D51D71E820FAE4C900A27174 /* TransferDatas */ = {
+			isa = PBXGroup;
+			children = (
+				D51D71E920FAE4C900A27174 /* Person.h */,
+				D51D71EA20FAE4C900A27174 /* SourceCode.h */,
+				D51D71EB20FAE4C900A27174 /* Packet.m */,
+				D51D71EC20FAE4C900A27174 /* PersonPacket.m */,
+				D51D71ED20FAE4C900A27174 /* Person.m */,
+				D51D71EE20FAE4C900A27174 /* Packet.h */,
+				D51D71EF20FAE4C900A27174 /* SourceCode.m */,
+				D51D71F020FAE4C900A27174 /* PersonPacket.h */,
+			);
+			path = TransferDatas;
+			sourceTree = "<group>";
+		};
 		FC0F988C20F74C3B00462C12 = {
 			isa = PBXGroup;
 			children = (
-				FC0F989720F74C3B00462C12 /* Bonjour */,
+				D51D71D820FAE4C900A27174 /* Bonjour */,
+				D51D71B820FA3F8100A27174 /* CodeTransport */,
+				D51D71B520FA3F8100A27174 /* Frameworks */,
 				FC0F989620F74C3B00462C12 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -55,40 +196,31 @@
 			isa = PBXGroup;
 			children = (
 				FC0F989520F74C3B00462C12 /* Bonjour.app */,
+				D51D71B420FA3F8100A27174 /* CodeTransport.appex */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		FC0F989720F74C3B00462C12 /* Bonjour */ = {
-			isa = PBXGroup;
-			children = (
-				FCD013FA20F8945F004484B5 /* AsyncSocket */,
-				FC0F989820F74C3B00462C12 /* AppDelegate.h */,
-				FC0F989920F74C3B00462C12 /* AppDelegate.m */,
-				FC0F989B20F74C4000462C12 /* Assets.xcassets */,
-				FC0F989D20F74C4000462C12 /* MainMenu.xib */,
-				FC0F98A020F74C4000462C12 /* Info.plist */,
-				FC0F98A120F74C4000462C12 /* main.m */,
-				FC0F98A320F74C4000462C12 /* Bonjour.entitlements */,
-			);
-			path = Bonjour;
-			sourceTree = "<group>";
-		};
-		FCD013FA20F8945F004484B5 /* AsyncSocket */ = {
-			isa = PBXGroup;
-			children = (
-				FCD013FB20F8945F004484B5 /* Documentation.html */,
-				FCD013FC20F8945F004484B5 /* GCDAsyncSocket.h */,
-				FCD013FD20F8945F004484B5 /* GCDAsyncSocket.m */,
-				FCD013FE20F8945F004484B5 /* GCDAsyncUdpSocket.h */,
-				FCD013FF20F8945F004484B5 /* GCDAsyncUdpSocket.m */,
-			);
-			path = AsyncSocket;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		D51D71B320FA3F8100A27174 /* CodeTransport */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D51D71C620FA3F8100A27174 /* Build configuration list for PBXNativeTarget "CodeTransport" */;
+			buildPhases = (
+				D51D71B020FA3F8100A27174 /* Sources */,
+				D51D71B120FA3F8100A27174 /* Frameworks */,
+				D51D71B220FA3F8100A27174 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CodeTransport;
+			productName = CodeTransport;
+			productReference = D51D71B420FA3F8100A27174 /* CodeTransport.appex */;
+			productType = "com.apple.product-type.xcode-extension";
+		};
 		FC0F989420F74C3B00462C12 /* Bonjour */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = FC0F98A620F74C4000462C12 /* Build configuration list for PBXNativeTarget "Bonjour" */;
@@ -96,10 +228,12 @@
 				FC0F989120F74C3B00462C12 /* Sources */,
 				FC0F989220F74C3B00462C12 /* Frameworks */,
 				FC0F989320F74C3B00462C12 /* Resources */,
+				D51D71C720FA3F8100A27174 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				D51D71C220FA3F8100A27174 /* PBXTargetDependency */,
 			);
 			name = Bonjour;
 			productName = Bonjour;
@@ -115,6 +249,14 @@
 				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = Essence;
 				TargetAttributes = {
+					D51D71B320FA3F8100A27174 = {
+						CreatedOnToolsVersion = 9.4.1;
+						SystemCapabilities = {
+							com.apple.Sandbox = {
+								enabled = 1;
+							};
+						};
+					};
 					FC0F989420F74C3B00462C12 = {
 						CreatedOnToolsVersion = 9.3;
 						SystemCapabilities = {
@@ -139,42 +281,86 @@
 			projectRoot = "";
 			targets = (
 				FC0F989420F74C3B00462C12 /* Bonjour */,
+				D51D71B320FA3F8100A27174 /* CodeTransport */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		D51D71B220FA3F8100A27174 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D51D720B20FAE4C900A27174 /* Info.plist in Resources */,
+				D51D71FB20FAE4C900A27174 /* Assets.xcassets in Resources */,
+				D51D71F520FAE4C900A27174 /* Documentation.html in Resources */,
+				D51D71FD20FAE4C900A27174 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FC0F989320F74C3B00462C12 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FC0F989C20F74C4000462C12 /* Assets.xcassets in Resources */,
-				FCD0140020F8945F004484B5 /* Documentation.html in Resources */,
-				FC0F989F20F74C4000462C12 /* MainMenu.xib in Resources */,
+				D51D720A20FAE4C900A27174 /* Info.plist in Resources */,
+				D51D71FA20FAE4C900A27174 /* Assets.xcassets in Resources */,
+				D51D71F420FAE4C900A27174 /* Documentation.html in Resources */,
+				D51D71FC20FAE4C900A27174 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		D51D71B020FA3F8100A27174 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D51D720520FAE4C900A27174 /* PersonPacket.m in Sources */,
+				D51D71F720FAE4C900A27174 /* GCDAsyncUdpSocket.m in Sources */,
+				D51D720920FAE4C900A27174 /* SourceCode.m in Sources */,
+				D51D720720FAE4C900A27174 /* Person.m in Sources */,
+				D51D71F920FAE4C900A27174 /* GCDAsyncSocket.m in Sources */,
+				D51D71F320FAE4C900A27174 /* FileTransferService.m in Sources */,
+				D51D720320FAE4C900A27174 /* Packet.m in Sources */,
+				D51D71BB20FA3F8100A27174 /* SourceEditorExtension.m in Sources */,
+				D51D71FF20FAE4C900A27174 /* main.m in Sources */,
+				D51D71BE20FA3F8100A27174 /* SourceEditorCommand.m in Sources */,
+				D51D720120FAE4C900A27174 /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FC0F989120F74C3B00462C12 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FCD0140220F8945F004484B5 /* GCDAsyncUdpSocket.m in Sources */,
-				FCD0140120F8945F004484B5 /* GCDAsyncSocket.m in Sources */,
-				FC0F98A220F74C4000462C12 /* main.m in Sources */,
-				FC0F989A20F74C3B00462C12 /* AppDelegate.m in Sources */,
+				D51D71F820FAE4C900A27174 /* GCDAsyncSocket.m in Sources */,
+				D51D71F620FAE4C900A27174 /* GCDAsyncUdpSocket.m in Sources */,
+				D51D720620FAE4C900A27174 /* Person.m in Sources */,
+				D51D71FE20FAE4C900A27174 /* main.m in Sources */,
+				D51D71F220FAE4C900A27174 /* FileTransferService.m in Sources */,
+				D51D720020FAE4C900A27174 /* AppDelegate.m in Sources */,
+				D51D720420FAE4C900A27174 /* PersonPacket.m in Sources */,
+				D51D720820FAE4C900A27174 /* SourceCode.m in Sources */,
+				D51D720220FAE4C900A27174 /* Packet.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		D51D71C220FA3F8100A27174 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D51D71B320FA3F8100A27174 /* CodeTransport */;
+			targetProxy = D51D71C120FA3F8100A27174 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
-		FC0F989D20F74C4000462C12 /* MainMenu.xib */ = {
+		D51D71E320FAE4C900A27174 /* MainMenu.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				FC0F989E20F74C4000462C12 /* Base */,
+				D51D71E420FAE4C900A27174 /* Base */,
 			);
 			name = MainMenu.xib;
 			sourceTree = "<group>";
@@ -182,6 +368,44 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		D51D71C420FA3F8100A27174 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = CodeTransport/CodeTransport.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 428CL6K7KT;
+				INFOPLIST_FILE = CodeTransport/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = Essence.Bonjour.CodeTransport;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		D51D71C520FA3F8100A27174 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = CodeTransport/CodeTransport.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 428CL6K7KT;
+				INFOPLIST_FILE = CodeTransport/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = Essence.Bonjour.CodeTransport;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 		FC0F98A420F74C4000462C12 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -330,6 +554,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		D51D71C620FA3F8100A27174 /* Build configuration list for PBXNativeTarget "CodeTransport" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D51D71C420FA3F8100A27174 /* Debug */,
+				D51D71C520FA3F8100A27174 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		FC0F989020F74C3B00462C12 /* Build configuration list for PBXProject "Bonjour" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "VCTableViewCell.h"
 
 @interface ViewController : UIViewController
 
