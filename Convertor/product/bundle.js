@@ -1,3 +1,4 @@
+var global = {};
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 var allParesedLocalSelectors = [];
 var delayParsedContexts = [];	//{locationMark:"###1###", context:context}
@@ -75,19 +76,21 @@ var JPClassContext = function(className) {
 JPClassContext.prototype = Object.create(JPContext.prototype);
 JPClassContext.prototype.parse = function(){
 
-    for (var i = 0; i < this.instanceMethods.length; i ++) {
-        if (this.instanceMethods[i].exclusive) {
+	//Traverse method list to find out if hasExclusiveMethod
+	var firstMethodContext = null;
+	if (this.instanceMethods.length) {
+		firstMethodContext = this.instanceMethods[0].preMethod ? null : this.instanceMethods[0];
+	}
+	if (!firstMethodContext && this.classMethods.length) {
+		firstMethodContext = this.classMethods[0];
+	}
+	while (firstMethodContext) {
+        if (firstMethodContext.exclusive) {
             hasExclusiveMethod = true;
             break;
         }
-    }
-
-    for (var i = 0; i < this.classMethods.length; i ++) {
-        if (this.classMethods[i].exclusive) {
-            hasExclusiveMethod = true;
-            break;
-        }
-    }
+        firstMethodContext = firstMethodContext.nextMethod;
+	}
 
 	var script = this.ignore ? '' : "defineClass('" + this.className + "', {";
 	for (var i = 0; i < this.instanceMethods.length; i ++) {
@@ -348,15 +351,13 @@ var convertor = function(script, cb) {
     script = script.replace(/(^\s*)/g,'');
     if (script.indexOf('@implementation') == -1) {
         ignoreClass = 1;
-        if (script[0] != '-' && script[0] != '+' ) {
+        if (script[0] != '-' && script[0] != '+') {
             script = '@implementation tmp \n -(void)tmp{' + script + '\n}\n@end'
             ignoreMethod = 1;
         } else {
             script = '@implementation tmp \n' + script + '\n@end'
         }
     }
-
-    // console.log(script);
 
     var chars = new antlr4.InputStream(script);
     var lexer = new ObjCLexer(chars);
@@ -370,9 +371,9 @@ var convertor = function(script, cb) {
         if (cb) cb(null, e);
     }));
     var tree = parser.translation_unit();
-    var listener = new JPObjCListener(function(result){
+    var listener = new JPObjCListener(function(result, className){
         var processor = new JPScriptProcessor(result)
-        if (cb) cb(processor.finalScript());
+        if (cb) cb(processor.finalScript(), className);
     });
     listener.ignoreClass = ignoreClass;
     listener.ignoreMethod = ignoreMethod;
@@ -469,7 +470,7 @@ JPObjCListener.prototype.buildScript = function() {
 	if (this.requireClasses.length) {
 		requires = "require('" + this.requireClasses.join(',') + "');\n";
 	}
-	this.cb(requires + this.rootContext.parse());
+	this.cb(requires + this.rootContext.parse(), this.rootContext.className);
 }
 
 

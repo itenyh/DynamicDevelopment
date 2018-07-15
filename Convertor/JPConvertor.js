@@ -30,9 +30,9 @@ var convertor = function(script, cb) {
         if (cb) cb(null, e);
     }));
     var tree = parser.translation_unit();
-    var listener = new JPObjCListener(function(result){
+    var listener = new JPObjCListener(function(result, className){
         var processor = new JPScriptProcessor(result)
-        if (cb) cb(processor.finalScript());
+        if (cb) cb(processor.finalScript(), className);
     });
     listener.ignoreClass = ignoreClass;
     listener.ignoreMethod = ignoreMethod;

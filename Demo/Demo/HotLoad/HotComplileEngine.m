@@ -15,7 +15,7 @@
 
 #import "AppDelegate.h"
 
-typedef void (^TranslateCallBack)(NSString *result);
+typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className);
 
 @interface HotComplileEngine () <FileTransferServiceBrowserDelegate>
 
@@ -23,7 +23,6 @@ typedef void (^TranslateCallBack)(NSString *result);
 @property (nonatomic, copy) NSString *rootPath;
 @property (nonatomic, copy) NSString *filePath;
 @property (nonatomic, strong) NSDate *fileLastModifyDate;
-@property (nonatomic, copy) NSString *result;
 
 @property (nonatomic, strong) FileTransferServiceBrowser *browser;
 
@@ -59,9 +58,9 @@ typedef void (^TranslateCallBack)(NSString *result);
 }
 
 - (void)fileTransferServiceReceivedNewCode:(NSString *)code {
-    [self translateObj2Js:code callBack:^(NSString *result) {
-        result = [self loadMacro:result];
-        [self refresh:result];
+    [self translateObj2Js:code callBack:^(NSString *jsScript, NSString *className) {
+        jsScript = [self loadMacro:jsScript];
+        [self refresh:jsScript className:className];
     }];
 }
 
@@ -90,9 +89,9 @@ typedef void (^TranslateCallBack)(NSString *result);
         NSDate *curDate = [fileRes objectForKey:NSURLContentModificationDateKey];
         if (self.fileLastModifyDate && [curDate compare: self.fileLastModifyDate] != NSOrderedDescending) { return; }
         NSString *objFile = [NSString stringWithContentsOfFile:self.filePath encoding:NSUTF8StringEncoding error:&error];
-        [self translateObj2Js:objFile callBack:^(NSString *result) {
-            result = [self loadMacro:result];
-            [self refresh:result];
+        [self translateObj2Js:objFile callBack:^(NSString *jsScript, NSString *className) {
+            jsScript = [self loadMacro:jsScript];
+            [self refresh:jsScript className:className];
         }];
         self.fileLastModifyDate = curDate;
     }];
@@ -102,9 +101,9 @@ typedef void (^TranslateCallBack)(NSString *result);
 
 #pragma - mark Util Methods
 
-- (void)refresh:(NSString *)jsInput {
+- (void)refresh:(NSString *)jsInput className:(NSString *)className {
     
-    [JPCleaner cleanAll];
+    [JPCleaner cleanClass:className];
     [JPEngine evaluateScript:jsInput];
     
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
