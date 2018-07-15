@@ -7,12 +7,14 @@
 //
 
 #define NETSERVICE_TYPE @"_itenyhhds._tcp"
+#if (DEBUG)
+#define NETSERVICE_NAME @"CodeTransfer_DEBUG"
+#else
 #define NETSERVICE_NAME @"CodeTransfer"
+#endif
 
 #import "FileTransferServiceBrowser.h"
 #import "GCDAsyncSocket.h"
-#import "Person.h"
-#import "PersonPacket.h"
 #import "SourceCode.h"
 
 @interface FileTransferServiceBrowser () <NSNetServiceBrowserDelegate, NSNetServiceDelegate, GCDAsyncSocketDelegate>
@@ -101,7 +103,7 @@
 
 - (void)netServiceDidResolveAddress:(NSNetService *)sender {
     if ([self connectWithService:sender]) {
-        NSLog(@"Did connect with service");
+        NSLog(@"Did connect with service: %@", NETSERVICE_NAME);
     } else {
         NSLog(@"Error connecting with service");
     }

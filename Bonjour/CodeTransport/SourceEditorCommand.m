@@ -13,6 +13,9 @@
 
 - (void)performCommandWithInvocation:(XCSourceEditorCommandInvocation *)invocation completionHandler:(void (^)(NSError * _Nullable nilOrError))completionHandler
 {
+    
+    [[FileTransferService sharedInstance] startBroadcast];
+    
     NSString *code = invocation.buffer.completeBuffer;
     [[FileTransferService sharedInstance] sendCode:code];
     

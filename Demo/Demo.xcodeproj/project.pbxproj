@@ -7,10 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		736CD21520FB4FF000A87102 /* NiceLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 736CD21420FB4FF000A87102 /* NiceLabel.m */; };
 		AE40BFB38E170D0FB9EB7205 /* libPods-Demo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6ECA50D021CECD28D041DFC1 /* libPods-Demo.a */; };
 		D51D71D420FADB2700A27174 /* Packet.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71CE20FADB2700A27174 /* Packet.m */; };
-		D51D71D520FADB2700A27174 /* PersonPacket.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71CF20FADB2700A27174 /* PersonPacket.m */; };
-		D51D71D620FADB2700A27174 /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71D020FADB2700A27174 /* Person.m */; };
 		D51D71D720FADB2700A27174 /* SourceCode.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71D220FADB2700A27174 /* SourceCode.m */; };
 		D5A2BC2520FAF9E900C9694F /* FileTransferServiceBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = D5A2BC2420FAF9E900C9694F /* FileTransferServiceBrowser.m */; };
 		FC67496720EB29CD0075F4C4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FC67496620EB29CD0075F4C4 /* AppDelegate.m */; };
@@ -43,14 +42,12 @@
 /* Begin PBXFileReference section */
 		23F8B04A667D49CB3F0F0296 /* Pods-Demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Demo.release.xcconfig"; path = "Pods/Target Support Files/Pods-Demo/Pods-Demo.release.xcconfig"; sourceTree = "<group>"; };
 		6ECA50D021CECD28D041DFC1 /* libPods-Demo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Demo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		D51D71CC20FADB2700A27174 /* Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Person.h; sourceTree = "<group>"; };
+		736CD21320FB4FF000A87102 /* NiceLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NiceLabel.h; sourceTree = "<group>"; };
+		736CD21420FB4FF000A87102 /* NiceLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NiceLabel.m; sourceTree = "<group>"; };
 		D51D71CD20FADB2700A27174 /* SourceCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourceCode.h; sourceTree = "<group>"; };
 		D51D71CE20FADB2700A27174 /* Packet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Packet.m; sourceTree = "<group>"; };
-		D51D71CF20FADB2700A27174 /* PersonPacket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersonPacket.m; sourceTree = "<group>"; };
-		D51D71D020FADB2700A27174 /* Person.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Person.m; sourceTree = "<group>"; };
 		D51D71D120FADB2700A27174 /* Packet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Packet.h; sourceTree = "<group>"; };
 		D51D71D220FADB2700A27174 /* SourceCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SourceCode.m; sourceTree = "<group>"; };
-		D51D71D320FADB2700A27174 /* PersonPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersonPacket.h; sourceTree = "<group>"; };
 		D5A2BC2320FAF9E900C9694F /* FileTransferServiceBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileTransferServiceBrowser.h; sourceTree = "<group>"; };
 		D5A2BC2420FAF9E900C9694F /* FileTransferServiceBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileTransferServiceBrowser.m; sourceTree = "<group>"; };
 		F5EF3A1DA4BDB2A3D82912F7 /* Pods-Demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Demo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Demo/Pods-Demo.debug.xcconfig"; sourceTree = "<group>"; };
@@ -142,14 +139,10 @@
 		D51D71CB20FADB2700A27174 /* TransferDatas */ = {
 			isa = PBXGroup;
 			children = (
-				D51D71CC20FADB2700A27174 /* Person.h */,
-				D51D71CD20FADB2700A27174 /* SourceCode.h */,
-				D51D71CE20FADB2700A27174 /* Packet.m */,
-				D51D71CF20FADB2700A27174 /* PersonPacket.m */,
-				D51D71D020FADB2700A27174 /* Person.m */,
 				D51D71D120FADB2700A27174 /* Packet.h */,
+				D51D71CE20FADB2700A27174 /* Packet.m */,
+				D51D71CD20FADB2700A27174 /* SourceCode.h */,
 				D51D71D220FADB2700A27174 /* SourceCode.m */,
-				D51D71D320FADB2700A27174 /* PersonPacket.h */,
 			);
 			path = TransferDatas;
 			sourceTree = "<group>";
@@ -183,6 +176,8 @@
 				FC67496620EB29CD0075F4C4 /* AppDelegate.m */,
 				FC67496820EB29CD0075F4C4 /* ViewController.h */,
 				FC67496920EB29CD0075F4C4 /* ViewController.m */,
+				736CD21320FB4FF000A87102 /* NiceLabel.h */,
+				736CD21420FB4FF000A87102 /* NiceLabel.m */,
 			);
 			path = Demo;
 			sourceTree = "<group>";
@@ -429,7 +424,7 @@
 			files = (
 				FCD0140A20F895B9004484B5 /* GCDAsyncSocket.m in Sources */,
 				FC7A4F3520EE122E00C138C9 /* FileSystemWatch.m in Sources */,
-				D51D71D620FADB2700A27174 /* Person.m in Sources */,
+				736CD21520FB4FF000A87102 /* NiceLabel.m in Sources */,
 				FC7A4F3420EE122E00C138C9 /* JPCleaner.m in Sources */,
 				D51D71D720FADB2700A27174 /* SourceCode.m in Sources */,
 				FC7A4F3020EE122E00C138C9 /* JPMethodSignature.m in Sources */,
@@ -442,7 +437,6 @@
 				FC7A4F2D20EE122E00C138C9 /* JPCFunction.m in Sources */,
 				FC7A4F2A20EE122D00C138C9 /* HotComplileEngine.m in Sources */,
 				FC7A4F3620EE122E00C138C9 /* SGDirWatchdog.m in Sources */,
-				D51D71D520FADB2700A27174 /* PersonPacket.m in Sources */,
 				FC67496720EB29CD0075F4C4 /* AppDelegate.m in Sources */,
 				FC7A4F3220EE122E00C138C9 /* JPEngine.m in Sources */,
 				FC7A4F2F20EE122E00C138C9 /* JPStructPointer.m in Sources */,

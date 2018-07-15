@@ -29,10 +29,6 @@
 		D51D720120FAE4C900A27174 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71E620FAE4C900A27174 /* AppDelegate.m */; };
 		D51D720220FAE4C900A27174 /* Packet.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71EB20FAE4C900A27174 /* Packet.m */; };
 		D51D720320FAE4C900A27174 /* Packet.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71EB20FAE4C900A27174 /* Packet.m */; };
-		D51D720420FAE4C900A27174 /* PersonPacket.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71EC20FAE4C900A27174 /* PersonPacket.m */; };
-		D51D720520FAE4C900A27174 /* PersonPacket.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71EC20FAE4C900A27174 /* PersonPacket.m */; };
-		D51D720620FAE4C900A27174 /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71ED20FAE4C900A27174 /* Person.m */; };
-		D51D720720FAE4C900A27174 /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71ED20FAE4C900A27174 /* Person.m */; };
 		D51D720820FAE4C900A27174 /* SourceCode.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71EF20FAE4C900A27174 /* SourceCode.m */; };
 		D51D720920FAE4C900A27174 /* SourceCode.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D71EF20FAE4C900A27174 /* SourceCode.m */; };
 		D51D720A20FAE4C900A27174 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D51D71F120FAE4C900A27174 /* Info.plist */; };
@@ -85,14 +81,10 @@
 		D51D71E520FAE4C900A27174 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		D51D71E620FAE4C900A27174 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		D51D71E720FAE4C900A27174 /* FileTransferService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileTransferService.h; sourceTree = "<group>"; };
-		D51D71E920FAE4C900A27174 /* Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Person.h; sourceTree = "<group>"; };
 		D51D71EA20FAE4C900A27174 /* SourceCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourceCode.h; sourceTree = "<group>"; };
 		D51D71EB20FAE4C900A27174 /* Packet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Packet.m; sourceTree = "<group>"; };
-		D51D71EC20FAE4C900A27174 /* PersonPacket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersonPacket.m; sourceTree = "<group>"; };
-		D51D71ED20FAE4C900A27174 /* Person.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Person.m; sourceTree = "<group>"; };
 		D51D71EE20FAE4C900A27174 /* Packet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Packet.h; sourceTree = "<group>"; };
 		D51D71EF20FAE4C900A27174 /* SourceCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SourceCode.m; sourceTree = "<group>"; };
-		D51D71F020FAE4C900A27174 /* PersonPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersonPacket.h; sourceTree = "<group>"; };
 		D51D71F120FAE4C900A27174 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FC0F989520F74C3B00462C12 /* Bonjour.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bonjour.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -116,6 +108,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7379D72620FB40CC008D7FCD /* SupportFiles */ = {
+			isa = PBXGroup;
+			children = (
+				D51D71D920FAE4C900A27174 /* Bonjour.entitlements */,
+				D51D71E220FAE4C900A27174 /* Assets.xcassets */,
+				D51D71E320FAE4C900A27174 /* MainMenu.xib */,
+				D51D71E520FAE4C900A27174 /* main.m */,
+				D51D71F120FAE4C900A27174 /* Info.plist */,
+			);
+			path = SupportFiles;
+			sourceTree = "<group>";
+		};
 		D51D71B520FA3F8100A27174 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -140,17 +144,13 @@
 		D51D71D820FAE4C900A27174 /* Bonjour */ = {
 			isa = PBXGroup;
 			children = (
-				D51D71D920FAE4C900A27174 /* Bonjour.entitlements */,
-				D51D71DC20FAE4C900A27174 /* AsyncSocket */,
-				D51D71E220FAE4C900A27174 /* Assets.xcassets */,
-				D51D71E320FAE4C900A27174 /* MainMenu.xib */,
-				D51D71E520FAE4C900A27174 /* main.m */,
-				D51D71E620FAE4C900A27174 /* AppDelegate.m */,
-				D51D71DB20FAE4C900A27174 /* AppDelegate.h */,
-				D51D71DA20FAE4C900A27174 /* FileTransferService.m */,
-				D51D71E720FAE4C900A27174 /* FileTransferService.h */,
+				7379D72620FB40CC008D7FCD /* SupportFiles */,
 				D51D71E820FAE4C900A27174 /* TransferDatas */,
-				D51D71F120FAE4C900A27174 /* Info.plist */,
+				D51D71DC20FAE4C900A27174 /* AsyncSocket */,
+				D51D71DB20FAE4C900A27174 /* AppDelegate.h */,
+				D51D71E620FAE4C900A27174 /* AppDelegate.m */,
+				D51D71E720FAE4C900A27174 /* FileTransferService.h */,
+				D51D71DA20FAE4C900A27174 /* FileTransferService.m */,
 			);
 			path = Bonjour;
 			sourceTree = "<group>";
@@ -170,14 +170,10 @@
 		D51D71E820FAE4C900A27174 /* TransferDatas */ = {
 			isa = PBXGroup;
 			children = (
-				D51D71E920FAE4C900A27174 /* Person.h */,
-				D51D71EA20FAE4C900A27174 /* SourceCode.h */,
-				D51D71EB20FAE4C900A27174 /* Packet.m */,
-				D51D71EC20FAE4C900A27174 /* PersonPacket.m */,
-				D51D71ED20FAE4C900A27174 /* Person.m */,
 				D51D71EE20FAE4C900A27174 /* Packet.h */,
+				D51D71EB20FAE4C900A27174 /* Packet.m */,
+				D51D71EA20FAE4C900A27174 /* SourceCode.h */,
 				D51D71EF20FAE4C900A27174 /* SourceCode.m */,
-				D51D71F020FAE4C900A27174 /* PersonPacket.h */,
 			);
 			path = TransferDatas;
 			sourceTree = "<group>";
@@ -316,10 +312,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D51D720520FAE4C900A27174 /* PersonPacket.m in Sources */,
 				D51D71F720FAE4C900A27174 /* GCDAsyncUdpSocket.m in Sources */,
 				D51D720920FAE4C900A27174 /* SourceCode.m in Sources */,
-				D51D720720FAE4C900A27174 /* Person.m in Sources */,
 				D51D71F920FAE4C900A27174 /* GCDAsyncSocket.m in Sources */,
 				D51D71F320FAE4C900A27174 /* FileTransferService.m in Sources */,
 				D51D720320FAE4C900A27174 /* Packet.m in Sources */,
@@ -336,11 +330,9 @@
 			files = (
 				D51D71F820FAE4C900A27174 /* GCDAsyncSocket.m in Sources */,
 				D51D71F620FAE4C900A27174 /* GCDAsyncUdpSocket.m in Sources */,
-				D51D720620FAE4C900A27174 /* Person.m in Sources */,
 				D51D71FE20FAE4C900A27174 /* main.m in Sources */,
 				D51D71F220FAE4C900A27174 /* FileTransferService.m in Sources */,
 				D51D720020FAE4C900A27174 /* AppDelegate.m in Sources */,
-				D51D720420FAE4C900A27174 /* PersonPacket.m in Sources */,
 				D51D720820FAE4C900A27174 /* SourceCode.m in Sources */,
 				D51D720220FAE4C900A27174 /* Packet.m in Sources */,
 			);
@@ -519,11 +511,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = Bonjour/Bonjour.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Bonjour/SupportFiles/Bonjour.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 428CL6K7KT;
-				INFOPLIST_FILE = Bonjour/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Bonjour/SupportFiles/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -537,11 +529,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = Bonjour/Bonjour.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Bonjour/SupportFiles/Bonjour.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 428CL6K7KT;
-				INFOPLIST_FILE = Bonjour/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Bonjour/SupportFiles/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",

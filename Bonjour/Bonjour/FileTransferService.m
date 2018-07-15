@@ -7,7 +7,12 @@
 //
 
 #define NETSERVICE_TYPE @"_itenyhhds._tcp"
+
+#if (DEBUG)
+#define NETSERVICE_NAME @"CodeTransfer_DEBUG"
+#else
 #define NETSERVICE_NAME @"CodeTransfer"
+#endif
 
 #import "FileTransferService.h"
 #import "GCDAsyncSocket.h"
@@ -17,6 +22,7 @@
 
 @property (nonatomic, strong) NSNetService *service;
 @property (nonatomic, strong) GCDAsyncSocket *socket;
+@property (nonatomic, strong) NSMutableSet<GCDAsyncSocket *> *acceptedSockets;
 
 @end
 
@@ -28,17 +34,15 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedInstance = [FileTransferService new];
-        [sharedInstance startBroadcast];
     });
     return sharedInstance;
 }
 
 - (void)startBroadcast {
     NSError *err = nil;
-    if ([self.socket acceptOnPort:0 error:&err]) {
+    if (!self.service && [self.socket acceptOnPort:0 error:&err]) {
         //Get the port created by OS
         UInt16 port = [self.socket localPort];
-        
         //Publish a Bonjour service
         self.service = [[NSNetService alloc] initWithDomain:@"" type:NETSERVICE_TYPE name:NETSERVICE_NAME port:port];
         self.service.delegate = self;
@@ -49,20 +53,20 @@
     }
 }
 
-- (void)sendPacket:(id)packet {
+- (void)sendCode:(NSString *)code {
+    for (GCDAsyncSocket *socket in self.acceptedSockets) {
+        SourceCode *sourceCode = [SourceCode new];
+        sourceCode.code = code;
+        [self _sendPacket:sourceCode socket:socket];
+    }
+}
+
+- (void)_sendPacket:(id)packet socket:(GCDAsyncSocket *)socket {
     NSData *packetData = [NSKeyedArchiver archivedDataWithRootObject:packet];
     NSUInteger packetDataLength = packetData.length;
     NSMutableData *buffer = [NSMutableData dataWithBytes:&packetDataLength length:sizeof(UInt16)];
     [buffer appendData:packetData];
-    [self.socket writeData:buffer withTimeout:-1 tag:0];
-}
-
-- (void)sendCode:(NSString *)code {
-    if (self.socket) {
-        SourceCode *sourceCode = [SourceCode new];
-        sourceCode.code = code;
-        [self sendPacket:sourceCode];
-    }
+    [socket writeData:buffer withTimeout:-1 tag:0];
 }
 
 #pragma - mark GCDAsyncSocketDelegate
@@ -71,23 +75,24 @@
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket {
-    NSLog(@"Socket accepted");
-    self.socket = newSocket;
-    self.socket.delegate = self;
+    NSLog(@"New Socket accepted");
+    [self.acceptedSockets addObject:newSocket];
+    newSocket.delegate = self;
 }
 
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err {
-    if (self.socket == sock) {
-        NSLog(@"Socket disconnected");
-        self.socket.delegate = nil;
-        self.socket = nil;
-    }
+    [self.acceptedSockets removeObject:sock];
+    NSLog(@"Socket: %@ disconnected", sock);
 }
 
 #pragma - mark NSNetServiceDelegate
 
 - (void)netServiceDidPublish:(NSNetService *)sender {
-    NSLog (@"success to publish net service");
+    NSLog (@"Success to publish net service");
+}
+
+- (void)netService:(NSNetService *)sender didNotPublish:(NSDictionary<NSString *,NSNumber *> *)errorDict {
+    NSLog (@"Fail to publish net service: %@", errorDict);
 }
 
 #pragma - mark LazyLoad
@@ -97,6 +102,13 @@
         _socket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
     }
     return _socket;
+}
+
+- (NSMutableSet *)acceptedSockets {
+    if (!_acceptedSockets) {
+        _acceptedSockets = [NSMutableSet set];
+    }
+    return _acceptedSockets;
 }
 
 @end

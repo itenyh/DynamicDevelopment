@@ -24,8 +24,7 @@
     self.view.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.label];
     [self.label mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.view).offset(10);
-        make.centerY.equalTo(self.view);
+        make.edges.equalTo(self.view);
     }];
 }
 
@@ -34,8 +33,11 @@
 - (UILabel *)label {
     if (!_label) {
         _label = [UILabel new];
-        _label.text = @"你的名字: ";
-        _label.backgroundColor = [UIColor grayColor];
+        _label.text = @"你的名字: 新海诚，😁!";
+        _label.textColor = [UIColor whiteColor];
+        _label.font = [UIFont systemFontOfSize:13];
+        _label.backgroundColor = [UIColor purpleColor];
+        _label.textAlignment = 1;
     }
     return _label;
 }

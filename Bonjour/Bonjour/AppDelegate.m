@@ -20,7 +20,7 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
 
-    [FileTransferService sharedInstance];
+    [[FileTransferService sharedInstance] startBroadcast];
    
 }
 

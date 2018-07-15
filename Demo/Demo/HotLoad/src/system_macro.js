@@ -18,6 +18,7 @@ global.UILayoutPriorityDefaultHigh = 750;
 global.UILayoutPriorityDefaultLow = 250;
 
 global.NSTextAlignmentLeft = 0;
+global.NSTextAlignmentCenter = 1;
 
 //UIButtonTextAlign
 global.UIControlContentHorizontalAlignmentCenter = 0;

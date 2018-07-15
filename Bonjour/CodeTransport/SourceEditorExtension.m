@@ -14,7 +14,7 @@
 
 - (void)extensionDidFinishLaunching
 {
-    [FileTransferService sharedInstance];
+//    [[FileTransferService sharedInstance] startBroadcast];
 }
 
 
