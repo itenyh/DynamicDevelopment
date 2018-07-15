@@ -80,22 +80,16 @@
     else if (tag == 2) {
         SourceCode *sourceCode = [NSKeyedUnarchiver unarchiveObjectWithData:data];
         NSLog(@"SourceCode received: %@", sourceCode.code);
+        if (self.delegate && [self.delegate respondsToSelector:@selector(fileTransferServiceReceivedNewCode:)]) {
+            [self.delegate fileTransferServiceReceivedNewCode:sourceCode.code];
+        }
         [self.socket readDataToLength:sizeof(UInt16) withTimeout:-1 tag:1];
     }
-}
-
-- (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag {
-    NSLog(@"4545454");
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port {
     NSLog(@"Socket connected to host");
     [self.socket readDataToLength:sizeof(UInt16) withTimeout:-1 tag:1];
-    NSLog(@"read over????");
-//    Person *person = [[Person alloc] initWithName:@"Nicky" age:20];
-//    PersonPacket *packet = [[PersonPacket alloc] initWithPerson:person];
-//    [self sendPacket:packet];
-//    NSLog(@"Test packet sent");
 }
 
 #pragma - mark NSNetServiceBrowserDelegate NSNetServiceDelegate

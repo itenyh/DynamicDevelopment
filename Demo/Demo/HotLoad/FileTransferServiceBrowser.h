@@ -8,7 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
+@protocol FileTransferServiceBrowserDelegate <NSObject>
+
+- (void)fileTransferServiceReceivedNewCode:(NSString *)code;
+
+@end
+
 @interface FileTransferServiceBrowser : NSObject
+
+@property (nonatomic, weak) id<FileTransferServiceBrowserDelegate> delegate;
 
 - (void)startBrowsering;
 

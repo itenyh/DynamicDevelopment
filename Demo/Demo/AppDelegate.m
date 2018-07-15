@@ -27,7 +27,8 @@
     self.window.rootViewController = navController;
     [self.window makeKeyAndVisible];
     
-    [[HotComplileEngine sharedInstance] startEngine:@"ViewController.m"];
+//    [[HotComplileEngine sharedInstance] watchAndHotReload:@"ViewController.m"];
+    [[HotComplileEngine sharedInstance] hotReloadProject];
     
 //    UIButton *button = [UIButton new];
 //    [button setTitleColor:[UIColor blueColor] forState:UIControlStateHighlighted];
@@ -44,7 +45,7 @@
 }
 
 - (void)eval {
-    [[HotComplileEngine sharedInstance] loadRefresh];
+//    [[HotComplileEngine sharedInstance] loadRefresh];
 }
 
 @end
