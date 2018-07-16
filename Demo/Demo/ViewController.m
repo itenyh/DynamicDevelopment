@@ -8,11 +8,13 @@
 
 #import "ViewController.h"
 #import "FileTransferServiceBrowser.h"
+#import "NiceLabel.h"
 
 @interface ViewController ()
 
 @property (nonatomic, strong) FileTransferServiceBrowser *broswer;
-@property (nonatomic, strong) UILabel *label;
+@property (nonatomic, strong) NiceLabel *label;
+@property (nonatomic, strong) UIImageView *imageView;
 
 @end
 
@@ -20,9 +22,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-//    [self.broswer startBrowsering];
     self.view.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.label];
+    [self.view addSubview:self.imageView];
+    
     [self.label mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(self.view);
     }];
@@ -30,16 +33,22 @@
 
 #pragma - mark LazyLoad
 
-- (UILabel *)label {
+- (NiceLabel *)label {
     if (!_label) {
-        _label = [UILabel new];
-        _label.text = @"你的名字: 新海诚，😁!";
+        _label = [NiceLabel new];
+        _label.text = @"你的名字: 新海，😁131231";
         _label.textColor = [UIColor whiteColor];
-        _label.font = [UIFont systemFontOfSize:13];
         _label.backgroundColor = [UIColor purpleColor];
         _label.textAlignment = 1;
     }
     return _label;
+}
+
+- (UIImageView *)imageView {
+    if (!_imageView) {
+        _imageView = [UIImageView new];
+    }
+    return _imageView;
 }
 
 - (FileTransferServiceBrowser *)broswer {

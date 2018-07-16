@@ -17,7 +17,6 @@ var content = '@implementation ViewController\n' +
     '   \n' +
     '    \n' +
     '}\n' +
-    '#pragma hotdev exclusive\n' +
     '- (void)testBlock {\n' +
     '    \n' +
     '}\n' +

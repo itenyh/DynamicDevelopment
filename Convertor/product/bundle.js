@@ -176,11 +176,11 @@ JPMsgContext.prototype.parse = function() {
 	var code = '';
 	if (typeof this.receiver == "string") {
         if (this.receiver.indexOf('_') == 0) {
-        	var receivers = this.receiver.split('.');
+            var receivers = this.receiver.split('.');
             code += 'self' + '|__dot__|' + "getProp('" + receivers.shift().substr(1).trim() + "')";
             if (receivers.length > 0) {
-            	code += '.' + receivers.join('.');
-			}
+                code += '.' + receivers.join('.');
+            }
         }
         else {
             code += this.receiver;
@@ -347,6 +347,14 @@ var JPErrorListener = require('./JPErrorListener').JPErrorListener
 var JPScriptProcessor = require('./JPScriptProcessor').JPScriptProcessor
 
 var convertor = function(script, cb) {
+
+	var replaceComments = function(script) {
+        return script.replace(/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/gm, '');
+    }
+    
+	//pre process
+	script = replaceComments(script);
+
     var ignoreClass = 0, ignoreMethod = 0;
     script = script.replace(/(^\s*)/g,'');
     if (script.indexOf('@implementation') == -1) {
@@ -383,6 +391,7 @@ var convertor = function(script, cb) {
     } catch(e) {
         cb(null, e);
     }
+    
 }
 
 global.convertor = convertor;
@@ -738,12 +747,9 @@ JPObjCListener.prototype.exitDeclaration = function(ctx) {
 
 
 JPObjCListener.prototype.enterAssignment_expression = function(ctx) {
-    // console.log('enterAssignment_expression: ' + ctx.start.text + '	stop: ' + ctx.stop.text + '	 children length: ' + ctx.children[2].start.text);
-	if (ctx.children && ctx.children.length == 3 && ctx.children[1].start.text == '=') {
-        // console.log(this.ocScript.substring(ctx.start.start, ctx.stop.stop + 1));
-		var leftStr = ctx.start.source[1].strdata.substring(ctx.children[0].start.start, ctx.children[0].stop.stop + 1)
-        // console.log(leftStr);
-		if (leftStr.indexOf('.') > -1 || leftStr.indexOf('_') == 0) {
+    if (ctx.children && ctx.children.length == 3 && ctx.children[1].start.text == '=') {
+        var leftStr = ctx.start.source[1].strdata.substring(ctx.children[0].start.start, ctx.children[0].stop.stop + 1)
+        if (leftStr.indexOf('.') > -1 || leftStr.indexOf('_') == 0) {
 			var assignContext = new JPAssignContext();
 
 			var assignLeftContext = new JPAssignLeftContext();
@@ -761,8 +767,7 @@ JPObjCListener.prototype.enterAssignment_expression = function(ctx) {
 };
 
 JPObjCListener.prototype.exitAssignment_expression = function(ctx) {
-    // console.log('exitAssignment_expression: ' + ctx.stop.source[1]);
-	if (ctx.children && ctx.children.length == 3 && ctx.children[1].start.text == '=') {
+    if (ctx.children && ctx.children.length == 3 && ctx.children[1].start.text == '=') {
 		var leftStr = ctx.start.source[1].strdata.substring(ctx.children[0].start.start, ctx.children[0].stop.stop + 1)
 		if (leftStr.indexOf('.') > -1 || leftStr.indexOf('_') == 0) {
 			this.addStrContext(ctx.stop.stop + 1)
@@ -873,8 +878,6 @@ ObjCListener.prototype.checkExclusive = function (ctx, methodContext) {
     } else {
         methodsInternalStr = ctx.start.source[1].strdata.substring(this.rootContext.startStopIndex + 1, ctx.start.start);
     }
-    //去掉注释
-    methodsInternalStr = methodsInternalStr.replace(/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/gm, '');
     exclusive = /#pragma hotdev exclusive/g.test(methodsInternalStr);
     return exclusive;
 }

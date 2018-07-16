@@ -6,6 +6,14 @@ var JPErrorListener = require('./JPErrorListener').JPErrorListener
 var JPScriptProcessor = require('./JPScriptProcessor').JPScriptProcessor
 
 var convertor = function(script, cb) {
+
+	var replaceComments = function(script) {
+        return script.replace(/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/gm, '');
+    }
+    
+	//pre process
+	script = replaceComments(script);
+
     var ignoreClass = 0, ignoreMethod = 0;
     script = script.replace(/(^\s*)/g,'');
     if (script.indexOf('@implementation') == -1) {
@@ -42,6 +50,7 @@ var convertor = function(script, cb) {
     } catch(e) {
         cb(null, e);
     }
+    
 }
 
 global.convertor = convertor;

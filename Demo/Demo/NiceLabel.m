@@ -10,6 +10,9 @@
 
 @implementation NiceLabel
 
-
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    self.font = [UIFont systemFontOfSize:12];
+}
 
 @end
