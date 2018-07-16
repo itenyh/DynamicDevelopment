@@ -54,8 +54,12 @@ JPScriptProcessor.prototype = {
         this.script = this.script.replace(/(super\.)/g, 'self.super().');
         return this;
     },
+    replaceComments: function() {
+        this.script = this.script.replace(/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/gm, '');
+        return this;
+    },
     finalScript: function() {
-        this.stripSymbolAt().replaceString().processPropertyGetter().uglyDynamicPropertyGetter().restoreDot().replaceNil().replaceSuper().restoreString().beautify();
+        this.replaceComments().stripSymbolAt().replaceString().processPropertyGetter().uglyDynamicPropertyGetter().restoreDot().replaceNil().replaceSuper().restoreString().beautify();
         return this.script;
     }
 }

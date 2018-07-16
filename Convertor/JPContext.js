@@ -174,11 +174,11 @@ JPMsgContext.prototype.parse = function() {
 	var code = '';
 	if (typeof this.receiver == "string") {
         if (this.receiver.indexOf('_') == 0) {
-        	var receivers = this.receiver.split('.');
+            var receivers = this.receiver.split('.');
             code += 'self' + '|__dot__|' + "getProp('" + receivers.shift().substr(1).trim() + "')";
             if (receivers.length > 0) {
-            	code += '.' + receivers.join('.');
-			}
+                code += '.' + receivers.join('.');
+            }
         }
         else {
             code += this.receiver;
