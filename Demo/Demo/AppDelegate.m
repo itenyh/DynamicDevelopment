@@ -30,30 +30,23 @@
 //    [[HotComplileEngine sharedInstance] watchAndHotReload:@"ViewController.m"];
     [[HotComplileEngine sharedInstance] hotReloadProject];
     
-//    UIButton *button = [UIButton new];
-//    [button setTitleColor:[UIColor blueColor] forState:UIControlStateHighlighted];
-//    [self.window addSubview:button];
-//    [button mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.left.top.equalTo(self.window);
-//    }];
-//    
-//    [button setTitle:@"eval" forState:UIControlStateNormal];
-//    [button addTarget:self action:@selector(eval) forControlEvents:UIControlEventTouchUpInside];
-//    button.backgroundColor = [UIColor redColor];
+    UIButton *button = [UIButton new];
+    [button setTitleColor:[UIColor blueColor] forState:UIControlStateHighlighted];
+    [self.window addSubview:button];
+    [button mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.window);
+        make.top.equalTo(self.window).offset(120);
+    }];
     
-    NSFileManager *filemgr;
-    NSString *currentpath;
-    
-    filemgr = [[NSFileManager alloc] init];
-    
-    currentpath = [[NSBundle mainBundle] pathForResource:@"system_macro" ofType:@"js"];
-    NSLog(@"currentpath: %@", currentpath);
+    [button setTitle:@"eval" forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(eval) forControlEvents:UIControlEventTouchUpInside];
+    button.backgroundColor = [UIColor redColor];
     
     return YES;
 }
 
 - (void)eval {
-//    [[HotComplileEngine sharedInstance] loadRefresh];
+    [HotComplileEngine loadMainJs];
 }
 
 @end

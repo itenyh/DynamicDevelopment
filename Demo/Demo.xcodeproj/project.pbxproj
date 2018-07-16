@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		736CD21520FB4FF000A87102 /* NiceLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 736CD21420FB4FF000A87102 /* NiceLabel.m */; };
+		7395B36E20FCDD1F004D614B /* main.js in Resources */ = {isa = PBXBuildFile; fileRef = 7395B36D20FCDD1F004D614B /* main.js */; };
 		AE40BFB38E170D0FB9EB7205 /* libPods-Demo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6ECA50D021CECD28D041DFC1 /* libPods-Demo.a */; };
 		D5A2BC2520FAF9E900C9694F /* FileTransferServiceBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = D5A2BC2420FAF9E900C9694F /* FileTransferServiceBrowser.m */; };
 		FC0C8E1220FC3599003F1C01 /* Packet.m in Sources */ = {isa = PBXBuildFile; fileRef = FC0C8E0F20FC3599003F1C01 /* Packet.m */; };
@@ -44,6 +45,7 @@
 		6ECA50D021CECD28D041DFC1 /* libPods-Demo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Demo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		736CD21320FB4FF000A87102 /* NiceLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NiceLabel.h; sourceTree = "<group>"; };
 		736CD21420FB4FF000A87102 /* NiceLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NiceLabel.m; sourceTree = "<group>"; };
+		7395B36D20FCDD1F004D614B /* main.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = main.js; sourceTree = "<group>"; };
 		D5A2BC2320FAF9E900C9694F /* FileTransferServiceBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileTransferServiceBrowser.h; sourceTree = "<group>"; };
 		D5A2BC2420FAF9E900C9694F /* FileTransferServiceBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileTransferServiceBrowser.m; sourceTree = "<group>"; };
 		F5EF3A1DA4BDB2A3D82912F7 /* Pods-Demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Demo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Demo/Pods-Demo.debug.xcconfig"; sourceTree = "<group>"; };
@@ -325,6 +327,7 @@
 		FC7A4F2620EE122D00C138C9 /* Convertor */ = {
 			isa = PBXGroup;
 			children = (
+				7395B36D20FCDD1F004D614B /* main.js */,
 				FC7A4F2720EE122D00C138C9 /* bundle.js */,
 				FC7A4F2920EE122D00C138C9 /* system_macro.js */,
 			);
@@ -408,6 +411,7 @@
 				FC7A4F3320EE122E00C138C9 /* JSPatch.js in Resources */,
 				FC67496D20EB29CD0075F4C4 /* Main.storyboard in Resources */,
 				FCD0140920F895B9004484B5 /* Documentation.html in Resources */,
+				7395B36E20FCDD1F004D614B /* main.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

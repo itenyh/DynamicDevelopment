@@ -14,5 +14,6 @@
 
 - (void)watchAndHotReload:(NSString *)filename;
 - (void)hotReloadProject;
++ (void)loadMainJs;
 
 @end

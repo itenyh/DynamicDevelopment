@@ -61,7 +61,7 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className);
 
 - (void)fileTransferServiceReceivedNewCode:(NSString *)code {
     [self translateObj2Js:code callBack:^(NSString *jsScript, NSString *className) {
-        NSLog(@"translateObj2Js: %@", jsScript);
+        [self saveJsScript:jsScript];
         [self refresh:jsScript className:className];
     }];
 }
@@ -101,6 +101,43 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className);
 }
 
 #pragma - mark Util Methods
+
+// Load JsScript translated from Objective-C
++ (void)loadMainJs {
+    NSString *rootPath ;
+#if TARGET_IPHONE_SIMULATOR
+    rootPath = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"ProjectPath"];
+#else
+    rootPath = [[NSBundle mainBundle] bundlePath];
+#endif
+    NSString *mainJsPath = [NSString stringWithFormat:@"%@/%@", rootPath, @"HotLoad/Convertor/main.js"];
+    [JPCleaner cleanAll];
+    [JPEngine evaluateScriptWithPath:mainJsPath];
+    
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    UINavigationController * navController = (UINavigationController *)appDelegate.window.rootViewController;
+    Class class = navController.topViewController.class;
+    UIViewController *newVc = [[class alloc] init];
+    [navController popViewControllerAnimated:NO];
+    [navController pushViewController:newVc animated:NO];
+    
+}
+
+// Save JsScript translated from Objective-C
+- (void)saveJsScript:(NSString *)script {
+    NSString *rootPath ;
+#if TARGET_IPHONE_SIMULATOR
+    rootPath = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"ProjectPath"];
+#else
+    rootPath = [[NSBundle mainBundle] bundlePath];
+#endif
+    NSString *mainJsPath = [NSString stringWithFormat:@"%@/%@", rootPath, @"HotLoad/Convertor/main.js"];
+    NSError *error;
+    [script writeToFile:mainJsPath atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    if (error) {
+        NSLog(@"error when write script: %@", error);
+    }
+}
 
 - (void)refresh:(NSString *)jsInput className:(NSString *)className {
     
