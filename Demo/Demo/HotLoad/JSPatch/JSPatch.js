@@ -166,17 +166,7 @@ var global = this
       var lastSelf = global.self
       global.self = this
       this.__realClsName = realClsName
-  var fileterdArguments = []
-  for (var i in arguments) {
-  var arg = arguments[i];
-    if (arg['__isBlock']) {
-        fileterdArguments.push(arg['originalCallback']);
-    }
-  else {
-        fileterdArguments.push(arg);
-        }
-  }
-      var ret = func.apply(this, fileterdArguments)
+      var ret = func.apply(this, arguments)
       global.self = lastSelf
       return ret
     }
@@ -286,7 +276,7 @@ var global = this
       global.self = slf
       return cb.apply(that, _formatOCToJS(args))
     }
-  var ret = {args: args, cb: callback, argCount: cb.length, __isBlock: 1, originalCallback:cb}
+    var ret = {args: args, cb: callback, argCount: cb.length, __isBlock: 1}
     if (global.__genBlock) {
       ret['blockObj'] = global.__genBlock(args, cb)
     }

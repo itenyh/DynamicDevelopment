@@ -52,7 +52,7 @@ JPObjCListener.prototype.buildScript = function() {
 	if (this.requireClasses.length) {
 		requires = "require('" + this.requireClasses.join(',') + "');\n";
 	}
-	this.cb(requires + this.rootContext.parse());
+	this.cb(requires + this.rootContext.parse(), this.rootContext.className);
 }
 
 

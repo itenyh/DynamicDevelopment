@@ -27,24 +27,25 @@
     self.window.rootViewController = navController;
     [self.window makeKeyAndVisible];
     
-    [[HotComplileEngine sharedInstance] startEngine:@"ViewController.m"];
+//    [[HotComplileEngine sharedInstance] watchAndHotReload:@"ViewController.m"];
+    [[HotComplileEngine sharedInstance] hotReloadProject];
     
-    UIButton *button = [UIButton new];
-    [button setTitleColor:[UIColor blueColor] forState:UIControlStateHighlighted];
-    [self.window addSubview:button];
-    [button mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.top.equalTo(self.window);
-    }];
-    
-    [button setTitle:@"eval" forState:UIControlStateNormal];
-    [button addTarget:self action:@selector(eval) forControlEvents:UIControlEventTouchUpInside];
-    button.backgroundColor = [UIColor redColor];
+//    UIButton *button = [UIButton new];
+//    [button setTitleColor:[UIColor blueColor] forState:UIControlStateHighlighted];
+//    [self.window addSubview:button];
+//    [button mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.top.equalTo(self.window);
+//    }];
+//    
+//    [button setTitle:@"eval" forState:UIControlStateNormal];
+//    [button addTarget:self action:@selector(eval) forControlEvents:UIControlEventTouchUpInside];
+//    button.backgroundColor = [UIColor redColor];
     
     return YES;
 }
 
 - (void)eval {
-    [[HotComplileEngine sharedInstance] loadRefresh];
+//    [[HotComplileEngine sharedInstance] loadRefresh];
 }
 
 @end

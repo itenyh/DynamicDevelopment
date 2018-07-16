@@ -24,8 +24,8 @@ var content = '@implementation ViewController\n' +
     '@end'
 
 
-convertor(content, function (result) {
-    console.log(result);
+convertor(content, function (result, className) {
+    console.log(result, className);
 });
 
 // var a = [];

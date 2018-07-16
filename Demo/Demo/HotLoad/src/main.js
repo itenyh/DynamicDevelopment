@@ -1,11 +1,15 @@
 include('system_macro.js');
-require('VCTableViewCell,NSDate');
+require('UIColor,FileTransferServiceBrowser');
 defineClass('ViewController', {
     viewDidLoad: function() {
-
+        self.super().viewDidLoad();
+        //    [self.broswer() startBrowsering];
+        self.view().setBackgroundColor(UIColor.redColor());
     },
-    testBlock: function() {
-
+    broswer: function() {
+        if (!self.getProp('broswer')) {
+            self.setProp_forKey(FileTransferServiceBrowser.new(), 'broswer');
+        }
+        return self.getProp('broswer');
     },
-    
 });
