@@ -42,9 +42,11 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className);
 
 - (void)setupEngine {
     [JPEngine startEngine];
-    
-    //add extensions after startEngine
-    [JPEngine addExtensions:@[@"JPBlock", @"JPCFunction"]];
+    [JPEngine addExtensions:@[@"JPBlock", @"JPCFunction", @"JPCGFunction"]];
+//    //load global utils
+//    NSString *scriptPath = [[NSBundle mainBundle] pathForResource:@"system_macro" ofType:@"js"];
+//    NSString *scriptString = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:nil];
+//    [JPEngine evaluateScript:scriptString];
     
     [JPEngine handleException:^(NSString *msg) {
         NSLog(@"JPEngine Exception: %@", msg);
@@ -59,7 +61,7 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className);
 
 - (void)fileTransferServiceReceivedNewCode:(NSString *)code {
     [self translateObj2Js:code callBack:^(NSString *jsScript, NSString *className) {
-        jsScript = [self loadMacro:jsScript];
+        NSLog(@"translateObj2Js: %@", jsScript);
         [self refresh:jsScript className:className];
     }];
 }
@@ -88,9 +90,8 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className);
         if (error) { NSLog(@"filePathURL error: %@", error); }
         NSDate *curDate = [fileRes objectForKey:NSURLContentModificationDateKey];
         if (self.fileLastModifyDate && [curDate compare: self.fileLastModifyDate] != NSOrderedDescending) { return; }
-        NSString *objFile = [NSString stringWithContentsOfFile:self.filePath encoding:NSUTF8StringEncoding error:&error];
+        NSString *objFile = [NSString stringWithContentsOfFile:self.filePath encoding:NSUTF8StringEncoding error:nil];
         [self translateObj2Js:objFile callBack:^(NSString *jsScript, NSString *className) {
-            jsScript = [self loadMacro:jsScript];
             [self refresh:jsScript className:className];
         }];
         self.fileLastModifyDate = curDate;
@@ -128,11 +129,6 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className);
     [context evaluateScript:scriptString];
     JSValue *convertor = [[context objectForKeyedSubscript:@"global"] objectForKeyedSubscript:@"convertor"];
     [convertor callWithArguments:@[input, callBack]];
-}
-
-- (NSString *)loadMacro:(NSString *)script {
-    NSString *macroString = @"include('system_macro.js');";
-    return [NSString stringWithFormat:@"%@\n%@", macroString, script];
 }
 
 @end

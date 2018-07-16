@@ -20,18 +20,34 @@
 
 @implementation ViewController
 
+#pragma hotdev exclusive
 - (void)viewDidLoad {
-    [super viewDidLoad];
-    self.view.backgroundColor = [UIColor whiteColor];
-    [self.view addSubview:self.label];
-    [self.view addSubview:self.imageView];
+//    [super viewDidLoad];
+//    self.view.backgroundColor = [UIColor whiteColor];
+//    [self.view addSubview:self.label];
+//    [self.view addSubview:self.imageView];
     
-    [self.label mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(self.view);
-    }];
+//    [self.label mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.edges.equalTo(self.view).mas_offset(UIEdgeInsetsMake(10, 10, 10, 10));
+//    }];
+//    [self.label mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.center.equalTo(self.view);
+//        make.size.with.equalTo(CGSizeMake(100, 200).width);
+//        make.size.height.equalTo(CGSizeMake(100, 200).height);
+//    }];
+//    NSLog(@"=====> %@", @"1");
+//    [NSString stringWithFormat:@"%@", @"123"];
+//    NSLog(CGSizeMake(100, 200)|_dot_|width);
+    [self test];
+//    NSLog(CGSizeMake(100, 200)|_dot_|width);
+//    NSLog(@"%@", @"123");
 }
 
 #pragma - mark LazyLoad
+
+- (CGSize)test {
+    return CGSizeMake(100, 100);
+}
 
 - (NiceLabel *)label {
     if (!_label) {

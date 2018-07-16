@@ -41,6 +41,14 @@
 //    [button addTarget:self action:@selector(eval) forControlEvents:UIControlEventTouchUpInside];
 //    button.backgroundColor = [UIColor redColor];
     
+    NSFileManager *filemgr;
+    NSString *currentpath;
+    
+    filemgr = [[NSFileManager alloc] init];
+    
+    currentpath = [[NSBundle mainBundle] pathForResource:@"system_macro" ofType:@"js"];
+    NSLog(@"currentpath: %@", currentpath);
+    
     return YES;
 }
 
