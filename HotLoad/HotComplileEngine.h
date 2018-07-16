@@ -12,8 +12,7 @@
 
 + (instancetype)sharedInstance;
 
-- (void)startEngine:(NSString *)filename;
-- (void)refresh;
-- (void)loadRefresh;
+- (void)watchAndHotReload:(NSString *)filename;
+- (void)hotReloadProject;
 
 @end

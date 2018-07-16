@@ -1,5 +1,10 @@
 var global = {};
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+var allParesedLocalSelectors = [];
+var delayParsedContexts = [];	//{locationMark:"###1###", context:context}
+var hasExclusiveMethod = false;
+var isFinishedParsed = false;
+
 /////////////////Base
 var JPContext = function() {
 	this.next = null;
@@ -66,11 +71,32 @@ var JPClassContext = function(className) {
 	this.instanceMethods = [];
 	this.classMethods = [];
 	this.ignore = 0;
+    this.startStopIndex = null;
 }
 JPClassContext.prototype = Object.create(JPContext.prototype);
 JPClassContext.prototype.parse = function(){
+
+	//Traverse method list to find out if hasExclusiveMethod
+	var firstMethodContext = null;
+	if (this.instanceMethods.length) {
+		firstMethodContext = this.instanceMethods[0].preMethod ? null : this.instanceMethods[0];
+	}
+	if (!firstMethodContext && this.classMethods.length) {
+		firstMethodContext = this.classMethods[0];
+	}
+	while (firstMethodContext) {
+        if (firstMethodContext.exclusive) {
+            hasExclusiveMethod = true;
+            break;
+        }
+        firstMethodContext = firstMethodContext.nextMethod;
+	}
+
 	var script = this.ignore ? '' : "defineClass('" + this.className + "', {";
 	for (var i = 0; i < this.instanceMethods.length; i ++) {
+		if (hasExclusiveMethod && !this.instanceMethods[i].exclusive) {
+			continue;
+		}
 		var separator = this.ignore && this.instanceMethods.length <= 1 ? '': ',';
 		script += this.instanceMethods[i].parse() + separator;
 	}
@@ -78,14 +104,25 @@ JPClassContext.prototype.parse = function(){
 	if (this.classMethods.length) {
 		script += this.ignore ? '' : ',{';
 		for (var i = 0; i < this.classMethods.length; i ++) {
+            if (hasExclusiveMethod && !this.classMethods[i].exclusive) {
+                continue;
+            }
 			var separator = this.ignore && this.classMethods.length <= 1 ? '': ','
 			script += this.classMethods[i].parse() + separator;
 		}
 		script += this.ignore ? '' : '}'
 	}
 	script += this.ignore ? '' : ');';
+
+	isFinishedParsed = true;
+	for (var i in delayParsedContexts) {
+		var locationMark = delayParsedContexts[i]['locationMark'];
+		var context = delayParsedContexts[i]['context'];
+        script = script.replace(locationMark, context.parse());
+	}
+
 	return script;
-}
+ }
 
 
 /////////////////JPMethodContext
@@ -94,6 +131,11 @@ var JPMethodContext = function() {
 	this.names = [];
 	this.params = [];
 	this.ignore = 0;
+
+	this.exclusive = false;
+	this.stopIndex = null;
+	this.preMethod = null;
+	this.nextMethod = null;
 }
 JPMethodContext.prototype = Object.create(JPContext.prototype);
 JPMethodContext.prototype.parse = function(){
@@ -122,6 +164,7 @@ JPMethodContext.prototype.parse = function(){
 var JPMsgContext = function() {
 	this.receiver = null;
 	this.selector = [];
+	this.parsedSelector = null;
 	this.preMsg = null;
 
 	this.argumentIndex = 0;
@@ -133,7 +176,11 @@ JPMsgContext.prototype.parse = function() {
 	var code = '';
 	if (typeof this.receiver == "string") {
         if (this.receiver.indexOf('_') == 0) {
-            code += 'self' + '|__dot__|' + "getProp('" + this.receiver.substr(1).trim() + "')";
+        	var receivers = this.receiver.split('.');
+            code += 'self' + '|__dot__|' + "getProp('" + receivers.shift().substr(1).trim() + "')";
+            if (receivers.length > 0) {
+            	code += '.' + receivers.join('.');
+			}
         }
         else {
             code += this.receiver;
@@ -153,7 +200,12 @@ JPMsgContext.prototype.parse = function() {
 			params.push(this.selector[i].param.parse());
 		}
 	}
-	code += '|__dot__|' + funcName.join('_') + '(' + params.join(',') + ')';
+
+	this.parsedSelector = funcName.join('_');
+	if (this.receiver === 'self') {
+		allParesedLocalSelectors.push(this.parsedSelector);
+    }
+	code += '|__dot__|' + this.parsedSelector + '(' + params.join(',') + ')';
 	return code;
 }
 
@@ -171,14 +223,39 @@ JPParamContext.prototype = Object.create(JPBridgeContext.prototype);
 var JPBlockContext = function() {
 	this.types = [];
 	this.names = [];
+	this.msg = null;
 	this.content = null;
 }
 
 JPBlockContext.prototype = Object.create(JPContext.prototype);
 JPBlockContext.prototype.parse = function(){
-	var paramTypes = this.types.length ? "'void, " + this.types.join(',') + "', " : '';
-	var script = 'block(' + paramTypes + 'function(' + this.names.join(',') + ') {';
-	return script + this.content.parse() + "})";
+
+	//如果作为参数的block，要等所有的解析完成后，再解析
+	if (this.msg && !isFinishedParsed) {
+		var locationMark = '####' + delayParsedContexts.length + '####';
+		delayParsedContexts.push({locationMark:locationMark, context:this});
+		return locationMark;
+	}
+
+    var blockSelector = this.msg.parsedSelector;
+	var isLocalMethod = false;
+	for (var i in allParesedLocalSelectors) {
+		var selector = allParesedLocalSelectors[i];
+		if (selector === blockSelector) {
+			isLocalMethod = true;
+			break;
+		}
+	}
+
+	if (isLocalMethod) {
+        var script = 'function(' + this.names.join(',') + ') {';
+        return script + this.content.parse() + "}";
+	}
+	else {
+        var paramTypes = this.types.length ? "'void, " + this.types.join(',') + "', " : '';
+        var script = 'block(' + paramTypes + 'function(' + this.names.join(',') + ') {';
+        return script + this.content.parse() + "})";
+	}
 }
 
 
@@ -294,9 +371,9 @@ var convertor = function(script, cb) {
         if (cb) cb(null, e);
     }));
     var tree = parser.translation_unit();
-    var listener = new JPObjCListener(function(result){
+    var listener = new JPObjCListener(function(result, className){
         var processor = new JPScriptProcessor(result)
-        if (cb) cb(processor.finalScript());
+        if (cb) cb(processor.finalScript(), className);
     });
     listener.ignoreClass = ignoreClass;
     listener.ignoreMethod = ignoreMethod;
@@ -393,7 +470,7 @@ JPObjCListener.prototype.buildScript = function() {
 	if (this.requireClasses.length) {
 		requires = "require('" + this.requireClasses.join(',') + "');\n";
 	}
-	this.cb(requires + this.rootContext.parse());
+	this.cb(requires + this.rootContext.parse(), this.rootContext.className);
 }
 
 
@@ -408,6 +485,7 @@ ObjCListener.prototype.enterClass_implementation = function(ctx) {
 	this.ocScript = ctx.start.source[1].strdata;
 	this.currContext.className = ctx.children[1].start.text;
 	this.currContext.ignore = this.ignoreClass;
+	this.currContext.startStopIndex = ctx.children[1].stop.stop;
 };
 
 ObjCListener.prototype.exitClass_implementation = function(ctx) {
@@ -418,6 +496,8 @@ ObjCListener.prototype.exitClass_implementation = function(ctx) {
 ObjCListener.prototype.enterClass_method_definition = function(ctx) {
 	var methodContext = new JPMethodContext();
 	methodContext.ignore = this.ignoreMethod;
+    this.linkMethodList(methodContext);
+    methodContext.exclusive = this.checkExclusive(ctx, methodContext);
 	this.rootContext.classMethods.push(methodContext);
 	this.currContext = methodContext;
 };
@@ -429,6 +509,8 @@ ObjCListener.prototype.exitClass_method_definition = function(ctx) {
 ObjCListener.prototype.enterInstance_method_definition = function(ctx) {
 	var methodContext = new JPMethodContext();
 	methodContext.ignore = this.ignoreMethod;
+    this.linkMethodList(methodContext);
+    methodContext.exclusive = this.checkExclusive(ctx, methodContext);
 	this.rootContext.instanceMethods.push(methodContext);
 	this.currContext = methodContext;
 };
@@ -455,6 +537,15 @@ JPObjCListener.prototype.enterMethod_definition = function(ctx) {
 };
 
 JPObjCListener.prototype.exitMethod_definition = function(ctx) {
+    var preContext = this.currContext;
+    while (!(preContext instanceof JPMethodContext)) {
+        preContext = preContext.pre;
+        if (!preContext) {
+            throw new Error('method parse fail');
+        }
+    }
+    preContext.stopIndex = ctx.stop.stop;
+
 	this.addStrContext(ctx.stop.stop)
 };
 
@@ -465,6 +556,20 @@ JPObjCListener.prototype.enterBlock_expression = function(ctx) {
 	this.currContext = strContext;
 
 	var blockContext = new JPBlockContext();
+
+	var isParamBlock = true;
+    var preContext = this.currContext;
+    while (!(preContext instanceof JPParamContext)) {
+        preContext = preContext.pre;
+        if (!preContext) {
+            isParamBlock = false;
+            break;
+        }
+    }
+    if (isParamBlock) {
+        blockContext.msg = preContext.parent;
+    }
+
 	this.currContext.setNext(blockContext);
 	blockContext.currIdx = ctx.start.stop + 1
 
@@ -553,6 +658,13 @@ JPObjCListener.prototype.exitMessage_expression = function(ctx) {
 
 JPObjCListener.prototype.enterReceiver = function(ctx) {
 	if (ctx.start.text != '[') {
+		var receiverName = ctx.start.text;
+		if (receiverName[0] >= 'A' && receiverName[0] <= 'Z') {
+			// if the first letter is upper case, we take it as a class name
+			if (excludeClassNames.indexOf(receiverName) == -1 && this.requireClasses.indexOf(receiverName) == -1) {
+				this.requireClasses.push(receiverName);
+			}
+		}
 		this.currContext.receiver = this.ocScript.substring(ctx.start.start, ctx.stop.stop + 1);
 	}
 };
@@ -561,16 +673,6 @@ JPObjCListener.prototype.exitReceiver = function(ctx) {
 };
 
 JPObjCListener.prototype.enterMessage_selector = function(ctx) {
-
-    var receiverName = this.currContext.receiver;
-    var selectorName = ctx.children[0].start.text;
-    if ((receiverName[0] >= 'A' && receiverName[0] <= 'Z') || selectorName == 'new' || selectorName == 'alloc') {
-        // if the first letter is upper case or selector is new or alloc, we take it as a class name
-        if (excludeClassNames.indexOf(receiverName) == -1 && this.requireClasses.indexOf(receiverName) == -1) {
-            this.requireClasses.push(receiverName);
-        }
-    }
-
 	for (var i = 0; i < ctx.children.length; i ++) {
 		this.currContext.selector.push({
 			name: ctx.children[i].start.text,
@@ -704,7 +806,6 @@ JPObjCListener.prototype.enterAssignment_operator = function(ctx) {
 // Enter a parse tree produced by ObjCParser#for_in_statement.
 ObjCListener.prototype.enterFor_in_statement = function(ctx) {
 	if (ctx.children[2].ruleIndex == 57) {
-		console.log(ctx)
 		//is Type_variable_declaratorContext
 		var typeVariableDeclaratorCtx = ctx.children[2];
 	
@@ -745,7 +846,38 @@ ObjCListener.prototype.enterFor_statement = function(ctx) {
 ObjCListener.prototype.exitFor_statement = function(ctx) {
 };
 
+//Util Methods
+ObjCListener.prototype.linkMethodList = function (methodContext) {
+    //找到最后一个method
+    var lastMethodContext = null;
+    if (this.rootContext.classMethods.length > 0) {
+        lastMethodContext = this.rootContext.classMethods[this.rootContext.classMethods.length - 1];
+        if (lastMethodContext.nextMethod) {
+            lastMethodContext = this.rootContext.instanceMethods[this.rootContext.instanceMethods.length - 1];
+        }
+    }
+    else {
+        if (this.rootContext.instanceMethods.length > 0) {
+            lastMethodContext = this.rootContext.instanceMethods[this.rootContext.instanceMethods.length - 1];
+        }
+    }
+    methodContext.preMethod = lastMethodContext;
+    if (lastMethodContext) lastMethodContext.nextMethod = methodContext;
+}
 
+ObjCListener.prototype.checkExclusive = function (ctx, methodContext) {
+    var exclusive;
+    var methodsInternalStr;
+    if (methodContext.preMethod) {
+        methodsInternalStr = ctx.start.source[1].strdata.substring(methodContext.preMethod.stopIndex + 1, ctx.start.start);
+    } else {
+        methodsInternalStr = ctx.start.source[1].strdata.substring(this.rootContext.startStopIndex + 1, ctx.start.start);
+    }
+    //去掉注释
+    methodsInternalStr = methodsInternalStr.replace(/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/gm, '');
+    exclusive = /#pragma hotdev exclusive/g.test(methodsInternalStr);
+    return exclusive;
+}
 
 
 exports.JPObjCListener = JPObjCListener;
