@@ -12,6 +12,14 @@
 
 + (void)main:(JSContext *)context {
     
+    [JPEngine defineStruct:@{
+                             @"name": @"UIEdgeInsets",
+                             @"types": @"FFFF",
+                             @"keys": @[@"top", @"left", @"bottom", @"right"]
+                             }];
+
+    [context evaluateScript:@"global.NSTextAlignmentLeft = 0; global.NSTextAlignmentCenter = 1;"];
+    
     __weak JSContext *weakContext = context;
     context[@"CGSizeMake"] = ^() {
         NSArray *args = [JSContext currentArguments];
@@ -19,6 +27,12 @@
         NSNumber *heightNumber = ((JSValue *)args[1]).toNumber;
         CGSize size = CGSizeMake([widthNumber doubleValue], [heightNumber doubleValue]);
         return [JSValue valueWithSize:size inContext:weakContext];
+    };
+    
+    context[@"UIEdgeInsetsMake"] = ^() {
+        NSArray *args = [JSContext currentArguments];
+        UIEdgeInsets insets = UIEdgeInsetsMake(((JSValue *)args[0]).toNumber.doubleValue, ((JSValue *)args[1]).toNumber.doubleValue, ((JSValue *)args[2]).toNumber.doubleValue, ((JSValue *)args[3]).toNumber.doubleValue);
+        return [JPExtension getDictOfStruct:&insets structDefine:[JPExtension registeredStruct][@"UIEdgeInsets"]];
     };
     
     context[@"NSLog"] = ^() {

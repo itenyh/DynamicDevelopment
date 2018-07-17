@@ -19,7 +19,10 @@
         id result;
         
         if (keys.count == 2 && [keys containsObject:@"width"] && [keys containsObject:@"height"]) {
-            result = _MASBoxValue("{CGSize=dd}", CGSizeMake([dict[@"width"] doubleValue], [dict[@"height"] doubleValue]));
+            result = _MASBoxValue(@encode(CGSize), CGSizeMake([dict[@"width"] doubleValue], [dict[@"height"] doubleValue]));
+        }
+        else if (keys.count == 4 && [keys containsObject:@"top"] && [keys containsObject:@"right"] && [keys containsObject:@"bottom"] && [keys containsObject:@"left"]) {
+            result = _MASBoxValue(@encode(UIEdgeInsets), UIEdgeInsetsMake([dict[@"top"] doubleValue], [dict[@"right"] doubleValue], [dict[@"bottom"] doubleValue], [dict[@"left"] doubleValue]));
         }
         
         return [JPExtension formatOCToJS:result];
@@ -35,12 +38,6 @@
     NSString *modifiedString = [regex stringByReplacingMatchesInString:sourceCode options:0 range:NSMakeRange(0, [sourceCode length]) withTemplate:@"equalTo(MMASBoxValue($1))"];
     return modifiedString;
     
-//    NSString *string = @"make.size.mas_equalTo(CGSizeMake(10, 10));";
-//    NSError *error = nil;
-//    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"mas_equalTo\\((.+)\\)" options:NSRegularExpressionCaseInsensitive error:&error];
-//    NSString *modifiedString = [regex stringByReplacingMatchesInString:string options:0 range:NSMakeRange(0, [string length]) withTemplate:@"equalTo(MMASBoxValue($1))"];
-//    NSLog(@"%@", modifiedString);
-//    return @"";
 }
 
 @end
