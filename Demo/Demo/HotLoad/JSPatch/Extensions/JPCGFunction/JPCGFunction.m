@@ -39,6 +39,7 @@
         }
         NSLog(@"%@", logContent);
     };
+    
 }
 
 @end

@@ -19,6 +19,8 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className);
 
 @interface HotComplileEngine () <FileTransferServiceBrowserDelegate>
 
+@property (nonatomic, strong) NSMutableArray *extensions;
+
 @property (nonatomic, strong) NSMutableArray *watchDogs;
 @property (nonatomic, copy) NSString *rootPath;
 @property (nonatomic, copy) NSString *filePath;
@@ -41,8 +43,10 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className);
 }
 
 - (void)setupEngine {
+    
     [JPEngine startEngine];
-    [JPEngine addExtensions:@[@"JPBlock", @"JPCFunction", @"JPCGFunction"]];
+    [self addExtensions:@[@"JPBlock", @"JPCFunction", @"JPCGFunction", @"JPMasonry"]];
+    
 //    //load global utils
 //    NSString *scriptPath = [[NSBundle mainBundle] pathForResource:@"system_macro" ofType:@"js"];
 //    NSString *scriptString = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:nil];
@@ -102,6 +106,14 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className);
 
 #pragma - mark Util Methods
 
+- (void)addExtensions:(NSArray *)extensionNames {
+    [JPEngine addExtensions:extensionNames];
+    for (NSString *extension in extensionNames) {
+        Class extensionClass = NSClassFromString(extension);
+        [self.extensions addObject:extensionClass];
+    }
+}
+
 // Load JsScript translated from Objective-C
 + (void)loadMainJs {
     NSString *rootPath ;
@@ -154,6 +166,11 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className);
 }
 
 - (void)translateObj2Js:(NSString *)input callBack:(TranslateCallBack)callBack {
+    
+    for (Class extension in self.extensions) {
+        input = [extension performSelector:@selector(preProcessSourceCode:) withObject:input];
+    }
+    
     NSString *scriptPath = [[NSBundle mainBundle] pathForResource:@"bundle" ofType:@"js"];
     NSError *error;
     NSString *scriptString = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
@@ -166,6 +183,15 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className);
     [context evaluateScript:scriptString];
     JSValue *convertor = [[context objectForKeyedSubscript:@"global"] objectForKeyedSubscript:@"convertor"];
     [convertor callWithArguments:@[input, callBack]];
+}
+
+#pragma - mark lazy load
+
+- (NSMutableArray *)extensions {
+    if (!_extensions) {
+        _extensions = [NSMutableArray array];
+    }
+    return _extensions;
 }
 
 @end

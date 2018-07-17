@@ -1932,4 +1932,8 @@ static id _unboxOCObjectToJS(id obj)
     return _runnedScript;
 }
 
++ (NSString *)preProcessSourceCode:(NSString *)sourceCode {
+    return sourceCode;
+}
+
 @end

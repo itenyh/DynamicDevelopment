@@ -13,7 +13,6 @@
 		D5A2BC2520FAF9E900C9694F /* FileTransferServiceBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = D5A2BC2420FAF9E900C9694F /* FileTransferServiceBrowser.m */; };
 		FC0C8E1220FC3599003F1C01 /* Packet.m in Sources */ = {isa = PBXBuildFile; fileRef = FC0C8E0F20FC3599003F1C01 /* Packet.m */; };
 		FC0C8E1320FC3599003F1C01 /* SourceCode.m in Sources */ = {isa = PBXBuildFile; fileRef = FC0C8E1120FC3599003F1C01 /* SourceCode.m */; };
-		FC0C8E1F20FC7BEB003F1C01 /* JPCGFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = FC0C8E1E20FC7BEB003F1C01 /* JPCGFunction.m */; };
 		FC67496720EB29CD0075F4C4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FC67496620EB29CD0075F4C4 /* AppDelegate.m */; };
 		FC67496A20EB29CD0075F4C4 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FC67496920EB29CD0075F4C4 /* ViewController.m */; };
 		FC67496D20EB29CD0075F4C4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FC67496B20EB29CD0075F4C4 /* Main.storyboard */; };
@@ -21,23 +20,25 @@
 		FC67497220EB29D60075F4C4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FC67497020EB29D60075F4C4 /* LaunchScreen.storyboard */; };
 		FC67497520EB29D60075F4C4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FC67497420EB29D60075F4C4 /* main.m */; };
 		FC7A4F2A20EE122D00C138C9 /* HotComplileEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = FC7A4EFE20EE122D00C138C9 /* HotComplileEngine.m */; };
-		FC7A4F2B20EE122D00C138C9 /* JPBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = FC7A4F0320EE122D00C138C9 /* JPBlock.m */; };
-		FC7A4F2C20EE122D00C138C9 /* JPBlockWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = FC7A4F0520EE122D00C138C9 /* JPBlockWrapper.m */; };
-		FC7A4F2D20EE122E00C138C9 /* JPCFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = FC7A4F0820EE122D00C138C9 /* JPCFunction.m */; };
-		FC7A4F2E20EE122E00C138C9 /* JPMemory.m in Sources */ = {isa = PBXBuildFile; fileRef = FC7A4F0A20EE122D00C138C9 /* JPMemory.m */; };
-		FC7A4F2F20EE122E00C138C9 /* JPStructPointer.m in Sources */ = {isa = PBXBuildFile; fileRef = FC7A4F0C20EE122D00C138C9 /* JPStructPointer.m */; };
-		FC7A4F3020EE122E00C138C9 /* JPMethodSignature.m in Sources */ = {isa = PBXBuildFile; fileRef = FC7A4F1920EE122D00C138C9 /* JPMethodSignature.m */; };
-		FC7A4F3120EE122E00C138C9 /* libffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FC7A4F1A20EE122D00C138C9 /* libffi.a */; };
-		FC7A4F3220EE122E00C138C9 /* JPEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = FC7A4F1C20EE122D00C138C9 /* JPEngine.m */; };
-		FC7A4F3320EE122E00C138C9 /* JSPatch.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7A4F1D20EE122D00C138C9 /* JSPatch.js */; };
-		FC7A4F3420EE122E00C138C9 /* JPCleaner.m in Sources */ = {isa = PBXBuildFile; fileRef = FC7A4F2020EE122D00C138C9 /* JPCleaner.m */; };
-		FC7A4F3520EE122E00C138C9 /* FileSystemWatch.m in Sources */ = {isa = PBXBuildFile; fileRef = FC7A4F2320EE122D00C138C9 /* FileSystemWatch.m */; };
-		FC7A4F3620EE122E00C138C9 /* SGDirWatchdog.m in Sources */ = {isa = PBXBuildFile; fileRef = FC7A4F2520EE122D00C138C9 /* SGDirWatchdog.m */; };
 		FC7A4F3720EE122E00C138C9 /* bundle.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7A4F2720EE122D00C138C9 /* bundle.js */; };
 		FC7A4F3920EE122E00C138C9 /* system_macro.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7A4F2920EE122D00C138C9 /* system_macro.js */; };
-		FCD0140920F895B9004484B5 /* Documentation.html in Resources */ = {isa = PBXBuildFile; fileRef = FCD0140420F895B9004484B5 /* Documentation.html */; };
-		FCD0140A20F895B9004484B5 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = FCD0140620F895B9004484B5 /* GCDAsyncSocket.m */; };
-		FCD0140B20F895B9004484B5 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = FCD0140820F895B9004484B5 /* GCDAsyncUdpSocket.m */; };
+		FC8FFC2420FDDA790097FBE4 /* JPBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = FC8FFC0F20FDDA790097FBE4 /* JPBlock.m */; };
+		FC8FFC2520FDDA790097FBE4 /* JPBlockWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = FC8FFC1120FDDA790097FBE4 /* JPBlockWrapper.m */; };
+		FC8FFC2620FDDA790097FBE4 /* JPCFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = FC8FFC1420FDDA790097FBE4 /* JPCFunction.m */; };
+		FC8FFC2720FDDA790097FBE4 /* JPMemory.m in Sources */ = {isa = PBXBuildFile; fileRef = FC8FFC1620FDDA790097FBE4 /* JPMemory.m */; };
+		FC8FFC2820FDDA790097FBE4 /* JPStructPointer.m in Sources */ = {isa = PBXBuildFile; fileRef = FC8FFC1820FDDA790097FBE4 /* JPStructPointer.m */; };
+		FC8FFC2920FDDA790097FBE4 /* JPCGFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = FC8FFC1B20FDDA790097FBE4 /* JPCGFunction.m */; };
+		FC8FFC2A20FDDA790097FBE4 /* JPMasonry.m in Sources */ = {isa = PBXBuildFile; fileRef = FC8FFC1D20FDDA790097FBE4 /* JPMasonry.m */; };
+		FC8FFC2B20FDDA790097FBE4 /* JPEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = FC8FFC1F20FDDA790097FBE4 /* JPEngine.m */; };
+		FC8FFC2C20FDDA790097FBE4 /* JSPatch.js in Resources */ = {isa = PBXBuildFile; fileRef = FC8FFC2020FDDA790097FBE4 /* JSPatch.js */; };
+		FC8FFC2D20FDDA790097FBE4 /* JPCleaner.m in Sources */ = {isa = PBXBuildFile; fileRef = FC8FFC2320FDDA790097FBE4 /* JPCleaner.m */; };
+		FC8FFC4820FDDA8F0097FBE4 /* Documentation.html in Resources */ = {isa = PBXBuildFile; fileRef = FC8FFC3020FDDA8F0097FBE4 /* Documentation.html */; };
+		FC8FFC4920FDDA8F0097FBE4 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = FC8FFC3220FDDA8F0097FBE4 /* GCDAsyncSocket.m */; };
+		FC8FFC4A20FDDA8F0097FBE4 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = FC8FFC3420FDDA8F0097FBE4 /* GCDAsyncUdpSocket.m */; };
+		FC8FFC4B20FDDA8F0097FBE4 /* FileSystemWatch.m in Sources */ = {isa = PBXBuildFile; fileRef = FC8FFC3720FDDA8F0097FBE4 /* FileSystemWatch.m */; };
+		FC8FFC4C20FDDA8F0097FBE4 /* SGDirWatchdog.m in Sources */ = {isa = PBXBuildFile; fileRef = FC8FFC3920FDDA8F0097FBE4 /* SGDirWatchdog.m */; };
+		FC8FFC4D20FDDA8F0097FBE4 /* JPMethodSignature.m in Sources */ = {isa = PBXBuildFile; fileRef = FC8FFC4620FDDA8F0097FBE4 /* JPMethodSignature.m */; };
+		FC8FFC4E20FDDA8F0097FBE4 /* libffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FC8FFC4720FDDA8F0097FBE4 /* libffi.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,8 +54,6 @@
 		FC0C8E0F20FC3599003F1C01 /* Packet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Packet.m; sourceTree = "<group>"; };
 		FC0C8E1020FC3599003F1C01 /* SourceCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourceCode.h; sourceTree = "<group>"; };
 		FC0C8E1120FC3599003F1C01 /* SourceCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SourceCode.m; sourceTree = "<group>"; };
-		FC0C8E1D20FC7BEB003F1C01 /* JPCGFunction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JPCGFunction.h; sourceTree = "<group>"; };
-		FC0C8E1E20FC7BEB003F1C01 /* JPCGFunction.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JPCGFunction.m; sourceTree = "<group>"; };
 		FC67496220EB29CD0075F4C4 /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FC67496520EB29CD0075F4C4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		FC67496620EB29CD0075F4C4 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -68,45 +67,49 @@
 		FC6749C020EB4A0D0075F4C4 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		FC7A4EFD20EE122D00C138C9 /* HotComplileEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotComplileEngine.h; sourceTree = "<group>"; };
 		FC7A4EFE20EE122D00C138C9 /* HotComplileEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotComplileEngine.m; sourceTree = "<group>"; };
-		FC7A4F0220EE122D00C138C9 /* JPBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPBlock.h; sourceTree = "<group>"; };
-		FC7A4F0320EE122D00C138C9 /* JPBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPBlock.m; sourceTree = "<group>"; };
-		FC7A4F0420EE122D00C138C9 /* JPBlockWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPBlockWrapper.h; sourceTree = "<group>"; };
-		FC7A4F0520EE122D00C138C9 /* JPBlockWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPBlockWrapper.m; sourceTree = "<group>"; };
-		FC7A4F0720EE122D00C138C9 /* JPCFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPCFunction.h; sourceTree = "<group>"; };
-		FC7A4F0820EE122D00C138C9 /* JPCFunction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPCFunction.m; sourceTree = "<group>"; };
-		FC7A4F0920EE122D00C138C9 /* JPMemory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPMemory.h; sourceTree = "<group>"; };
-		FC7A4F0A20EE122D00C138C9 /* JPMemory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPMemory.m; sourceTree = "<group>"; };
-		FC7A4F0B20EE122D00C138C9 /* JPStructPointer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPStructPointer.h; sourceTree = "<group>"; };
-		FC7A4F0C20EE122D00C138C9 /* JPStructPointer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPStructPointer.m; sourceTree = "<group>"; };
-		FC7A4F0E20EE122D00C138C9 /* ffi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffi.h; sourceTree = "<group>"; };
-		FC7A4F0F20EE122D00C138C9 /* ffi_arm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffi_arm.h; sourceTree = "<group>"; };
-		FC7A4F1020EE122D00C138C9 /* ffi_arm64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffi_arm64.h; sourceTree = "<group>"; };
-		FC7A4F1120EE122D00C138C9 /* ffi_i386.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffi_i386.h; sourceTree = "<group>"; };
-		FC7A4F1220EE122D00C138C9 /* ffi_x86_64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffi_x86_64.h; sourceTree = "<group>"; };
-		FC7A4F1320EE122D00C138C9 /* ffitarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffitarget.h; sourceTree = "<group>"; };
-		FC7A4F1420EE122D00C138C9 /* ffitarget_arm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffitarget_arm.h; sourceTree = "<group>"; };
-		FC7A4F1520EE122D00C138C9 /* ffitarget_arm64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffitarget_arm64.h; sourceTree = "<group>"; };
-		FC7A4F1620EE122D00C138C9 /* ffitarget_i386.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffitarget_i386.h; sourceTree = "<group>"; };
-		FC7A4F1720EE122D00C138C9 /* ffitarget_x86_64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffitarget_x86_64.h; sourceTree = "<group>"; };
-		FC7A4F1820EE122D00C138C9 /* JPMethodSignature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPMethodSignature.h; sourceTree = "<group>"; };
-		FC7A4F1920EE122D00C138C9 /* JPMethodSignature.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPMethodSignature.m; sourceTree = "<group>"; };
-		FC7A4F1A20EE122D00C138C9 /* libffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libffi.a; sourceTree = "<group>"; };
-		FC7A4F1B20EE122D00C138C9 /* JPEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPEngine.h; sourceTree = "<group>"; };
-		FC7A4F1C20EE122D00C138C9 /* JPEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPEngine.m; sourceTree = "<group>"; };
-		FC7A4F1D20EE122D00C138C9 /* JSPatch.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = JSPatch.js; sourceTree = "<group>"; };
-		FC7A4F1F20EE122D00C138C9 /* JPCleaner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPCleaner.h; sourceTree = "<group>"; };
-		FC7A4F2020EE122D00C138C9 /* JPCleaner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPCleaner.m; sourceTree = "<group>"; };
-		FC7A4F2220EE122D00C138C9 /* FileSystemWatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileSystemWatch.h; sourceTree = "<group>"; };
-		FC7A4F2320EE122D00C138C9 /* FileSystemWatch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileSystemWatch.m; sourceTree = "<group>"; };
-		FC7A4F2420EE122D00C138C9 /* SGDirWatchdog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SGDirWatchdog.h; sourceTree = "<group>"; };
-		FC7A4F2520EE122D00C138C9 /* SGDirWatchdog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SGDirWatchdog.m; sourceTree = "<group>"; };
 		FC7A4F2720EE122D00C138C9 /* bundle.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = bundle.js; sourceTree = "<group>"; };
 		FC7A4F2920EE122D00C138C9 /* system_macro.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = system_macro.js; sourceTree = "<group>"; };
-		FCD0140420F895B9004484B5 /* Documentation.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Documentation.html; sourceTree = "<group>"; };
-		FCD0140520F895B9004484B5 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
-		FCD0140620F895B9004484B5 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
-		FCD0140720F895B9004484B5 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
-		FCD0140820F895B9004484B5 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
+		FC8FFC0E20FDDA790097FBE4 /* JPBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPBlock.h; sourceTree = "<group>"; };
+		FC8FFC0F20FDDA790097FBE4 /* JPBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPBlock.m; sourceTree = "<group>"; };
+		FC8FFC1020FDDA790097FBE4 /* JPBlockWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPBlockWrapper.h; sourceTree = "<group>"; };
+		FC8FFC1120FDDA790097FBE4 /* JPBlockWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPBlockWrapper.m; sourceTree = "<group>"; };
+		FC8FFC1320FDDA790097FBE4 /* JPCFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPCFunction.h; sourceTree = "<group>"; };
+		FC8FFC1420FDDA790097FBE4 /* JPCFunction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPCFunction.m; sourceTree = "<group>"; };
+		FC8FFC1520FDDA790097FBE4 /* JPMemory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPMemory.h; sourceTree = "<group>"; };
+		FC8FFC1620FDDA790097FBE4 /* JPMemory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPMemory.m; sourceTree = "<group>"; };
+		FC8FFC1720FDDA790097FBE4 /* JPStructPointer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPStructPointer.h; sourceTree = "<group>"; };
+		FC8FFC1820FDDA790097FBE4 /* JPStructPointer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPStructPointer.m; sourceTree = "<group>"; };
+		FC8FFC1A20FDDA790097FBE4 /* JPCGFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPCGFunction.h; sourceTree = "<group>"; };
+		FC8FFC1B20FDDA790097FBE4 /* JPCGFunction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPCGFunction.m; sourceTree = "<group>"; };
+		FC8FFC1C20FDDA790097FBE4 /* JPMasonry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPMasonry.h; sourceTree = "<group>"; };
+		FC8FFC1D20FDDA790097FBE4 /* JPMasonry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPMasonry.m; sourceTree = "<group>"; };
+		FC8FFC1E20FDDA790097FBE4 /* JPEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPEngine.h; sourceTree = "<group>"; };
+		FC8FFC1F20FDDA790097FBE4 /* JPEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPEngine.m; sourceTree = "<group>"; };
+		FC8FFC2020FDDA790097FBE4 /* JSPatch.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = JSPatch.js; sourceTree = "<group>"; };
+		FC8FFC2220FDDA790097FBE4 /* JPCleaner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPCleaner.h; sourceTree = "<group>"; };
+		FC8FFC2320FDDA790097FBE4 /* JPCleaner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPCleaner.m; sourceTree = "<group>"; };
+		FC8FFC3020FDDA8F0097FBE4 /* Documentation.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Documentation.html; sourceTree = "<group>"; };
+		FC8FFC3120FDDA8F0097FBE4 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
+		FC8FFC3220FDDA8F0097FBE4 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
+		FC8FFC3320FDDA8F0097FBE4 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
+		FC8FFC3420FDDA8F0097FBE4 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
+		FC8FFC3620FDDA8F0097FBE4 /* FileSystemWatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileSystemWatch.h; sourceTree = "<group>"; };
+		FC8FFC3720FDDA8F0097FBE4 /* FileSystemWatch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileSystemWatch.m; sourceTree = "<group>"; };
+		FC8FFC3820FDDA8F0097FBE4 /* SGDirWatchdog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SGDirWatchdog.h; sourceTree = "<group>"; };
+		FC8FFC3920FDDA8F0097FBE4 /* SGDirWatchdog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SGDirWatchdog.m; sourceTree = "<group>"; };
+		FC8FFC3B20FDDA8F0097FBE4 /* ffi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffi.h; sourceTree = "<group>"; };
+		FC8FFC3C20FDDA8F0097FBE4 /* ffi_arm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffi_arm.h; sourceTree = "<group>"; };
+		FC8FFC3D20FDDA8F0097FBE4 /* ffi_arm64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffi_arm64.h; sourceTree = "<group>"; };
+		FC8FFC3E20FDDA8F0097FBE4 /* ffi_i386.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffi_i386.h; sourceTree = "<group>"; };
+		FC8FFC3F20FDDA8F0097FBE4 /* ffi_x86_64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffi_x86_64.h; sourceTree = "<group>"; };
+		FC8FFC4020FDDA8F0097FBE4 /* ffitarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffitarget.h; sourceTree = "<group>"; };
+		FC8FFC4120FDDA8F0097FBE4 /* ffitarget_arm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffitarget_arm.h; sourceTree = "<group>"; };
+		FC8FFC4220FDDA8F0097FBE4 /* ffitarget_arm64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffitarget_arm64.h; sourceTree = "<group>"; };
+		FC8FFC4320FDDA8F0097FBE4 /* ffitarget_i386.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffitarget_i386.h; sourceTree = "<group>"; };
+		FC8FFC4420FDDA8F0097FBE4 /* ffitarget_x86_64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffitarget_x86_64.h; sourceTree = "<group>"; };
+		FC8FFC4520FDDA8F0097FBE4 /* JPMethodSignature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPMethodSignature.h; sourceTree = "<group>"; };
+		FC8FFC4620FDDA8F0097FBE4 /* JPMethodSignature.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPMethodSignature.m; sourceTree = "<group>"; };
+		FC8FFC4720FDDA8F0097FBE4 /* libffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libffi.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,7 +118,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE40BFB38E170D0FB9EB7205 /* libPods-Demo.a in Frameworks */,
-				FC7A4F3120EE122E00C138C9 /* libffi.a in Frameworks */,
+				FC8FFC4E20FDDA8F0097FBE4 /* libffi.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -148,17 +151,6 @@
 				FC0C8E1120FC3599003F1C01 /* SourceCode.m */,
 			);
 			path = TransferDatas;
-			sourceTree = "<group>";
-		};
-		FC0C8E1B20FC62D6003F1C01 /* FileWatcher */ = {
-			isa = PBXGroup;
-			children = (
-				FC7A4F2220EE122D00C138C9 /* FileSystemWatch.h */,
-				FC7A4F2320EE122D00C138C9 /* FileSystemWatch.m */,
-				FC7A4F2420EE122D00C138C9 /* SGDirWatchdog.h */,
-				FC7A4F2520EE122D00C138C9 /* SGDirWatchdog.m */,
-			);
-			path = FileWatcher;
 			sourceTree = "<group>";
 		};
 		FC0C8E1C20FC630B003F1C01 /* Transportation */ = {
@@ -230,98 +222,12 @@
 			children = (
 				FC7A4EFD20EE122D00C138C9 /* HotComplileEngine.h */,
 				FC7A4EFE20EE122D00C138C9 /* HotComplileEngine.m */,
-				FC7A4F2120EE122D00C138C9 /* ThridParty */,
-				FC7A4EFF20EE122D00C138C9 /* JSPatch */,
+				FC8FFC0B20FDDA790097FBE4 /* JSPatch */,
+				FC8FFC2E20FDDA8F0097FBE4 /* ThridParty */,
 				FC7A4F2620EE122D00C138C9 /* Convertor */,
 				FC0C8E1C20FC630B003F1C01 /* Transportation */,
 			);
 			path = HotLoad;
-			sourceTree = "<group>";
-		};
-		FC7A4EFF20EE122D00C138C9 /* JSPatch */ = {
-			isa = PBXGroup;
-			children = (
-				FC7A4F1E20EE122D00C138C9 /* Utils */,
-				FC7A4F0020EE122D00C138C9 /* Extensions */,
-				FC7A4F1B20EE122D00C138C9 /* JPEngine.h */,
-				FC7A4F1C20EE122D00C138C9 /* JPEngine.m */,
-				FC7A4F1D20EE122D00C138C9 /* JSPatch.js */,
-			);
-			path = JSPatch;
-			sourceTree = "<group>";
-		};
-		FC7A4F0020EE122D00C138C9 /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				FC7A4F0120EE122D00C138C9 /* JPBlock */,
-				FC7A4F0620EE122D00C138C9 /* JPCFunction */,
-				FC7A4F0D20EE122D00C138C9 /* libffi */,
-				FC0C8E1D20FC7BEB003F1C01 /* JPCGFunction.h */,
-				FC0C8E1E20FC7BEB003F1C01 /* JPCGFunction.m */,
-			);
-			path = Extensions;
-			sourceTree = "<group>";
-		};
-		FC7A4F0120EE122D00C138C9 /* JPBlock */ = {
-			isa = PBXGroup;
-			children = (
-				FC7A4F0220EE122D00C138C9 /* JPBlock.h */,
-				FC7A4F0320EE122D00C138C9 /* JPBlock.m */,
-				FC7A4F0420EE122D00C138C9 /* JPBlockWrapper.h */,
-				FC7A4F0520EE122D00C138C9 /* JPBlockWrapper.m */,
-			);
-			path = JPBlock;
-			sourceTree = "<group>";
-		};
-		FC7A4F0620EE122D00C138C9 /* JPCFunction */ = {
-			isa = PBXGroup;
-			children = (
-				FC7A4F0720EE122D00C138C9 /* JPCFunction.h */,
-				FC7A4F0820EE122D00C138C9 /* JPCFunction.m */,
-				FC7A4F0920EE122D00C138C9 /* JPMemory.h */,
-				FC7A4F0A20EE122D00C138C9 /* JPMemory.m */,
-				FC7A4F0B20EE122D00C138C9 /* JPStructPointer.h */,
-				FC7A4F0C20EE122D00C138C9 /* JPStructPointer.m */,
-			);
-			path = JPCFunction;
-			sourceTree = "<group>";
-		};
-		FC7A4F0D20EE122D00C138C9 /* libffi */ = {
-			isa = PBXGroup;
-			children = (
-				FC7A4F0E20EE122D00C138C9 /* ffi.h */,
-				FC7A4F0F20EE122D00C138C9 /* ffi_arm.h */,
-				FC7A4F1020EE122D00C138C9 /* ffi_arm64.h */,
-				FC7A4F1120EE122D00C138C9 /* ffi_i386.h */,
-				FC7A4F1220EE122D00C138C9 /* ffi_x86_64.h */,
-				FC7A4F1320EE122D00C138C9 /* ffitarget.h */,
-				FC7A4F1420EE122D00C138C9 /* ffitarget_arm.h */,
-				FC7A4F1520EE122D00C138C9 /* ffitarget_arm64.h */,
-				FC7A4F1620EE122D00C138C9 /* ffitarget_i386.h */,
-				FC7A4F1720EE122D00C138C9 /* ffitarget_x86_64.h */,
-				FC7A4F1820EE122D00C138C9 /* JPMethodSignature.h */,
-				FC7A4F1920EE122D00C138C9 /* JPMethodSignature.m */,
-				FC7A4F1A20EE122D00C138C9 /* libffi.a */,
-			);
-			path = libffi;
-			sourceTree = "<group>";
-		};
-		FC7A4F1E20EE122D00C138C9 /* Utils */ = {
-			isa = PBXGroup;
-			children = (
-				FC7A4F1F20EE122D00C138C9 /* JPCleaner.h */,
-				FC7A4F2020EE122D00C138C9 /* JPCleaner.m */,
-			);
-			path = Utils;
-			sourceTree = "<group>";
-		};
-		FC7A4F2120EE122D00C138C9 /* ThridParty */ = {
-			isa = PBXGroup;
-			children = (
-				FCD0140320F895B9004484B5 /* AsyncSocket */,
-				FC0C8E1B20FC62D6003F1C01 /* FileWatcher */,
-			);
-			path = ThridParty;
 			sourceTree = "<group>";
 		};
 		FC7A4F2620EE122D00C138C9 /* Convertor */ = {
@@ -334,16 +240,123 @@
 			path = Convertor;
 			sourceTree = "<group>";
 		};
-		FCD0140320F895B9004484B5 /* AsyncSocket */ = {
+		FC8FFC0B20FDDA790097FBE4 /* JSPatch */ = {
 			isa = PBXGroup;
 			children = (
-				FCD0140420F895B9004484B5 /* Documentation.html */,
-				FCD0140520F895B9004484B5 /* GCDAsyncSocket.h */,
-				FCD0140620F895B9004484B5 /* GCDAsyncSocket.m */,
-				FCD0140720F895B9004484B5 /* GCDAsyncUdpSocket.h */,
-				FCD0140820F895B9004484B5 /* GCDAsyncUdpSocket.m */,
+				FC8FFC1E20FDDA790097FBE4 /* JPEngine.h */,
+				FC8FFC1F20FDDA790097FBE4 /* JPEngine.m */,
+				FC8FFC2020FDDA790097FBE4 /* JSPatch.js */,
+				FC8FFC0C20FDDA790097FBE4 /* Extensions */,
+				FC8FFC2120FDDA790097FBE4 /* Utils */,
+			);
+			path = JSPatch;
+			sourceTree = "<group>";
+		};
+		FC8FFC0C20FDDA790097FBE4 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				FC8FFC0D20FDDA790097FBE4 /* JPBlock */,
+				FC8FFC1220FDDA790097FBE4 /* JPCFunction */,
+				FC8FFC1920FDDA790097FBE4 /* JPCGFunction */,
+				FC8FFC1C20FDDA790097FBE4 /* JPMasonry.h */,
+				FC8FFC1D20FDDA790097FBE4 /* JPMasonry.m */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		FC8FFC0D20FDDA790097FBE4 /* JPBlock */ = {
+			isa = PBXGroup;
+			children = (
+				FC8FFC0E20FDDA790097FBE4 /* JPBlock.h */,
+				FC8FFC0F20FDDA790097FBE4 /* JPBlock.m */,
+				FC8FFC1020FDDA790097FBE4 /* JPBlockWrapper.h */,
+				FC8FFC1120FDDA790097FBE4 /* JPBlockWrapper.m */,
+			);
+			path = JPBlock;
+			sourceTree = "<group>";
+		};
+		FC8FFC1220FDDA790097FBE4 /* JPCFunction */ = {
+			isa = PBXGroup;
+			children = (
+				FC8FFC1320FDDA790097FBE4 /* JPCFunction.h */,
+				FC8FFC1420FDDA790097FBE4 /* JPCFunction.m */,
+				FC8FFC1520FDDA790097FBE4 /* JPMemory.h */,
+				FC8FFC1620FDDA790097FBE4 /* JPMemory.m */,
+				FC8FFC1720FDDA790097FBE4 /* JPStructPointer.h */,
+				FC8FFC1820FDDA790097FBE4 /* JPStructPointer.m */,
+			);
+			path = JPCFunction;
+			sourceTree = "<group>";
+		};
+		FC8FFC1920FDDA790097FBE4 /* JPCGFunction */ = {
+			isa = PBXGroup;
+			children = (
+				FC8FFC1A20FDDA790097FBE4 /* JPCGFunction.h */,
+				FC8FFC1B20FDDA790097FBE4 /* JPCGFunction.m */,
+			);
+			path = JPCGFunction;
+			sourceTree = "<group>";
+		};
+		FC8FFC2120FDDA790097FBE4 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				FC8FFC2220FDDA790097FBE4 /* JPCleaner.h */,
+				FC8FFC2320FDDA790097FBE4 /* JPCleaner.m */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		FC8FFC2E20FDDA8F0097FBE4 /* ThridParty */ = {
+			isa = PBXGroup;
+			children = (
+				FC8FFC2F20FDDA8F0097FBE4 /* AsyncSocket */,
+				FC8FFC3520FDDA8F0097FBE4 /* FileWatcher */,
+				FC8FFC3A20FDDA8F0097FBE4 /* libffi */,
+			);
+			path = ThridParty;
+			sourceTree = "<group>";
+		};
+		FC8FFC2F20FDDA8F0097FBE4 /* AsyncSocket */ = {
+			isa = PBXGroup;
+			children = (
+				FC8FFC3020FDDA8F0097FBE4 /* Documentation.html */,
+				FC8FFC3120FDDA8F0097FBE4 /* GCDAsyncSocket.h */,
+				FC8FFC3220FDDA8F0097FBE4 /* GCDAsyncSocket.m */,
+				FC8FFC3320FDDA8F0097FBE4 /* GCDAsyncUdpSocket.h */,
+				FC8FFC3420FDDA8F0097FBE4 /* GCDAsyncUdpSocket.m */,
 			);
 			path = AsyncSocket;
+			sourceTree = "<group>";
+		};
+		FC8FFC3520FDDA8F0097FBE4 /* FileWatcher */ = {
+			isa = PBXGroup;
+			children = (
+				FC8FFC3620FDDA8F0097FBE4 /* FileSystemWatch.h */,
+				FC8FFC3720FDDA8F0097FBE4 /* FileSystemWatch.m */,
+				FC8FFC3820FDDA8F0097FBE4 /* SGDirWatchdog.h */,
+				FC8FFC3920FDDA8F0097FBE4 /* SGDirWatchdog.m */,
+			);
+			path = FileWatcher;
+			sourceTree = "<group>";
+		};
+		FC8FFC3A20FDDA8F0097FBE4 /* libffi */ = {
+			isa = PBXGroup;
+			children = (
+				FC8FFC3B20FDDA8F0097FBE4 /* ffi.h */,
+				FC8FFC3C20FDDA8F0097FBE4 /* ffi_arm.h */,
+				FC8FFC3D20FDDA8F0097FBE4 /* ffi_arm64.h */,
+				FC8FFC3E20FDDA8F0097FBE4 /* ffi_i386.h */,
+				FC8FFC3F20FDDA8F0097FBE4 /* ffi_x86_64.h */,
+				FC8FFC4020FDDA8F0097FBE4 /* ffitarget.h */,
+				FC8FFC4120FDDA8F0097FBE4 /* ffitarget_arm.h */,
+				FC8FFC4220FDDA8F0097FBE4 /* ffitarget_arm64.h */,
+				FC8FFC4320FDDA8F0097FBE4 /* ffitarget_i386.h */,
+				FC8FFC4420FDDA8F0097FBE4 /* ffitarget_x86_64.h */,
+				FC8FFC4520FDDA8F0097FBE4 /* JPMethodSignature.h */,
+				FC8FFC4620FDDA8F0097FBE4 /* JPMethodSignature.m */,
+				FC8FFC4720FDDA8F0097FBE4 /* libffi.a */,
+			);
+			path = libffi;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -406,12 +419,12 @@
 			files = (
 				FC67497220EB29D60075F4C4 /* LaunchScreen.storyboard in Resources */,
 				FC67496F20EB29D60075F4C4 /* Assets.xcassets in Resources */,
+				FC8FFC2C20FDDA790097FBE4 /* JSPatch.js in Resources */,
 				FC7A4F3720EE122E00C138C9 /* bundle.js in Resources */,
 				FC7A4F3920EE122E00C138C9 /* system_macro.js in Resources */,
-				FC7A4F3320EE122E00C138C9 /* JSPatch.js in Resources */,
 				FC67496D20EB29CD0075F4C4 /* Main.storyboard in Resources */,
-				FCD0140920F895B9004484B5 /* Documentation.html in Resources */,
 				7395B36E20FCDD1F004D614B /* main.js in Resources */,
+				FC8FFC4820FDDA8F0097FBE4 /* Documentation.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -443,25 +456,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FCD0140A20F895B9004484B5 /* GCDAsyncSocket.m in Sources */,
-				FC7A4F3520EE122E00C138C9 /* FileSystemWatch.m in Sources */,
+				FC8FFC4C20FDDA8F0097FBE4 /* SGDirWatchdog.m in Sources */,
+				FC8FFC2B20FDDA790097FBE4 /* JPEngine.m in Sources */,
 				736CD21520FB4FF000A87102 /* NiceLabel.m in Sources */,
-				FC7A4F3420EE122E00C138C9 /* JPCleaner.m in Sources */,
-				FC7A4F3020EE122E00C138C9 /* JPMethodSignature.m in Sources */,
+				FC8FFC2520FDDA790097FBE4 /* JPBlockWrapper.m in Sources */,
 				FC67496A20EB29CD0075F4C4 /* ViewController.m in Sources */,
-				FCD0140B20F895B9004484B5 /* GCDAsyncUdpSocket.m in Sources */,
-				FC7A4F2E20EE122E00C138C9 /* JPMemory.m in Sources */,
+				FC8FFC2720FDDA790097FBE4 /* JPMemory.m in Sources */,
+				FC8FFC2820FDDA790097FBE4 /* JPStructPointer.m in Sources */,
+				FC8FFC4920FDDA8F0097FBE4 /* GCDAsyncSocket.m in Sources */,
+				FC8FFC2D20FDDA790097FBE4 /* JPCleaner.m in Sources */,
 				FC67497520EB29D60075F4C4 /* main.m in Sources */,
-				FC7A4F2C20EE122D00C138C9 /* JPBlockWrapper.m in Sources */,
-				FC7A4F2D20EE122E00C138C9 /* JPCFunction.m in Sources */,
+				FC8FFC2920FDDA790097FBE4 /* JPCGFunction.m in Sources */,
+				FC8FFC4D20FDDA8F0097FBE4 /* JPMethodSignature.m in Sources */,
+				FC8FFC2420FDDA790097FBE4 /* JPBlock.m in Sources */,
+				FC8FFC4A20FDDA8F0097FBE4 /* GCDAsyncUdpSocket.m in Sources */,
+				FC8FFC4B20FDDA8F0097FBE4 /* FileSystemWatch.m in Sources */,
 				FC7A4F2A20EE122D00C138C9 /* HotComplileEngine.m in Sources */,
-				FC7A4F3620EE122E00C138C9 /* SGDirWatchdog.m in Sources */,
+				FC8FFC2620FDDA790097FBE4 /* JPCFunction.m in Sources */,
 				FC67496720EB29CD0075F4C4 /* AppDelegate.m in Sources */,
-				FC0C8E1F20FC7BEB003F1C01 /* JPCGFunction.m in Sources */,
 				FC0C8E1220FC3599003F1C01 /* Packet.m in Sources */,
-				FC7A4F3220EE122E00C138C9 /* JPEngine.m in Sources */,
-				FC7A4F2F20EE122E00C138C9 /* JPStructPointer.m in Sources */,
-				FC7A4F2B20EE122D00C138C9 /* JPBlock.m in Sources */,
+				FC8FFC2A20FDDA790097FBE4 /* JPMasonry.m in Sources */,
 				D5A2BC2520FAF9E900C9694F /* FileTransferServiceBrowser.m in Sources */,
 				FC0C8E1320FC3599003F1C01 /* SourceCode.m in Sources */,
 			);
@@ -625,6 +639,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Demo/HotLoad/JSPatch/libffi",
 					"$(PROJECT_DIR)/Demo/HotLoad/JSPatch/Extensions/libffi",
+					"$(PROJECT_DIR)/Demo/HotLoad/ThridParty/libffi",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Essence.Demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -658,6 +673,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Demo/HotLoad/JSPatch/libffi",
 					"$(PROJECT_DIR)/Demo/HotLoad/JSPatch/Extensions/libffi",
+					"$(PROJECT_DIR)/Demo/HotLoad/ThridParty/libffi",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Essence.Demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";

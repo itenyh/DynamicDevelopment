@@ -70,7 +70,7 @@
             }
             i = (int)end;
             continue;
-        
+            
         } else {
             
             arg = [_types substringWithRange:NSMakeRange(i, 1)];
@@ -134,45 +134,45 @@
 {
     switch (c[0]) {
         case 'v':
-        return &ffi_type_void;
+            return &ffi_type_void;
         case 'c':
-        return &ffi_type_schar;
+            return &ffi_type_schar;
         case 'C':
-        return &ffi_type_uchar;
+            return &ffi_type_uchar;
         case 's':
-        return &ffi_type_sshort;
+            return &ffi_type_sshort;
         case 'S':
-        return &ffi_type_ushort;
+            return &ffi_type_ushort;
         case 'i':
-        return &ffi_type_sint;
+            return &ffi_type_sint;
         case 'I':
-        return &ffi_type_uint;
+            return &ffi_type_uint;
         case 'l':
-        return &ffi_type_slong;
+            return &ffi_type_slong;
         case 'L':
-        return &ffi_type_ulong;
+            return &ffi_type_ulong;
         case 'q':
-        return &ffi_type_sint64;
+            return &ffi_type_sint64;
         case 'Q':
-        return &ffi_type_uint64;
+            return &ffi_type_uint64;
         case 'f':
-        return &ffi_type_float;
+            return &ffi_type_float;
         case 'd':
-        return &ffi_type_double;
+            return &ffi_type_double;
         case 'F':
 #if CGFLOAT_IS_DOUBLE
-        return &ffi_type_double;
+            return &ffi_type_double;
 #else
-        return &ffi_type_float;
+            return &ffi_type_float;
 #endif
         case 'B':
-        return &ffi_type_uint8;
+            return &ffi_type_uint8;
         case '^':
-        return &ffi_type_pointer;
+            return &ffi_type_pointer;
         case '@':
-        return &ffi_type_pointer;
+            return &ffi_type_pointer;
         case '#':
-        return &ffi_type_pointer;
+            return &ffi_type_pointer;
         case '{':
         {
             NSString *typeStr = [NSString stringWithCString:c encoding:NSASCIIStringEncoding];
@@ -209,8 +209,8 @@ static NSMutableDictionary *_typeLengthDict;
     if (!_typeLengthDict) {
         _typeLengthDict = [[NSMutableDictionary alloc] init];
         
-        #define JP_DEFINE_TYPE_LENGTH(_type) \
-        [_typeLengthDict setObject:@(sizeof(_type)) forKey:@#_type];\
+#define JP_DEFINE_TYPE_LENGTH(_type) \
+[_typeLengthDict setObject:@(sizeof(_type)) forKey:@#_type];\
 
         JP_DEFINE_TYPE_LENGTH(id);
         JP_DEFINE_TYPE_LENGTH(BOOL);
@@ -249,8 +249,8 @@ static NSMutableDictionary *_typeLengthDict;
     if (!typeName) return nil;
     if (!_typeEncodeDict) {
         _typeEncodeDict = [[NSMutableDictionary alloc] init];
-        #define JP_DEFINE_TYPE_ENCODE_CASE(_type) \
-        [_typeEncodeDict setObject:[NSString stringWithUTF8String:@encode(_type)] forKey:@#_type];\
+#define JP_DEFINE_TYPE_ENCODE_CASE(_type) \
+[_typeEncodeDict setObject:[NSString stringWithUTF8String:@encode(_type)] forKey:@#_type];\
 
         JP_DEFINE_TYPE_ENCODE_CASE(id);
         JP_DEFINE_TYPE_ENCODE_CASE(BOOL);
