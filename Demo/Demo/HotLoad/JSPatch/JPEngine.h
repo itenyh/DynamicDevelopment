@@ -82,6 +82,7 @@
 + (NSDictionary *)getDictOfStruct:(void *)structData structDefine:(NSDictionary *)structDefine;
 
 + (NSString *)preProcessSourceCode:(NSString *)sourceCode;
++ (NSDictionary *)rectToDic:(CGRect)rect;
 
 /*!
  @method

@@ -68,7 +68,14 @@ var global = this
         }
       }
       if (slf[methodName]) {
-        return slf[methodName].bind(slf);
+        if (typeof slf[methodName] === "function") {
+            return slf[methodName].bind(slf);
+        }
+        else {
+            return function() {
+                return slf[methodName];
+            }
+        }
       }
 
       if (!slf.__obj && !slf.__clsName) {
@@ -77,14 +84,14 @@ var global = this
       if (slf.__isSuper && slf.__clsName) {
           slf.__clsName = _OC_superClsName(slf.__obj.__realClsName ? slf.__obj.__realClsName: slf.__clsName);
       }
-      var clsName = slf.__clsName
-      if (clsName && _ocCls[clsName]) {
-        var methodType = slf.__obj ? 'instMethods': 'clsMethods'
-        if (_ocCls[clsName][methodType][methodName]) {
-          slf.__isSuper = 0;
-          return _ocCls[clsName][methodType][methodName].bind(slf)
-        }
-      }
+//      var clsName = slf.__clsName
+//      if (clsName && _ocCls[clsName]) {
+//        var methodType = slf.__obj ? 'instMethods': 'clsMethods'
+//        if (_ocCls[clsName][methodType][methodName]) {
+//          slf.__isSuper = 0;
+//          return _ocCls[clsName][methodType][methodName].bind(slf)
+//        }
+//      }
 
       return function(){
         var args = Array.prototype.slice.call(arguments)
