@@ -11,17 +11,18 @@ require('./JPConvertor')
 // var content = '[self.car test:[UIView new] block:^(NSDate *param) {\n' +
 //     '        NSLog(@"param:%@", param);\n' +
 //     '    }];';
-var content = '@implementation ViewController\n' +
-    '+ (void)viewDidLoad {\n' +
-    '    [super viewDidLoad];\n' +
-    '   \n' +
-    '    \n' +
-    '}\n' +
-    '- (void)testBlock {\n' +
-    '    \n' +
-    '}\n' +
-    '@end'
+//var content = '@implementation ViewController\n' +
+//    '+ (void)viewDidLoad {\n' +
+//   '    [super viewDidLoad];\n' +
+//     '   \n' +
+//     '    \n' +
+//     '}\n' +
+//     '- (void)testBlock {\n' +
+//     '    \n' +
+//     '}\n' +
+//     '@end'
 
+var content = "NSLog(@\"%@\", @\"131231\");"
 
 convertor(content, function (result, className) {
     console.log(result, className);

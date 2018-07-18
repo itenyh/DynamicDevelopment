@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "JPEngine.h"
+#import <CoreLocation/CoreLocation.h>
 
 @interface ViewController ()
 
@@ -18,14 +19,24 @@
 @implementation ViewController
 
 - (void)viewDidLoad {
-    
-    [super viewDidLoad];
-    self.view.backgroundColor = [UIColor grayColor];
-    [self.view addSubview:self.lable];
-    [self.lable mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.equalTo(self.view);
-        make.size.mas_equalTo(CGSizeMake(100, 50));
-    }];
+  
+    self.view.frame;
+//    [super viewDidLoad];
+//    self.view.backgroundColor = [UIColor grayColor];
+//    [self.view addSubview:self.lable];
+//    [self.lable mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.center.equalTo(self.view);
+//        make.size.mas_equalTo(CGSizeMake(100, 150));
+//    }];
+
+//    UIView *a = [UIView new];
+//    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+//    [dic setObject:a forKey:@"aaa"];
+//    NSLog(@"%@", dic);
+//    CLLocation *loc = CLLocationCoordinate2DMake(<#CLLocationDegrees latitude#>, <#CLLocationDegrees longitude#>);
+//    NSString *s = [NSString stringWithFormat:@"%@", self.lable.frame.size.width];
+//    NSLog(@"result: %@", s);
+//    NSLog(@"%@ #### %d %f %s", self, 13, 324.2, "132");
     
 }
 
@@ -36,7 +47,7 @@
     if (!_lable) {
         _lable = [UILabel new];
         _lable.backgroundColor = [UIColor orangeColor];
-        _lable.text = @"流星花园";
+        _lable.text = @"流星";
         _lable.textAlignment = NSTextAlignmentCenter;
     }
     return _lable;

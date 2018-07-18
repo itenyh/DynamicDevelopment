@@ -913,7 +913,9 @@ JPScriptProcessor.prototype = {
         return this;
     },
     stripSymbolAt: function() {
-        this.script = this.script.replace(/\@(\[)|\@(\")|\@(\{)|\@(\()|\@([0-9]+)/g, "$1$2$3$4$5");
+    	this.script = this.script.replace(/%@/g, "%###@#####");
+        this.script = this.script.replace(/\@(\[)|\@(\")|\@(\{)|\@(\()|\@([0-9]+)/g, "$1$2$3$4$5"); //["{(0-9
+        this.script = this.script.replace(/%###@#####/g, "%@");
         return this;
     },
     beautify: function() {

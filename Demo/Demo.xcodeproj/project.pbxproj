@@ -39,6 +39,7 @@
 		FC8FFC4C20FDDA8F0097FBE4 /* SGDirWatchdog.m in Sources */ = {isa = PBXBuildFile; fileRef = FC8FFC3920FDDA8F0097FBE4 /* SGDirWatchdog.m */; };
 		FC8FFC4D20FDDA8F0097FBE4 /* JPMethodSignature.m in Sources */ = {isa = PBXBuildFile; fileRef = FC8FFC4620FDDA8F0097FBE4 /* JPMethodSignature.m */; };
 		FC8FFC4E20FDDA8F0097FBE4 /* libffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FC8FFC4720FDDA8F0097FBE4 /* libffi.a */; };
+		FCDE6E6620FEF55400FEBC0D /* JPNSFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = FCDE6E6520FEF55400FEBC0D /* JPNSFunction.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -110,6 +111,8 @@
 		FC8FFC4520FDDA8F0097FBE4 /* JPMethodSignature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPMethodSignature.h; sourceTree = "<group>"; };
 		FC8FFC4620FDDA8F0097FBE4 /* JPMethodSignature.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPMethodSignature.m; sourceTree = "<group>"; };
 		FC8FFC4720FDDA8F0097FBE4 /* libffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libffi.a; sourceTree = "<group>"; };
+		FCDE6E6420FEF55400FEBC0D /* JPNSFunction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JPNSFunction.h; sourceTree = "<group>"; };
+		FCDE6E6520FEF55400FEBC0D /* JPNSFunction.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JPNSFunction.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -258,8 +261,8 @@
 				FC8FFC0D20FDDA790097FBE4 /* JPBlock */,
 				FC8FFC1220FDDA790097FBE4 /* JPCFunction */,
 				FC8FFC1920FDDA790097FBE4 /* JPCGFunction */,
-				FC8FFC1C20FDDA790097FBE4 /* JPMasonry.h */,
-				FC8FFC1D20FDDA790097FBE4 /* JPMasonry.m */,
+				FCDE6E6820FEF59200FEBC0D /* JPNSFunction */,
+				FCDE6E6720FEF58B00FEBC0D /* JPMasonry */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -357,6 +360,24 @@
 				FC8FFC4720FDDA8F0097FBE4 /* libffi.a */,
 			);
 			path = libffi;
+			sourceTree = "<group>";
+		};
+		FCDE6E6720FEF58B00FEBC0D /* JPMasonry */ = {
+			isa = PBXGroup;
+			children = (
+				FC8FFC1C20FDDA790097FBE4 /* JPMasonry.h */,
+				FC8FFC1D20FDDA790097FBE4 /* JPMasonry.m */,
+			);
+			path = JPMasonry;
+			sourceTree = "<group>";
+		};
+		FCDE6E6820FEF59200FEBC0D /* JPNSFunction */ = {
+			isa = PBXGroup;
+			children = (
+				FCDE6E6420FEF55400FEBC0D /* JPNSFunction.h */,
+				FCDE6E6520FEF55400FEBC0D /* JPNSFunction.m */,
+			);
+			path = JPNSFunction;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -463,6 +484,7 @@
 				FC67496A20EB29CD0075F4C4 /* ViewController.m in Sources */,
 				FC8FFC2720FDDA790097FBE4 /* JPMemory.m in Sources */,
 				FC8FFC2820FDDA790097FBE4 /* JPStructPointer.m in Sources */,
+				FCDE6E6620FEF55400FEBC0D /* JPNSFunction.m in Sources */,
 				FC8FFC4920FDDA8F0097FBE4 /* GCDAsyncSocket.m in Sources */,
 				FC8FFC2D20FDDA790097FBE4 /* JPCleaner.m in Sources */,
 				FC67497520EB29D60075F4C4 /* main.m in Sources */,
