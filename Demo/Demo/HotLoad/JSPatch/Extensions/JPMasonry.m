@@ -32,12 +32,10 @@
 }
 
 + (NSString *)preProcessSourceCode:(NSString *)sourceCode {
-
     NSError *error = nil;
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"mas_equalTo\\((.+)\\)" options:NSRegularExpressionCaseInsensitive error:&error];
     NSString *modifiedString = [regex stringByReplacingMatchesInString:sourceCode options:0 range:NSMakeRange(0, [sourceCode length]) withTemplate:@"equalTo(MMASBoxValue($1))"];
     return modifiedString;
-    
 }
 
 @end

@@ -18,7 +18,8 @@
                              @"keys": @[@"top", @"left", @"bottom", @"right"]
                              }];
 
-    [context evaluateScript:@"global.NSTextAlignmentLeft = 0; global.NSTextAlignmentCenter = 1;"];
+    [context evaluateScript:@"global.NSTextAlignmentLeft = 0; \
+                              global.NSTextAlignmentCenter = 1;"];
     
     __weak JSContext *weakContext = context;
     context[@"CGSizeMake"] = ^() {
