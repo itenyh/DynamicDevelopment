@@ -52,7 +52,6 @@
         else {
             logContent = [NSString stringWithFormat:@"%@", arguments];
         }
-        NSLog(@"%@", logContent);
     };
     
 }
