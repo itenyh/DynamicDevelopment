@@ -45,7 +45,7 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className);
 - (void)setupEngine {
     
     [JPEngine startEngine];
-    [self addExtensions:@[@"JPBlock", @"JPCFunction", @"JPCGFunction", @"JPMasonry"]];
+    [self addExtensions:@[@"JPBlock", @"JPCFunction", @"JPCGFunction", @"JPMasonry", @"JPNSFunction"]];
     
 //    //load global utils
 //    NSString *scriptPath = [[NSBundle mainBundle] pathForResource:@"system_macro" ofType:@"js"];
