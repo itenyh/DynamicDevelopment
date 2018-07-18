@@ -27,3 +27,6 @@
 
 //添加返回className
 1. 在JPObjectListener中，buildScript中返回className；在convertor中接收到这个参数
+
+//对JPEngine的修改，为JPExtension预编译处理模块
+1. 为JPExtension添加接口+ (NSString *)preProcessSourceCode:(NSString *)sourceCode

@@ -81,6 +81,8 @@
 + (void)getStructDataWidthDict:(void *)structData dict:(NSDictionary *)dict structDefine:(NSDictionary *)structDefine;
 + (NSDictionary *)getDictOfStruct:(void *)structData structDefine:(NSDictionary *)structDefine;
 
++ (NSString *)preProcessSourceCode:(NSString *)sourceCode;
+
 /*!
  @method
  @description Return the registered struct definition in JSPatch,

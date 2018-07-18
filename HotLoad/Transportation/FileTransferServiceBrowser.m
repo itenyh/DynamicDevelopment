@@ -76,12 +76,12 @@
     if (tag == 1) {
         UInt16 bodyLength = 0;
         [data getBytes:&bodyLength length:sizeof(UInt16)];
-        NSLog(@"Header received with bodylength: %d", bodyLength);
+//        NSLog(@"Header received with bodylength: %d", bodyLength);
         [self.socket readDataToLength:bodyLength withTimeout:-1 tag:2];
     }
     else if (tag == 2) {
         SourceCode *sourceCode = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-        NSLog(@"SourceCode received: %@", sourceCode.code);
+//        NSLog(@"SourceCode received: %@", sourceCode.code);
         if (self.delegate && [self.delegate respondsToSelector:@selector(fileTransferServiceReceivedNewCode:)]) {
             [self.delegate fileTransferServiceReceivedNewCode:sourceCode.code];
         }

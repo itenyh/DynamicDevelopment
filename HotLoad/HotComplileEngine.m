@@ -19,6 +19,8 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className);
 
 @interface HotComplileEngine () <FileTransferServiceBrowserDelegate>
 
+@property (nonatomic, strong) NSMutableArray *extensions;
+
 @property (nonatomic, strong) NSMutableArray *watchDogs;
 @property (nonatomic, copy) NSString *rootPath;
 @property (nonatomic, copy) NSString *filePath;
@@ -41,10 +43,14 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className);
 }
 
 - (void)setupEngine {
-    [JPEngine startEngine];
     
-    //add extensions after startEngine
-    [JPEngine addExtensions:@[@"JPBlock", @"JPCFunction"]];
+    [JPEngine startEngine];
+    [self addExtensions:@[@"JPBlock", @"JPCFunction", @"JPCGFunction", @"JPMasonry"]];
+    
+//    //load global utils
+//    NSString *scriptPath = [[NSBundle mainBundle] pathForResource:@"system_macro" ofType:@"js"];
+//    NSString *scriptString = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:nil];
+//    [JPEngine evaluateScript:scriptString];
     
     [JPEngine handleException:^(NSString *msg) {
         NSLog(@"JPEngine Exception: %@", msg);
@@ -59,7 +65,7 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className);
 
 - (void)fileTransferServiceReceivedNewCode:(NSString *)code {
     [self translateObj2Js:code callBack:^(NSString *jsScript, NSString *className) {
-        jsScript = [self loadMacro:jsScript];
+        [self saveJsScript:jsScript];
         [self refresh:jsScript className:className];
     }];
 }
@@ -88,9 +94,8 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className);
         if (error) { NSLog(@"filePathURL error: %@", error); }
         NSDate *curDate = [fileRes objectForKey:NSURLContentModificationDateKey];
         if (self.fileLastModifyDate && [curDate compare: self.fileLastModifyDate] != NSOrderedDescending) { return; }
-        NSString *objFile = [NSString stringWithContentsOfFile:self.filePath encoding:NSUTF8StringEncoding error:&error];
+        NSString *objFile = [NSString stringWithContentsOfFile:self.filePath encoding:NSUTF8StringEncoding error:nil];
         [self translateObj2Js:objFile callBack:^(NSString *jsScript, NSString *className) {
-            jsScript = [self loadMacro:jsScript];
             [self refresh:jsScript className:className];
         }];
         self.fileLastModifyDate = curDate;
@@ -100,6 +105,51 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className);
 }
 
 #pragma - mark Util Methods
+
+- (void)addExtensions:(NSArray *)extensionNames {
+    [JPEngine addExtensions:extensionNames];
+    for (NSString *extension in extensionNames) {
+        Class extensionClass = NSClassFromString(extension);
+        [self.extensions addObject:extensionClass];
+    }
+}
+
+// Load JsScript translated from Objective-C
++ (void)loadMainJs {
+    NSString *rootPath ;
+#if TARGET_IPHONE_SIMULATOR
+    rootPath = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"ProjectPath"];
+#else
+    rootPath = [[NSBundle mainBundle] bundlePath];
+#endif
+    NSString *mainJsPath = [NSString stringWithFormat:@"%@/%@", rootPath, @"HotLoad/Convertor/main.js"];
+    [JPCleaner cleanAll];
+    [JPEngine evaluateScriptWithPath:mainJsPath];
+    
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    UINavigationController * navController = (UINavigationController *)appDelegate.window.rootViewController;
+    Class class = navController.topViewController.class;
+    UIViewController *newVc = [[class alloc] init];
+    [navController popViewControllerAnimated:NO];
+    [navController pushViewController:newVc animated:NO];
+    
+}
+
+// Save JsScript translated from Objective-C
+- (void)saveJsScript:(NSString *)script {
+    NSString *rootPath ;
+#if TARGET_IPHONE_SIMULATOR
+    rootPath = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"ProjectPath"];
+#else
+    rootPath = [[NSBundle mainBundle] bundlePath];
+#endif
+    NSString *mainJsPath = [NSString stringWithFormat:@"%@/%@", rootPath, @"HotLoad/Convertor/main.js"];
+    NSError *error;
+    [script writeToFile:mainJsPath atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    if (error) {
+        NSLog(@"error when write script: %@", error);
+    }
+}
 
 - (void)refresh:(NSString *)jsInput className:(NSString *)className {
     
@@ -116,6 +166,11 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className);
 }
 
 - (void)translateObj2Js:(NSString *)input callBack:(TranslateCallBack)callBack {
+    
+    for (Class extension in self.extensions) {
+        input = [extension performSelector:@selector(preProcessSourceCode:) withObject:input];
+    }
+    
     NSString *scriptPath = [[NSBundle mainBundle] pathForResource:@"bundle" ofType:@"js"];
     NSError *error;
     NSString *scriptString = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
@@ -130,9 +185,13 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className);
     [convertor callWithArguments:@[input, callBack]];
 }
 
-- (NSString *)loadMacro:(NSString *)script {
-    NSString *macroString = @"include('system_macro.js');";
-    return [NSString stringWithFormat:@"%@\n%@", macroString, script];
+#pragma - mark lazy load
+
+- (NSMutableArray *)extensions {
+    if (!_extensions) {
+        _extensions = [NSMutableArray array];
+    }
+    return _extensions;
 }
 
 @end
