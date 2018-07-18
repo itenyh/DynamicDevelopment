@@ -21,13 +21,13 @@
 - (void)viewDidLoad {
   
 //      NSLog(self.view.frame.size);
-    [super viewDidLoad];
-    self.view.backgroundColor = [UIColor grayColor];
-    [self.view addSubview:self.lable];
-    [self.lable mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.equalTo(self.view);
-        make.size.mas_equalTo(self.view.frame.size);
-    }];
+//    [super viewDidLoad];
+//    self.view.backgroundColor = [UIColor grayColor];
+//    [self.view addSubview:self.lable];
+//    [self.lable mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.center.equalTo(self.view);
+//        make.size.mas_equalTo(self.view.frame.size);
+//    }];
 
 //    UIView *a = [UIView new];
 //    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
@@ -49,8 +49,8 @@
 //    JSValue *value = [[context objectForKeyedSubscript:@"a"] callWithArguments:nil];
 //    NSLog(@"value: %@ valueClass: %@", value, [value.toObject class]);
  
-    CGRect rect = [self test1:self.view.frame];
-    NSLog(@"====== %@", rect);
+//    CGRect rect = [self test1:self.view.frame];
+//    NSLog(@"====== %@", rect);
 }
 
 - (CGRect)test1:(CGRect)rect {
@@ -60,14 +60,14 @@
 
 #pragma - mark LazyLoad
 
-- (UILabel *)lable {
-    if (!_lable) {
-        _lable = [UILabel new];
-        _lable.backgroundColor = [UIColor orangeColor];
-        _lable.text = @"流星";
-        _lable.textAlignment = NSTextAlignmentCenter;
-    }
-    return _lable;
-}
+//- (UILabel *)lable {
+//    if (!_lable) {
+//        _lable = [UILabel new];
+//        _lable.backgroundColor = [UIColor orangeColor];
+//        _lable.text = @"流星";
+//        _lable.textAlignment = NSTextAlignmentCenter;
+//    }
+//    return _lable;
+//}
 
 @end
