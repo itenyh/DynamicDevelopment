@@ -20,40 +20,13 @@
 
 - (void)viewDidLoad {
   
-//    self.view.frame;
-//    [super viewDidLoad];
-//    self.view.backgroundColor = [UIColor grayColor];
-//    [self.view addSubview:self.lable];
-//    [self.lable mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.center.equalTo(self.view);
-//        make.size.mas_equalTo(CGSizeMake(100, 150));
-//    }];
-
-//    UIView *a = [UIView new];
-//    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
-//    [dic setObject:a forKey:@"aaa"];
-//    NSLog(@"%@", dic);
-//    CLLocation *loc = CLLocationCoordinate2DMake(<#CLLocationDegrees latitude#>, <#CLLocationDegrees longitude#>);
-//    NSString *s = [NSString stringWithFormat:@"%@", self.lable.frame.size.width];
-//    NSLog(@"result: %@", s);
-//    NSLog(@"%@ #### %d %f %s", self, 13, 324.2, "132");
+    [self.lable mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(self.view);
+    }];
     
-    JSContext *context = [JSContext new];
-    self.view.frame = CGRectMake(1, 1, 1, 1);
-    context[@"frame"] = ^() {
-        return self.view.frame;
-    };
-    context[@"makeFrame"] = ^() {
-        return CGRectMake(1, 1, 1, 1);
-    };
-    [context evaluateScript:@"function a() {\
-     var result = frame();\
-     var x = result['x'];\
-     return x;\
-     }"];
-    JSValue *f = [context objectForKeyedSubscript:@"a"];
-    JSValue *x = [f callWithArguments:nil];
-    NSLog(@"result: %@", x);
+    [self.lable mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(self.view);
+    }];
     
 }
 

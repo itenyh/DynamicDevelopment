@@ -26,6 +26,12 @@ var convertor = function(script, cb, eb) {
         }
     }
 
+    var newString = '';
+    for (var i = script.indexOf('@implementation') + '@implementation'.length + 1;i < script.length;i++) {
+        newString += script[i];
+    }
+    console.log(newString);
+
     var chars = new antlr4.InputStream(script);
     var lexer = new ObjCLexer(chars);
     lexer.addErrorListener(new JPErrorListener(function(e) {
