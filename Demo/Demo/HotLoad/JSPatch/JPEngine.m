@@ -729,12 +729,7 @@ static void JPForwardInvocation(__unsafe_unretained id assignSlf, SEL selector, 
                     [argList addObject:[JSValue _transFunc:arg inContext:_context]];  \
                     break; \
                 }
-                if ([typeString rangeOfString:@"CGRect"].location != NSNotFound) {
-                    CGRect rect;
-                    [invocation getArgument:&rect atIndex:i];
-                    [argList addObject:[JSValue valueWithRect:rect inContext:_context]];
-                    break;
-                }
+                JP_FWD_ARG_STRUCT(CGRect, valueWithRect)
                 JP_FWD_ARG_STRUCT(CGPoint, valueWithPoint)
                 JP_FWD_ARG_STRUCT(CGSize, valueWithSize)
                 JP_FWD_ARG_STRUCT(NSRange, valueWithRange)
@@ -895,13 +890,7 @@ static void JPForwardInvocation(__unsafe_unretained id assignSlf, SEL selector, 
                 [invocation setReturnValue:&ret];\
                 break;  \
             }
-            if ([typeString rangeOfString:@"CGRect"].location != NSNotFound) {
-                JP_FWD_RET_CALL_JS
-                CGRect ret = [jsval toRect];
-                NSDictionary *dict = rectToDict(ret);
-                [invocation setReturnValue:&dict];
-                break;
-            }
+            JP_FWD_RET_STRUCT(CGRect, toRect)
             JP_FWD_RET_STRUCT(CGPoint, toPoint)
             JP_FWD_RET_STRUCT(CGSize, toSize)
             JP_FWD_RET_STRUCT(NSRange, toRange)
@@ -1169,12 +1158,7 @@ static id callSelector(NSString *className, NSString *selectorName, JSValue *arg
                     [invocation setArgument:&value atIndex:i];  \
                     break; \
                 }
-                if ([typeString rangeOfString:@"CGRect"].location != NSNotFound) {
-                    NSDictionary *value = val.toDictionary;
-                    CGRect rect = dictToRect(value);
-                    [invocation setArgument:&rect atIndex:i];
-                    break;
-                }
+                JP_CALL_ARG_STRUCT(CGRect, toRect)
                 JP_CALL_ARG_STRUCT(CGPoint, toPoint)
                 JP_CALL_ARG_STRUCT(CGSize, toSize)
                 JP_CALL_ARG_STRUCT(NSRange, toRange)
@@ -1323,11 +1307,7 @@ static id callSelector(NSString *className, NSString *selectorName, JSValue *arg
                         [invocation getReturnValue:&result];    \
                         return [JSValue _methodName:result inContext:_context];    \
                     }
-                    if ([typeString rangeOfString:@"CGRect"].location != NSNotFound) {
-                        CGRect result;
-                        [invocation getReturnValue:&result];
-                        return rectToDict(result);
-                    }
+                    JP_CALL_RET_STRUCT(CGRect, valueWithRect)
                     JP_CALL_RET_STRUCT(CGPoint, valueWithPoint)
                     JP_CALL_RET_STRUCT(CGSize, valueWithSize)
                     JP_CALL_RET_STRUCT(NSRange, valueWithRange)
@@ -1782,22 +1762,6 @@ static NSString *convertJPSelectorString(NSString *selectorString)
     return [selectorName stringByReplacingOccurrencesOfString:@"-" withString:@"_"];
 }
 
-static NSDictionary *rectToDict(CGRect rect) {
-    CGSize size = rect.size;
-    CGPoint point = rect.origin;
-    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:[JSValue valueWithSize:size inContext:_context], @"size", [JSValue valueWithPoint:point inContext:_context], @"origin", nil];
-    return dic;
-}
-
-static CGRect dictToRect(NSDictionary *dict) {
-    CGRect rect;
-    rect.origin.x = (CGFloat)[dict[@"origin"][@"x"] floatValue];
-    rect.origin.y = (CGFloat)[dict[@"origin"][@"x"] floatValue];
-    rect.size.width = (CGFloat)[dict[@"size"][@"width"] floatValue];
-    rect.size.height = (CGFloat)[dict[@"size"][@"height"] floatValue];
-    return rect;
-}
-
 #pragma mark - Object format
 
 static id formatOCToJS(id obj)
@@ -1951,11 +1915,6 @@ static id _unboxOCObjectToJS(id obj)
 + (NSDictionary *)getDictOfStruct:(void *)structData structDefine:(NSDictionary *)structDefine
 {
     return getDictOfStruct(structData, structDefine);
-}
-
-+ (NSDictionary *)rectToDic:(CGRect)rect
-{
-    return rectToDict(rect);
 }
 
 + (NSMutableDictionary *)registeredStruct
