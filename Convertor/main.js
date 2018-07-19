@@ -22,10 +22,16 @@ require('./JPConvertor')
 //     '}\n' +
 //     '@end'
 
-var content = "NSLog(@\"%@\", @\"131231\");"
+var content = "@implementation PlayStationViewController" +
+
+"- (void)viewDidLoad {" +
+"    [super viewDidLoad]; " +
+"    [self createOnCenter:iCMCityDetailAreaHotChart.class height:@(450 / 2)];" +
+"}" +
+"@end";
 
 convertor(content, function (result, className) {
-    console.log(result, className);
+//     console.log(result, className);
 });
 
 // var a = [];

@@ -5,7 +5,7 @@ var JPObjCListener = require('./JPObjCListener').JPObjCListener
 var JPErrorListener = require('./JPErrorListener').JPErrorListener
 var JPScriptProcessor = require('./JPScriptProcessor').JPScriptProcessor
 
-var convertor = function(script, cb) {
+var convertor = function(script, cb, eb) {
 
 	var replaceComments = function(script) {
         return script.replace(/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/gm, '');
@@ -29,13 +29,13 @@ var convertor = function(script, cb) {
     var chars = new antlr4.InputStream(script);
     var lexer = new ObjCLexer(chars);
     lexer.addErrorListener(new JPErrorListener(function(e) {
-        if (cb) cb(null, e);
+        if (eb) eb(null, e);
     }));
     var tokens  = new antlr4.CommonTokenStream(lexer);
 
     var parser = new ObjCParser(tokens);
     parser.addErrorListener(new JPErrorListener(function(e) {
-        if (cb) cb(null, e);
+        if (eb) eb(null, e);
     }));
     var tree = parser.translation_unit();
     var listener = new JPObjCListener(function(result, className){
@@ -48,7 +48,7 @@ var convertor = function(script, cb) {
     try {
         antlr4.tree.ParseTreeWalker.DEFAULT.walk(listener, tree);
     } catch(e) {
-        cb(null, e);
+        if (eb) eb(null, e);
     }
     
 }
