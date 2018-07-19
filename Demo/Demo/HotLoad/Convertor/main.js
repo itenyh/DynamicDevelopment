@@ -1,9 +1,11 @@
+require('UIColor,UILabel');
 defineClass('ViewController', {
     viewDidLoad: function() {
 
 
-            self.test1(self.view().frame());
 
+        var rect = self.test1(self.view().frame());
+        NSLog("====== %@", rect);
     },
     test1: function(rect) {
         NSLog("rect: %f", rect.size().width());

@@ -732,7 +732,7 @@ static void JPForwardInvocation(__unsafe_unretained id assignSlf, SEL selector, 
                 if ([typeString rangeOfString:@"CGRect"].location != NSNotFound) {
                     CGRect rect;
                     [invocation getArgument:&rect atIndex:i];
-                    [argList addObject:[JSValue valueWithObject:rectToDict(rect) inContext:_context]];
+                    [argList addObject:[JSValue valueWithRect:rect inContext:_context]];
                     break;
                 }
                 JP_FWD_ARG_STRUCT(CGPoint, valueWithPoint)
@@ -896,9 +896,7 @@ static void JPForwardInvocation(__unsafe_unretained id assignSlf, SEL selector, 
                 break;  \
             }
             if ([typeString rangeOfString:@"CGRect"].location != NSNotFound) {
-                JSValue *jsval;
-                [_JSMethodForwardCallLock lock];
-                jsval = [jsFunc callWithArguments:params];
+                JP_FWD_RET_CALL_JS
                 CGRect ret = [jsval toRect];
                 NSDictionary *dict = rectToDict(ret);
                 [invocation setReturnValue:&dict];
