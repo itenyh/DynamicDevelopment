@@ -67,8 +67,15 @@ var global = this
           return false
         }
       }
-      if (slf[methodName]) {
-        return slf[methodName].bind(slf);
+      if (slf[methodName] != undefined) {
+        if (typeof slf[methodName] === "function") {
+            return slf[methodName].bind(slf);
+        }
+        else {
+            return function() {
+                return slf[methodName];
+            }
+        }
       }
 
       if (!slf.__obj && !slf.__clsName) {

@@ -1,11 +1,11 @@
-//解决_命名冲突问题
+//对【Convertor】的修改，解决_命名冲突问题
 1. 在JPContext中，JPCommonContext 为属性的单_转为__
 2. 在JPContext中，JPMsgContext 为消息传递的单_转为__
 
-//解决block，没有返回参数生成的问题
+//对【Convertor】的修改，解决block，没有返回参数生成的问题
 1. 在JPBlockContext.prototype.parse中，始终添加void作为返回参数
 
-//解决动态属性get和set
+//对【Convertor】的修改，解决动态属性get和set
 1. get只支持了lazy loading中(get)、return get两种形式
 2. 在JPScriptProcessor添加uglyDynamicPropertyGetter
 3. 在JPObjCListener.prototype.enterAssignment_expression 与 JPObjCListener.prototype.exitAssignment_expression中
@@ -15,22 +15,27 @@
 7月6日
 1. 在JPMsgContext.prototype.parse中，解决[_dynamicProp.subProp method];可能导致的解析问题
 
-//关于@
+//对【Convertor】的修改，关于@
 1. 在在JPScriptProcessor中，更改stripSymbolAt，对@+数字的形式，替换掉@
 
-//在js中调用本地方法，参数在oc中为block的，convertor不用加block()
+//对【Convertor】的修改，在js中调用本地方法，参数在oc中为block的，convertor不用加block()
 1. JPContext中增加 allParesedLocalSelectors，delayParsedContexts，isFinishedParsed来在第一次parse完成后，获取所有的allParesedLocalSelectors，然后再根据是否是本地方法来对block进行解析
 2. JPClassContext.prototype.parse、JPMsgContext、JPMsgContext.prototype.parse、JPBlockContext、JPBlockContext.prototype.parse、PObjCListener.prototype.enterBlock_expression均有改动
 
-//去掉comment
+//对【Convertor】的修改，去掉comment
 1. 在JSConvertor，convertor中，添加去掉comment的预处理
 
-//添加返回className
+//对【Convertor】的修改，添加返回className
 1. 在JPObjectListener中，buildScript中返回className；在convertor中接收到这个参数
 
 //对【JPEngine】的修改，为JPExtension预编译处理模块
 1. 为JPExtension添加接口+ (NSString *)preProcessSourceCode:(NSString *)sourceCode
 
 //对【Convertor】的修改，JPScriptProcessor，stripSymbolAt中，保留了%@这样的形式
+
+//对【JSPatch】的修改，为支持struct类型可以通过struct.property()方式得到返回值
+1. __c函数，if (slf[methodName]) { 进行修改，首先判断是否为未定义，排除数值为0的情况，if (slf[methodName] != undefined) {
+2. 如果slf[methodName]不是函数，则可直接返回值
+
 
 

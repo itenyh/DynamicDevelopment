@@ -20,7 +20,7 @@
 
 - (void)viewDidLoad {
   
-    self.view.frame;
+//    self.view.frame;
 //    [super viewDidLoad];
 //    self.view.backgroundColor = [UIColor grayColor];
 //    [self.view addSubview:self.lable];
@@ -38,8 +38,34 @@
 //    NSLog(@"result: %@", s);
 //    NSLog(@"%@ #### %d %f %s", self, 13, 324.2, "132");
     
+    JSContext *context = [JSContext new];
+    self.view.frame = CGRectMake(1, 1, 1, 1);
+    context[@"frame"] = ^() {
+        return self.view.frame;
+    };
+    context[@"makeFrame"] = ^() {
+        return CGRectMake(1, 1, 1, 1);
+    };
+    [context evaluateScript:@"function a() {\
+     var result = frame();\
+     var x = result['x'];\
+     return x;\
+     }"];
+    JSValue *f = [context objectForKeyedSubscript:@"a"];
+    JSValue *x = [f callWithArguments:nil];
+    NSLog(@"result: %@", x);
+    
 }
 
+- (CGRect)test2 {
+    return CGRectMake(1, 1, 1, 1);
+}
+
+- (CGRect)test1 {
+    UIView *v = [UIView new];
+    v.frame = CGRectMake(0, 1, 10, 10);
+    return v.frame;
+}
 
 #pragma - mark LazyLoad
 
