@@ -13,6 +13,7 @@
 + (void)main:(JSContext *)context {
     
     context[@"MMASBoxValue"] = ^id(JSValue *jsVal) {
+        //assume param only to be struct or number
         id result;
         if ([jsVal isObject]) {
             NSDictionary *dict = jsVal.toDictionary;
@@ -27,8 +28,7 @@
             return [JPExtension formatOCToJS:result];
         }
         else {
-            double value = jsVal.toDouble;
-            result = _MASBoxValue(@encode(double), value);
+            result = jsVal.toNumber;
         }
         return result;
     };

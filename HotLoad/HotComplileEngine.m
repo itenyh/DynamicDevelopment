@@ -137,18 +137,18 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className);
 
 // Save JsScript translated from Objective-C
 - (void)saveJsScript:(NSString *)script {
-    NSString *rootPath ;
-#if TARGET_IPHONE_SIMULATOR
-    rootPath = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"ProjectPath"];
-#else
-    rootPath = [[NSBundle mainBundle] bundlePath];
-#endif
-    NSString *mainJsPath = [NSString stringWithFormat:@"%@/%@", rootPath, @"HotLoad/Convertor/main.js"];
-    NSError *error;
-    [script writeToFile:mainJsPath atomically:YES encoding:NSUTF8StringEncoding error:&error];
-    if (error) {
-        NSLog(@"error when write script: %@", error);
-    }
+//    NSString *rootPath ;
+//#if TARGET_IPHONE_SIMULATOR
+//    rootPath = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"ProjectPath"];
+//#else
+//    rootPath = [[NSBundle mainBundle] bundlePath];
+//#endif
+//    NSString *mainJsPath = [NSString stringWithFormat:@"%@/%@", rootPath, @"HotLoad/Convertor/main.js"];
+//    NSError *error;
+//    [script writeToFile:mainJsPath atomically:YES encoding:NSUTF8StringEncoding error:&error];
+//    if (error) {
+//        NSLog(@"error when write script: %@", error);
+//    }
 }
 
 - (void)refresh:(NSString *)jsInput className:(NSString *)className {

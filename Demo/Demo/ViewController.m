@@ -29,9 +29,8 @@
     
     [self.lable mas_makeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(self.view);
-//        make.height.mas_equalTo(121);
+        make.height.mas_equalTo(23);
     }];
-    
     
     [super updateViewConstraints];
 }
@@ -40,7 +39,7 @@
     if (!_lable) {
         _lable = [UILabel new];
         _lable.backgroundColor = [UIColor orangeColor];
-        _lable.text = @"流asfasdfa";
+        _lable.text = @"流afa";
         _lable.textAlignment = NSTextAlignmentCenter;
     }
     return _lable;

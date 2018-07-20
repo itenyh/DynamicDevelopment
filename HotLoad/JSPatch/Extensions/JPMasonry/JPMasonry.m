@@ -13,22 +13,25 @@
 + (void)main:(JSContext *)context {
     
     context[@"MMASBoxValue"] = ^id(JSValue *jsVal) {
-        
-        NSDictionary *dict = jsVal.toDictionary;
-        NSArray *keys = dict.allKeys;
+        //assume param only to be struct or number
         id result;
-        
-        if (keys.count == 2 && [keys containsObject:@"width"] && [keys containsObject:@"height"]) {
-            result = _MASBoxValue(@encode(CGSize), CGSizeMake([dict[@"width"] doubleValue], [dict[@"height"] doubleValue]));
+        if ([jsVal isObject]) {
+            NSDictionary *dict = jsVal.toDictionary;
+            NSArray *keys = dict.allKeys;
+            if (keys.count == 2 && [keys containsObject:@"width"] && [keys containsObject:@"height"]) {
+                result = _MASBoxValue(@encode(CGSize), CGSizeMake([dict[@"width"] doubleValue], [dict[@"height"] doubleValue]));
+            }
+            else if (keys.count == 4 && [keys containsObject:@"top"] && [keys containsObject:@"right"] && [keys containsObject:@"bottom"] && [keys containsObject:@"left"]) {
+                result = _MASBoxValue(@encode(UIEdgeInsets), UIEdgeInsetsMake([dict[@"top"] doubleValue], [dict[@"right"] doubleValue], [dict[@"bottom"] doubleValue], [dict[@"left"] doubleValue]));
+            }
+            
+            return [JPExtension formatOCToJS:result];
         }
-        else if (keys.count == 4 && [keys containsObject:@"top"] && [keys containsObject:@"right"] && [keys containsObject:@"bottom"] && [keys containsObject:@"left"]) {
-            result = _MASBoxValue(@encode(UIEdgeInsets), UIEdgeInsetsMake([dict[@"top"] doubleValue], [dict[@"right"] doubleValue], [dict[@"bottom"] doubleValue], [dict[@"left"] doubleValue]));
+        else {
+            result = jsVal.toNumber;
         }
-        
-        return [JPExtension formatOCToJS:result];
-        
+        return result;
     };
-    
 }
 
 + (NSString *)preProcessSourceCode:(NSString *)sourceCode {
