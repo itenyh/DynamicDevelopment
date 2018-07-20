@@ -203,32 +203,37 @@ var JPBlockContext = function() {
 JPBlockContext.prototype = Object.create(JPContext.prototype);
 JPBlockContext.prototype.parse = function(){
 
-	//如果作为参数的block，要等所有的解析完成后，再解析
-	if (this.msg && !isFinishedParsed) {
-		var locationMark = '####' + delayParsedContexts.length + '####';
-		delayParsedContexts.push({locationMark:locationMark, context:this});
-		return locationMark;
-	}
+    var isLocalMethod = false;
 
-    var blockSelector = this.msg.parsedSelector;
-	var isLocalMethod = false;
-	for (var i in localMethods) {
-		var selector = localMethods[i];
-		if (selector === blockSelector) {
-			isLocalMethod = true;
-			break;
+	//如果作为参数的block，要等所有的解析完成后，再解析
+	if (this.msg) {
+		if (!isFinishedParsed) {
+            var locationMark = '####' + delayParsedContexts.length + '####';
+            delayParsedContexts.push({locationMark: locationMark, context: this});
+            return locationMark;
+        }
+        else {
+            var blockSelector = this.msg.parsedSelector;
+            for (var i in localMethods) {
+                var selector = localMethods[i];
+                if (selector === blockSelector) {
+                    isLocalMethod = true;
+                    break;
+                }
+            }
 		}
 	}
 
-	if (isLocalMethod) {
+    if (isLocalMethod) {
         var script = 'function(' + this.names.join(',') + ') {';
         return script + this.content.parse() + "}";
-	}
-	else {
+    }
+    else {
         var paramTypes = this.types.length ? "'void, " + this.types.join(',') + "', " : '';
         var script = 'block(' + paramTypes + 'function(' + this.names.join(',') + ') {';
         return script + this.content.parse() + "})";
-	}
+    }
+
 }
 
 
@@ -892,6 +897,10 @@ exports.processor = function (script) {
         finalScripts += ms.script;
     }
     script = script.replace(/(@implementation[\s\S]*?\n+\s+)[\s\S]*?(\s+@end)/gm, "$1" + finalScripts + "$2");
+
+    //去掉<>，包括了协议和泛型
+    script = script.replace(/<.+?>/gm, "");
+
     return script;
 }
 },{}],6:[function(require,module,exports){

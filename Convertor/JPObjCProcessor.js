@@ -86,5 +86,9 @@ exports.processor = function (script) {
         finalScripts += ms.script;
     }
     script = script.replace(/(@implementation[\s\S]*?\n+\s+)[\s\S]*?(\s+@end)/gm, "$1" + finalScripts + "$2");
+
+    //去掉<>，包括了协议和泛型
+    script = script.replace(/<.+?>/gm, "");
+
     return script;
 }
