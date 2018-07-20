@@ -19,27 +19,32 @@
 @implementation ViewController
 
 - (void)viewDidLoad {
-    [self test:^(NSString *param) {
-        
-    } haha:@"sdfs"];
-//    [self.view mas_makeConstraints:^(MASConstraintMaker *make) {
-//
-//    }];
-}
-
-//- (UILabel *)lable {
-//    if (!_lable) {
-//        _lable = [UILabel new];
-//        _lable.backgroundColor = [UIColor orangeColor];
-//        _lable.text = @"流星";
-//        _lable.textAlignment = NSTextAlignmentCenter;
-//    }
-//    return _lable;
-//}localMethods
-
-#pragma )(
-- (void)test:(void (^)(NSString *param))blk haha:(NSString *)h {
     
+    [self.view addSubview:self.lable];
+    
+    [self updateViewConstraints];
 }
+
+- (void)updateViewConstraints {
+    
+    [self.lable mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(self.view);
+//        make.height.mas_equalTo(121);
+    }];
+    
+    
+    [super updateViewConstraints];
+}
+
+- (UILabel *)lable {
+    if (!_lable) {
+        _lable = [UILabel new];
+        _lable.backgroundColor = [UIColor orangeColor];
+        _lable.text = @"流asfasdfa";
+        _lable.textAlignment = NSTextAlignmentCenter;
+    }
+    return _lable;
+}
+
 
 @end
