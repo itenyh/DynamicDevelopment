@@ -1,3 +1,4 @@
+var global = {};
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 var localMethods = [];
 var delayParsedContexts = [];	//{locationMark:"###1###", context:context}
@@ -318,7 +319,7 @@ var JPObjCListener = require('./JPObjCListener').JPObjCListener
 var JPErrorListener = require('./JPErrorListener').JPErrorListener
 var JPScriptProcessor = require('./JPScriptProcessor').JPScriptProcessor
 
-var convertor = function(script, cb, eb) {
+var convertor = function(script, cb) {
 
     var ignoreClass = 0, ignoreMethod = 0;
     script = script.replace(/(^\s*)/g,'');
@@ -338,13 +339,13 @@ var convertor = function(script, cb, eb) {
     var chars = new antlr4.InputStream(script);
     var lexer = new ObjCLexer(chars);
     lexer.addErrorListener(new JPErrorListener(function(e) {
-        if (eb) eb(null, e);
+        if (cb) cb(null, null, e);
     }));
     var tokens  = new antlr4.CommonTokenStream(lexer);
 
     var parser = new ObjCParser(tokens);
     parser.addErrorListener(new JPErrorListener(function(e) {
-        if (eb) eb(null, e);
+        if (cb) cb(null, null, e);;
     }));
     var tree = parser.translation_unit();
     var listener = new JPObjCListener(function(result, className){
@@ -357,7 +358,7 @@ var convertor = function(script, cb, eb) {
     try {
         antlr4.tree.ParseTreeWalker.DEFAULT.walk(listener, tree);
     } catch(e) {
-        if (eb) eb(null, e);
+        if (cb) cb(null, null, e);;
     }
     
 }
@@ -677,21 +678,17 @@ JPObjCListener.prototype.exitKeyword_argument = function(ctx) {
 
 
 JPObjCListener.prototype.enterDeclaration = function(ctx) {
-	if (ctx.children[1].start.text.indexOf('(') > -1) {
-		//c function decalaration
-		return;
-	}
+
+	// for (var i in ctx.children) {
+     //    console.log(ctx.children[i].start.text, i, ctx.children.length);
+	// }
 
 	var strContext = this.addStrContext(ctx.start.start);
 
 	var declarationContext = new JPDeclarationContext();
 	strContext.setNext(declarationContext);
 	this.currContext = declarationContext;
-	if (ctx.children[1].start.text.indexOf('*') > -1) {
-		this.currContext.currIdx = ctx.children[1].start.start + 1
-	} else {
-		this.currContext.currIdx = ctx.children[1].start.start - 1
-	}
+    this.currContext.currIdx = ctx.children[ctx.children.length - 2].start.stop + 1
 };
 
 JPObjCListener.prototype.exitDeclaration = function(ctx) {

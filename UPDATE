@@ -39,3 +39,5 @@
 
 //对【Convertor】的修改，增加JPObjcProcessor，过滤需要解析的methods
 
+//对【Convertor】的修改，JPObjCListener.prototype.enterDeclaration 中，添加对类似于struct声明(Type var)的支持
+

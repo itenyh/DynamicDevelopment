@@ -52,7 +52,7 @@ JPObjCListener.prototype.buildScript = function() {
 	if (this.requireClasses.length) {
 		requires = "require('" + this.requireClasses.join(',') + "');\n";
 	}
-	this.cb(requires + this.rootContext.parse(), this.rootContext.className);
+	this.cb(requires + this.rootContext.parse());
 }
 
 
@@ -124,20 +124,6 @@ JPObjCListener.prototype.enterBlock_expression = function(ctx) {
 	this.currContext = strContext;
 
 	var blockContext = new JPBlockContext();
-
-	var isParamBlock = true;
-    var preContext = this.currContext;
-    while (!(preContext instanceof JPParamContext)) {
-        preContext = preContext.pre;
-        if (!preContext) {
-            isParamBlock = false;
-            break;
-        }
-    }
-    if (isParamBlock) {
-        blockContext.msg = preContext.parent;
-    }
-
 	this.currContext.setNext(blockContext);
 	blockContext.currIdx = ctx.start.stop + 1
 
@@ -198,6 +184,7 @@ ObjCListener.prototype.exitCompound_statement = function(ctx) {
 
 
 JPObjCListener.prototype.enterMessage_expression = function(ctx) {
+
 	var newMsgContext = new JPMsgContext();
 	if (this.currContext instanceof JPMsgContext) {
 		//nested method invoke, e.g. [[UIView alloc] init]
@@ -239,6 +226,7 @@ JPObjCListener.prototype.enterReceiver = function(ctx) {
 
 JPObjCListener.prototype.exitReceiver = function(ctx) {
 };
+
 
 JPObjCListener.prototype.enterMessage_selector = function(ctx) {
 	for (var i = 0; i < ctx.children.length; i ++) {
@@ -282,17 +270,22 @@ JPObjCListener.prototype.exitKeyword_argument = function(ctx) {
 
 
 JPObjCListener.prototype.enterDeclaration = function(ctx) {
+	if (ctx.children[1].start.text.indexOf('(') > -1) {
+		//c function decalaration
+		return;
+	}
 
-	// for (var i in ctx.children) {
-     //    console.log(ctx.children[i].start.text, i, ctx.children.length);
-	// }
-
-	var strContext = this.addStrContext(ctx.start.start);
+	var strContext = this.addStrContext(ctx.start.start)
 
 	var declarationContext = new JPDeclarationContext();
 	strContext.setNext(declarationContext);
 	this.currContext = declarationContext;
-    this.currContext.currIdx = ctx.children[ctx.children.length - 2].start.stop + 1
+
+	if (ctx.children[1].start.text.indexOf('*') > -1) {
+		this.currContext.currIdx = ctx.children[1].start.start + 1
+	} else {
+		this.currContext.currIdx = ctx.children[1].start.start - 1
+	}
 };
 
 JPObjCListener.prototype.exitDeclaration = function(ctx) {
@@ -302,9 +295,9 @@ JPObjCListener.prototype.exitDeclaration = function(ctx) {
 
 
 JPObjCListener.prototype.enterAssignment_expression = function(ctx) {
-    if (ctx.children && ctx.children.length == 3 && ctx.children[1].start.text == '=') {
-        var leftStr = ctx.start.source[1].strdata.substring(ctx.children[0].start.start, ctx.children[0].stop.stop + 1)
-        if (leftStr.indexOf('.') > -1 || leftStr.indexOf('_') == 0) {
+	if (ctx.children && ctx.children.length == 3 && ctx.children[1].start.text == '=') {
+		var leftStr = ctx.start.source[1].strdata.substring(ctx.children[0].start.start, ctx.children[0].stop.stop + 1)
+		if (leftStr.indexOf('.') > -1) {
 			var assignContext = new JPAssignContext();
 
 			var assignLeftContext = new JPAssignLeftContext();
@@ -322,9 +315,9 @@ JPObjCListener.prototype.enterAssignment_expression = function(ctx) {
 };
 
 JPObjCListener.prototype.exitAssignment_expression = function(ctx) {
-    if (ctx.children && ctx.children.length == 3 && ctx.children[1].start.text == '=') {
+	if (ctx.children && ctx.children.length == 3 && ctx.children[1].start.text == '=') {
 		var leftStr = ctx.start.source[1].strdata.substring(ctx.children[0].start.start, ctx.children[0].stop.stop + 1)
-		if (leftStr.indexOf('.') > -1 || leftStr.indexOf('_') == 0) {
+		if (leftStr.indexOf('.') > -1) {
 			this.addStrContext(ctx.stop.stop + 1)
 				
 			var preContext = this.currContext;
@@ -405,5 +398,8 @@ ObjCListener.prototype.enterFor_statement = function(ctx) {
 
 ObjCListener.prototype.exitFor_statement = function(ctx) {
 };
+
+
+
 
 exports.JPObjCListener = JPObjCListener;
