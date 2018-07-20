@@ -18,14 +18,23 @@
 
 @implementation ViewController
 
-- (UILabel *)lable {
-    if (!_lable) {
-        _lable = [UILabel new];
-        _lable.backgroundColor = [UIColor orangeColor];
-        _lable.text = @"流星";
-        _lable.textAlignment = NSTextAlignmentCenter;
-    }
-    return _lable;
+- (void)viewDidLoad {
+    [self test:^(NSString *param) {
+        
+    }];
+//    [self.view mas_makeConstraints:^(MASConstraintMaker *make) {
+//
+//    }];
 }
+
+//- (UILabel *)lable {
+//    if (!_lable) {
+//        _lable = [UILabel new];
+//        _lable.backgroundColor = [UIColor orangeColor];
+//        _lable.text = @"流星";
+//        _lable.textAlignment = NSTextAlignmentCenter;
+//    }
+//    return _lable;
+//}
 
 @end

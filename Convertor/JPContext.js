@@ -1,6 +1,5 @@
 var allParesedLocalSelectors = [];
 var delayParsedContexts = [];	//{locationMark:"###1###", context:context}
-var hasExclusiveMethod = false;
 var isFinishedParsed = false;
 
 /////////////////Base
@@ -69,32 +68,13 @@ var JPClassContext = function(className) {
 	this.instanceMethods = [];
 	this.classMethods = [];
 	this.ignore = 0;
-    this.startStopIndex = null;
 }
 JPClassContext.prototype = Object.create(JPContext.prototype);
 JPClassContext.prototype.parse = function(){
 
-	//Traverse method list to find out if hasExclusiveMethod
-	var firstMethodContext = null;
-	if (this.instanceMethods.length) {
-		firstMethodContext = this.instanceMethods[0].preMethod ? null : this.instanceMethods[0];
-	}
-	if (!firstMethodContext && this.classMethods.length) {
-		firstMethodContext = this.classMethods[0];
-	}
-	while (firstMethodContext) {
-        if (firstMethodContext.exclusive) {
-            hasExclusiveMethod = true;
-            break;
-        }
-        firstMethodContext = firstMethodContext.nextMethod;
-	}
 
 	var script = this.ignore ? '' : "defineClass('" + this.className + "', {";
 	for (var i = 0; i < this.instanceMethods.length; i ++) {
-		if (hasExclusiveMethod && !this.instanceMethods[i].exclusive) {
-			continue;
-		}
 		var separator = this.ignore && this.instanceMethods.length <= 1 ? '': ',';
 		script += this.instanceMethods[i].parse() + separator;
 	}
@@ -102,9 +82,6 @@ JPClassContext.prototype.parse = function(){
 	if (this.classMethods.length) {
 		script += this.ignore ? '' : ',{';
 		for (var i = 0; i < this.classMethods.length; i ++) {
-            if (hasExclusiveMethod && !this.classMethods[i].exclusive) {
-                continue;
-            }
 			var separator = this.ignore && this.classMethods.length <= 1 ? '': ','
 			script += this.classMethods[i].parse() + separator;
 		}
@@ -129,11 +106,6 @@ var JPMethodContext = function() {
 	this.names = [];
 	this.params = [];
 	this.ignore = 0;
-
-	this.exclusive = false;
-	this.stopIndex = null;
-	this.preMethod = null;
-	this.nextMethod = null;
 }
 JPMethodContext.prototype = Object.create(JPContext.prototype);
 JPMethodContext.prototype.parse = function(){

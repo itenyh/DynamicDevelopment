@@ -67,7 +67,6 @@ ObjCListener.prototype.enterClass_implementation = function(ctx) {
 	this.ocScript = ctx.start.source[1].strdata;
 	this.currContext.className = ctx.children[1].start.text;
 	this.currContext.ignore = this.ignoreClass;
-	this.currContext.startStopIndex = ctx.children[1].stop.stop;
 };
 
 ObjCListener.prototype.exitClass_implementation = function(ctx) {
@@ -78,8 +77,6 @@ ObjCListener.prototype.exitClass_implementation = function(ctx) {
 ObjCListener.prototype.enterClass_method_definition = function(ctx) {
 	var methodContext = new JPMethodContext();
 	methodContext.ignore = this.ignoreMethod;
-    this.linkMethodList(methodContext);
-    methodContext.exclusive = this.checkExclusive(ctx, methodContext);
 	this.rootContext.classMethods.push(methodContext);
 	this.currContext = methodContext;
 };
@@ -91,8 +88,6 @@ ObjCListener.prototype.exitClass_method_definition = function(ctx) {
 ObjCListener.prototype.enterInstance_method_definition = function(ctx) {
 	var methodContext = new JPMethodContext();
 	methodContext.ignore = this.ignoreMethod;
-    this.linkMethodList(methodContext);
-    methodContext.exclusive = this.checkExclusive(ctx, methodContext);
 	this.rootContext.instanceMethods.push(methodContext);
 	this.currContext = methodContext;
 };
@@ -119,15 +114,6 @@ JPObjCListener.prototype.enterMethod_definition = function(ctx) {
 };
 
 JPObjCListener.prototype.exitMethod_definition = function(ctx) {
-    var preContext = this.currContext;
-    while (!(preContext instanceof JPMethodContext)) {
-        preContext = preContext.pre;
-        if (!preContext) {
-            throw new Error('method parse fail');
-        }
-    }
-    preContext.stopIndex = ctx.stop.stop;
-
 	this.addStrContext(ctx.stop.stop)
 };
 
@@ -423,37 +409,5 @@ ObjCListener.prototype.enterFor_statement = function(ctx) {
 
 ObjCListener.prototype.exitFor_statement = function(ctx) {
 };
-
-//Util Methods
-ObjCListener.prototype.linkMethodList = function (methodContext) {
-    //找到最后一个method
-    var lastMethodContext = null;
-    if (this.rootContext.classMethods.length > 0) {
-        lastMethodContext = this.rootContext.classMethods[this.rootContext.classMethods.length - 1];
-        if (lastMethodContext.nextMethod) {
-            lastMethodContext = this.rootContext.instanceMethods[this.rootContext.instanceMethods.length - 1];
-        }
-    }
-    else {
-        if (this.rootContext.instanceMethods.length > 0) {
-            lastMethodContext = this.rootContext.instanceMethods[this.rootContext.instanceMethods.length - 1];
-        }
-    }
-    methodContext.preMethod = lastMethodContext;
-    if (lastMethodContext) lastMethodContext.nextMethod = methodContext;
-}
-
-ObjCListener.prototype.checkExclusive = function (ctx, methodContext) {
-    var exclusive;
-    var methodsInternalStr;
-    if (methodContext.preMethod) {
-        methodsInternalStr = ctx.start.source[1].strdata.substring(methodContext.preMethod.stopIndex + 1, ctx.start.start);
-    } else {
-        methodsInternalStr = ctx.start.source[1].strdata.substring(this.rootContext.startStopIndex + 1, ctx.start.start);
-    }
-    exclusive = /#pragma hotdev exclusive/g.test(methodsInternalStr);
-    return exclusive;
-}
-
 
 exports.JPObjCListener = JPObjCListener;
