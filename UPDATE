@@ -37,5 +37,5 @@
 1. __c函数，if (slf[methodName]) { 进行修改，首先判断是否为未定义，排除数值为0的情况，if (slf[methodName] != undefined) {
 2. 如果slf[methodName]不是函数，则可直接返回值
 
-
+//对【Convertor】的修改，增加JPObjcProcessor，过滤需要解析的methods
 

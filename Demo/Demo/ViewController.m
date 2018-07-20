@@ -21,7 +21,7 @@
 - (void)viewDidLoad {
     [self test:^(NSString *param) {
         
-    }];
+    } haha:@"sdfs"];
 //    [self.view mas_makeConstraints:^(MASConstraintMaker *make) {
 //
 //    }];
@@ -35,6 +35,11 @@
 //        _lable.textAlignment = NSTextAlignmentCenter;
 //    }
 //    return _lable;
-//}
+//}localMethods
+
+#pragma )(
+- (void)test:(void (^)(NSString *param))blk haha:(NSString *)h {
+    
+}
 
 @end

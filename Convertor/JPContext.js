@@ -1,4 +1,4 @@
-var allParesedLocalSelectors = [];
+var localMethods = [];
 var delayParsedContexts = [];	//{locationMark:"###1###", context:context}
 var isFinishedParsed = false;
 
@@ -77,6 +77,7 @@ JPClassContext.prototype.parse = function(){
 	for (var i = 0; i < this.instanceMethods.length; i ++) {
 		var separator = this.ignore && this.instanceMethods.length <= 1 ? '': ',';
 		script += this.instanceMethods[i].parse() + separator;
+        localMethods.push(this.instanceMethods[i].parsedMethodName);
 	}
 	script += this.ignore ? '' : '}';
 	if (this.classMethods.length) {
@@ -84,6 +85,7 @@ JPClassContext.prototype.parse = function(){
 		for (var i = 0; i < this.classMethods.length; i ++) {
 			var separator = this.ignore && this.classMethods.length <= 1 ? '': ','
 			script += this.classMethods[i].parse() + separator;
+            localMethods.push(this.classMethods[i].parsedMethodName);
 		}
 		script += this.ignore ? '' : '}'
 	}
@@ -105,6 +107,7 @@ JPClassContext.prototype.parse = function(){
 var JPMethodContext = function() {
 	this.names = [];
 	this.params = [];
+	this.parsedMethodName = ''
 	this.ignore = 0;
 }
 JPMethodContext.prototype = Object.create(JPContext.prototype);
@@ -118,7 +121,8 @@ JPMethodContext.prototype.parse = function(){
 			firstName = "_" + firstName;
 			this.names[0] = firstName;
 		}
-		script = this.names.join('_') + ": function(" + this.params.join(',') + ") {"
+        this.parsedMethodName = this.names.join('_');
+		script = this.parsedMethodName + ": function(" + this.params.join(',') + ") {"
 	}
 
 	while (ctx = ctx.next) {
@@ -172,10 +176,7 @@ JPMsgContext.prototype.parse = function() {
 	}
 
 	this.parsedSelector = funcName.join('_');
-	if (this.receiver === 'self') {
-		allParesedLocalSelectors.push(this.parsedSelector);
-    }
-	code += '|__dot__|' + this.parsedSelector + '(' + params.join(',') + ')';
+    code += '|__dot__|' + this.parsedSelector + '(' + params.join(',') + ')';
 	return code;
 }
 
@@ -209,8 +210,8 @@ JPBlockContext.prototype.parse = function(){
 
     var blockSelector = this.msg.parsedSelector;
 	var isLocalMethod = false;
-	for (var i in allParesedLocalSelectors) {
-		var selector = allParesedLocalSelectors[i];
+	for (var i in localMethods) {
+		var selector = localMethods[i];
 		if (selector === blockSelector) {
 			isLocalMethod = true;
 			break;

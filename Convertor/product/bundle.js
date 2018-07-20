@@ -1,8 +1,6 @@
-var global = {};
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-var allParesedLocalSelectors = [];
+var localMethods = [];
 var delayParsedContexts = [];	//{locationMark:"###1###", context:context}
-var hasExclusiveMethod = false;
 var isFinishedParsed = false;
 
 /////////////////Base
@@ -71,44 +69,24 @@ var JPClassContext = function(className) {
 	this.instanceMethods = [];
 	this.classMethods = [];
 	this.ignore = 0;
-    this.startStopIndex = null;
 }
 JPClassContext.prototype = Object.create(JPContext.prototype);
 JPClassContext.prototype.parse = function(){
 
-	//Traverse method list to find out if hasExclusiveMethod
-	var firstMethodContext = null;
-	if (this.instanceMethods.length) {
-		firstMethodContext = this.instanceMethods[0].preMethod ? null : this.instanceMethods[0];
-	}
-	if (!firstMethodContext && this.classMethods.length) {
-		firstMethodContext = this.classMethods[0];
-	}
-	while (firstMethodContext) {
-        if (firstMethodContext.exclusive) {
-            hasExclusiveMethod = true;
-            break;
-        }
-        firstMethodContext = firstMethodContext.nextMethod;
-	}
 
 	var script = this.ignore ? '' : "defineClass('" + this.className + "', {";
 	for (var i = 0; i < this.instanceMethods.length; i ++) {
-		if (hasExclusiveMethod && !this.instanceMethods[i].exclusive) {
-			continue;
-		}
 		var separator = this.ignore && this.instanceMethods.length <= 1 ? '': ',';
 		script += this.instanceMethods[i].parse() + separator;
+        localMethods.push(this.instanceMethods[i].parsedMethodName);
 	}
 	script += this.ignore ? '' : '}';
 	if (this.classMethods.length) {
 		script += this.ignore ? '' : ',{';
 		for (var i = 0; i < this.classMethods.length; i ++) {
-            if (hasExclusiveMethod && !this.classMethods[i].exclusive) {
-                continue;
-            }
 			var separator = this.ignore && this.classMethods.length <= 1 ? '': ','
 			script += this.classMethods[i].parse() + separator;
+            localMethods.push(this.classMethods[i].parsedMethodName);
 		}
 		script += this.ignore ? '' : '}'
 	}
@@ -130,12 +108,8 @@ JPClassContext.prototype.parse = function(){
 var JPMethodContext = function() {
 	this.names = [];
 	this.params = [];
+	this.parsedMethodName = ''
 	this.ignore = 0;
-
-	this.exclusive = false;
-	this.stopIndex = null;
-	this.preMethod = null;
-	this.nextMethod = null;
 }
 JPMethodContext.prototype = Object.create(JPContext.prototype);
 JPMethodContext.prototype.parse = function(){
@@ -148,7 +122,8 @@ JPMethodContext.prototype.parse = function(){
 			firstName = "_" + firstName;
 			this.names[0] = firstName;
 		}
-		script = this.names.join('_') + ": function(" + this.params.join(',') + ") {"
+        this.parsedMethodName = this.names.join('_');
+		script = this.parsedMethodName + ": function(" + this.params.join(',') + ") {"
 	}
 
 	while (ctx = ctx.next) {
@@ -202,10 +177,7 @@ JPMsgContext.prototype.parse = function() {
 	}
 
 	this.parsedSelector = funcName.join('_');
-	if (this.receiver === 'self') {
-		allParesedLocalSelectors.push(this.parsedSelector);
-    }
-	code += '|__dot__|' + this.parsedSelector + '(' + params.join(',') + ')';
+    code += '|__dot__|' + this.parsedSelector + '(' + params.join(',') + ')';
 	return code;
 }
 
@@ -239,8 +211,8 @@ JPBlockContext.prototype.parse = function(){
 
     var blockSelector = this.msg.parsedSelector;
 	var isLocalMethod = false;
-	for (var i in allParesedLocalSelectors) {
-		var selector = allParesedLocalSelectors[i];
+	for (var i in localMethods) {
+		var selector = localMethods[i];
 		if (selector === blockSelector) {
 			isLocalMethod = true;
 			break;
@@ -348,13 +320,6 @@ var JPScriptProcessor = require('./JPScriptProcessor').JPScriptProcessor
 
 var convertor = function(script, cb, eb) {
 
-	var replaceComments = function(script) {
-        return script.replace(/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/gm, '');
-    }
-    
-	//pre process
-	script = replaceComments(script);
-
     var ignoreClass = 0, ignoreMethod = 0;
     script = script.replace(/(^\s*)/g,'');
     if (script.indexOf('@implementation') == -1) {
@@ -366,6 +331,9 @@ var convertor = function(script, cb, eb) {
             script = '@implementation tmp \n' + script + '\n@end'
         }
     }
+
+    var processor = require('./JPObjCProcessor').processor;
+    script = processor(script);
 
     var chars = new antlr4.InputStream(script);
     var lexer = new ObjCLexer(chars);
@@ -398,7 +366,7 @@ global.convertor = convertor;
 exports.convertor = convertor;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./JPErrorListener":3,"./JPObjCListener":4,"./JPScriptProcessor":5,"./parser/ObjCLexer":7,"./parser/ObjCParser":9,"./parser/antlr4/index":50}],3:[function(require,module,exports){
+},{"./JPErrorListener":3,"./JPObjCListener":4,"./JPObjCProcessor":5,"./JPScriptProcessor":6,"./parser/ObjCLexer":8,"./parser/ObjCParser":10,"./parser/antlr4/index":51}],3:[function(require,module,exports){
 var ErrorListener = require('./parser/antlr4/error/ErrorListener').ErrorListener;
 
 function JPErrorListener(errorCallback) {
@@ -424,7 +392,7 @@ JPErrorListener.prototype.reportContextSensitivity = function(recognizer, dfa, s
 };
 
 exports.JPErrorListener = JPErrorListener;
-},{"./parser/antlr4/error/ErrorListener":46}],4:[function(require,module,exports){
+},{"./parser/antlr4/error/ErrorListener":47}],4:[function(require,module,exports){
 var ObjCListener = require('./parser/ObjCListener').ObjCListener
 var c = require('./JPContext')
 var JPCommonContext = c.JPCommonContext,
@@ -494,7 +462,6 @@ ObjCListener.prototype.enterClass_implementation = function(ctx) {
 	this.ocScript = ctx.start.source[1].strdata;
 	this.currContext.className = ctx.children[1].start.text;
 	this.currContext.ignore = this.ignoreClass;
-	this.currContext.startStopIndex = ctx.children[1].stop.stop;
 };
 
 ObjCListener.prototype.exitClass_implementation = function(ctx) {
@@ -505,8 +472,6 @@ ObjCListener.prototype.exitClass_implementation = function(ctx) {
 ObjCListener.prototype.enterClass_method_definition = function(ctx) {
 	var methodContext = new JPMethodContext();
 	methodContext.ignore = this.ignoreMethod;
-    this.linkMethodList(methodContext);
-    methodContext.exclusive = this.checkExclusive(ctx, methodContext);
 	this.rootContext.classMethods.push(methodContext);
 	this.currContext = methodContext;
 };
@@ -518,8 +483,6 @@ ObjCListener.prototype.exitClass_method_definition = function(ctx) {
 ObjCListener.prototype.enterInstance_method_definition = function(ctx) {
 	var methodContext = new JPMethodContext();
 	methodContext.ignore = this.ignoreMethod;
-    this.linkMethodList(methodContext);
-    methodContext.exclusive = this.checkExclusive(ctx, methodContext);
 	this.rootContext.instanceMethods.push(methodContext);
 	this.currContext = methodContext;
 };
@@ -546,15 +509,6 @@ JPObjCListener.prototype.enterMethod_definition = function(ctx) {
 };
 
 JPObjCListener.prototype.exitMethod_definition = function(ctx) {
-    var preContext = this.currContext;
-    while (!(preContext instanceof JPMethodContext)) {
-        preContext = preContext.pre;
-        if (!preContext) {
-            throw new Error('method parse fail');
-        }
-    }
-    preContext.stopIndex = ctx.stop.stop;
-
 	this.addStrContext(ctx.stop.stop)
 };
 
@@ -851,40 +805,99 @@ ObjCListener.prototype.enterFor_statement = function(ctx) {
 ObjCListener.prototype.exitFor_statement = function(ctx) {
 };
 
-//Util Methods
-ObjCListener.prototype.linkMethodList = function (methodContext) {
-    //找到最后一个method
-    var lastMethodContext = null;
-    if (this.rootContext.classMethods.length > 0) {
-        lastMethodContext = this.rootContext.classMethods[this.rootContext.classMethods.length - 1];
-        if (lastMethodContext.nextMethod) {
-            lastMethodContext = this.rootContext.instanceMethods[this.rootContext.instanceMethods.length - 1];
-        }
-    }
-    else {
-        if (this.rootContext.instanceMethods.length > 0) {
-            lastMethodContext = this.rootContext.instanceMethods[this.rootContext.instanceMethods.length - 1];
-        }
-    }
-    methodContext.preMethod = lastMethodContext;
-    if (lastMethodContext) lastMethodContext.nextMethod = methodContext;
-}
-
-ObjCListener.prototype.checkExclusive = function (ctx, methodContext) {
-    var exclusive;
-    var methodsInternalStr;
-    if (methodContext.preMethod) {
-        methodsInternalStr = ctx.start.source[1].strdata.substring(methodContext.preMethod.stopIndex + 1, ctx.start.start);
-    } else {
-        methodsInternalStr = ctx.start.source[1].strdata.substring(this.rootContext.startStopIndex + 1, ctx.start.start);
-    }
-    exclusive = /#pragma hotdev exclusive/g.test(methodsInternalStr);
-    return exclusive;
-}
-
-
 exports.JPObjCListener = JPObjCListener;
-},{"./JPContext":1,"./parser/ObjCListener":8}],5:[function(require,module,exports){
+},{"./JPContext":1,"./parser/ObjCListener":9}],5:[function(require,module,exports){
+
+var JPMethodObject = function() {
+    this.script = null;
+    this.isIn = null;
+    this.isOut = null;
+}
+
+exports.processor = function (script) {
+
+    //Remove comments
+    var replaceComments = function(script) {
+        return script.replace(/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/gm, '');
+    }
+    script = replaceComments(script);
+
+    //Get Method Script
+    var implementationBody = /@implementation[\s\S]*?\n+\s+([\s\S]*?)\s+@end/gm.exec(script)[1];
+
+    var bracesDeep = 0;
+    var didInBody = false;
+    var willLeftBody = false;
+    var methodScript = ''
+
+    var methodObjects = [];
+
+    for (var i = 0;i < implementationBody.length;i++) {
+
+        var curChar = implementationBody[i];
+        methodScript += curChar;
+
+        if (curChar == '{') {
+            bracesDeep++;
+        }
+        else if (curChar == '}') {
+            bracesDeep--;
+        }
+
+        willLeftBody = (didInBody && bracesDeep == 0);
+        didInBody = bracesDeep >= 1;
+
+        if (willLeftBody) {
+            var ms = new JPMethodObject();
+            ms.script = methodScript;
+            methodObjects.push(ms);
+            methodScript = '';
+        }
+
+    }
+
+    //Init Method Object
+    for (var method in methodObjects) {
+        var ms = methodObjects[method];
+        ms.isIn = /#pragma\s+\(\)\s*\n/gm.test(ms.script);
+        ms.isOut = /#pragma\s+\)\(\s*\n/gm.test(ms.script);
+    }
+
+    //Filter Method Object
+    var hasInMethodScript = false;
+    for (var method in methodObjects) {
+        var ms = methodObjects[method];
+        if (ms.isIn) {
+            hasInMethodScript = true;
+            break;
+        }
+    }
+
+    var finalMethodObjects = [];
+    for (var method in methodObjects) {
+        var ms = methodObjects[method];
+        if (hasInMethodScript) {
+            if (ms.isIn) {
+                finalMethodObjects.push(ms);
+            }
+        }
+        else {
+            if (!ms.isOut) {
+                finalMethodObjects.push(ms);
+            }
+        }
+    }
+
+    //Get Result script
+    var finalScripts = '';
+    for (var method in finalMethodObjects) {
+        var ms = finalMethodObjects[method];
+        finalScripts += ms.script;
+    }
+    script = script.replace(/(@implementation[\s\S]*?\n+\s+)[\s\S]*?(\s+@end)/gm, "$1" + finalScripts + "$2");
+    return script;
+}
+},{}],6:[function(require,module,exports){
 var beautify = require('./lib/beautify').js_beautify
 
 var JPScriptProcessor = function(script) {
@@ -951,7 +964,7 @@ JPScriptProcessor.prototype = {
 
 
 exports.JPScriptProcessor = JPScriptProcessor;
-},{"./lib/beautify":6}],6:[function(require,module,exports){
+},{"./lib/beautify":7}],7:[function(require,module,exports){
 (function (global){
 /*jshint curly:true, eqeqeq:true, laxbreak:true, noempty:false */
 /*
@@ -3049,7 +3062,7 @@ exports.JPScriptProcessor = JPScriptProcessor;
 
 }());
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 // Generated from ObjC.g4 by ANTLR 4.5.1
 // jshint ignore: start
 var antlr4 = require('./antlr4/index');
@@ -4146,7 +4159,7 @@ ObjCLexer.grammarFileName = "ObjC.g4";
 exports.ObjCLexer = ObjCLexer;
 
 
-},{"./antlr4/index":50}],8:[function(require,module,exports){
+},{"./antlr4/index":51}],9:[function(require,module,exports){
 // Generated from ObjC.g4 by ANTLR 4.5.1
 // jshint ignore: start
 var antlr4 = require('./antlr4/index');
@@ -5278,7 +5291,7 @@ ObjCListener.prototype.exitConstant = function(ctx) {
 
 
 exports.ObjCListener = ObjCListener;
-},{"./antlr4/index":50}],9:[function(require,module,exports){
+},{"./antlr4/index":51}],10:[function(require,module,exports){
 // Generated from ObjC.g4 by ANTLR 4.5.1
 // jshint ignore: start
 var antlr4 = require('./antlr4/index');
@@ -17545,7 +17558,7 @@ ObjCParser.prototype.constant = function() {
 
 exports.ObjCParser = ObjCParser;
 
-},{"./ObjCListener":8,"./antlr4/index":50}],10:[function(require,module,exports){
+},{"./ObjCListener":9,"./antlr4/index":51}],11:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -17946,7 +17959,7 @@ BufferedTokenStream.prototype.fill = function() {
 
 exports.BufferedTokenStream = BufferedTokenStream;
 
-},{"./IntervalSet":15,"./Lexer":17,"./Token":23}],11:[function(require,module,exports){
+},{"./IntervalSet":16,"./Lexer":18,"./Token":24}],12:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -18041,7 +18054,7 @@ CommonTokenFactory.prototype.createThin = function(type, text) {
 
 exports.CommonTokenFactory = CommonTokenFactory;
 
-},{"./Token":23}],12:[function(require,module,exports){
+},{"./Token":24}],13:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -18170,7 +18183,7 @@ CommonTokenStream.prototype.getNumberOfOnChannelTokens = function() {
 };
 
 exports.CommonTokenStream = CommonTokenStream;
-},{"./BufferedTokenStream":10,"./Token":23}],13:[function(require,module,exports){
+},{"./BufferedTokenStream":11,"./Token":24}],14:[function(require,module,exports){
 //
 //  [The "BSD license"]
 //   Copyright (c) 2012 Terence Parr
@@ -18225,7 +18238,7 @@ FileStream.prototype.constructor = FileStream;
 
 exports.FileStream = FileStream;
 
-},{"./InputStream":14,"fs":54}],14:[function(require,module,exports){
+},{"./InputStream":15,"fs":55}],15:[function(require,module,exports){
 // 
 //  [The "BSD license"]
 //   Copyright (c) 2012 Terence Parr
@@ -18361,7 +18374,7 @@ InputStream.prototype.toString = function() {
 
 exports.InputStream = InputStream;
 
-},{"./Token":23}],15:[function(require,module,exports){
+},{"./Token":24}],16:[function(require,module,exports){
 /*jslint smarttabs:true */
 
 var Token = require('./Token').Token;
@@ -18656,7 +18669,7 @@ IntervalSet.prototype.elementName = function(literalNames, symbolicNames, a) {
 exports.Interval = Interval;
 exports.IntervalSet = IntervalSet;
 
-},{"./Token":23}],16:[function(require,module,exports){
+},{"./Token":24}],17:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -18881,7 +18894,7 @@ LL1Analyzer.prototype._LOOK = function(s, stopState , ctx, look, lookBusy, calle
 exports.LL1Analyzer = LL1Analyzer;
 
 
-},{"./IntervalSet":15,"./PredictionContext":20,"./Token":23,"./Utils":24,"./atn/ATNConfig":26,"./atn/ATNState":31,"./atn/Transition":39}],17:[function(require,module,exports){
+},{"./IntervalSet":16,"./PredictionContext":21,"./Token":24,"./Utils":25,"./atn/ATNConfig":27,"./atn/ATNState":32,"./atn/Transition":40}],18:[function(require,module,exports){
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
 //  Copyright (c) 2012 Sam Harwell
@@ -19274,7 +19287,7 @@ Lexer.prototype.recover = function(re) {
 
 exports.Lexer = Lexer;
 
-},{"./CommonTokenFactory":11,"./Recognizer":21,"./Token":23,"./error/Errors":48}],18:[function(require,module,exports){
+},{"./CommonTokenFactory":12,"./Recognizer":22,"./Token":24,"./error/Errors":49}],19:[function(require,module,exports){
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
 //  Copyright (c) 2012 Sam Harwell
@@ -19965,7 +19978,7 @@ Parser.prototype.setTrace = function(trace) {
 };
 
 exports.Parser = Parser;
-},{"./Lexer":17,"./Recognizer":21,"./Token":23,"./atn/ATNDeserializationOptions":28,"./atn/ATNDeserializer":29,"./error/ErrorStrategy":47,"./tree/Tree":51}],19:[function(require,module,exports){
+},{"./Lexer":18,"./Recognizer":22,"./Token":24,"./atn/ATNDeserializationOptions":29,"./atn/ATNDeserializer":30,"./error/ErrorStrategy":48,"./tree/Tree":52}],20:[function(require,module,exports){
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
 //  Copyright (c) 2012 Sam Harwell
@@ -20198,7 +20211,7 @@ InterpreterRuleContext.prototype = Object.create(ParserRuleContext.prototype);
 InterpreterRuleContext.prototype.constructor = InterpreterRuleContext;
 
 exports.ParserRuleContext = ParserRuleContext;
-},{"./IntervalSet":15,"./RuleContext":22,"./tree/Tree":51}],20:[function(require,module,exports){
+},{"./IntervalSet":16,"./RuleContext":23,"./tree/Tree":52}],21:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -20950,7 +20963,7 @@ exports.SingletonPredictionContext = SingletonPredictionContext;
 exports.predictionContextFromRuleContext = predictionContextFromRuleContext;
 exports.getCachedPredictionContext = getCachedPredictionContext;
 
-},{"./RuleContext":22}],21:[function(require,module,exports){
+},{"./RuleContext":23}],22:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -21123,7 +21136,7 @@ Object.defineProperty(Recognizer.prototype, "state", {
 
 exports.Recognizer = Recognizer;
 
-},{"./Token":23,"./error/ErrorListener":46}],22:[function(require,module,exports){
+},{"./Token":24,"./error/ErrorListener":47}],23:[function(require,module,exports){
 // [The "BSD license"]
 //  Copyright (c) 2013 Terence Parr
 //  Copyright (c) 2013 Sam Harwell
@@ -21290,7 +21303,7 @@ RuleContext.prototype.toString = function(ruleNames, stop) {
 };
 
 
-},{"./tree/Tree":51,"./tree/Trees":52}],23:[function(require,module,exports){
+},{"./tree/Tree":52,"./tree/Trees":53}],24:[function(require,module,exports){
 //[The "BSD license"]
 // Copyright (c) 2012 Terence Parr
 // Copyright (c) 2012 Sam Harwell
@@ -21467,7 +21480,7 @@ CommonToken.prototype.toString = function() {
 exports.Token = Token;
 exports.CommonToken = CommonToken;
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 function arrayToString(a) {
 	return "[" + a.join(", ") + "]";
 }
@@ -21669,7 +21682,7 @@ exports.DoubleDict = DoubleDict;
 exports.escapeWhitespace = escapeWhitespace;
 exports.arrayToString = arrayToString;
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 // [The "BSD license"]
 //  Copyright (c) 2013 Terence Parr
 //  Copyright (c) 2013 Sam Harwell
@@ -21836,7 +21849,7 @@ ATN.prototype.getExpectedTokens = function( stateNumber, ctx ) {
 ATN.INVALID_ALT_NUMBER = 0;
 
 exports.ATN = ATN;
-},{"./../IntervalSet":15,"./../LL1Analyzer":16,"./../Token":23}],26:[function(require,module,exports){
+},{"./../IntervalSet":16,"./../LL1Analyzer":17,"./../Token":24}],27:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -22015,7 +22028,7 @@ LexerATNConfig.prototype.checkNonGreedyDecision = function(source, target) {
 
 exports.ATNConfig = ATNConfig;
 exports.LexerATNConfig = LexerATNConfig;
-},{"./ATNState":31,"./SemanticContext":38}],27:[function(require,module,exports){
+},{"./ATNState":32,"./SemanticContext":39}],28:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -22298,7 +22311,7 @@ OrderedATNConfigSet.prototype.constructor = OrderedATNConfigSet;
 exports.ATNConfigSet = ATNConfigSet;
 exports.OrderedATNConfigSet = OrderedATNConfigSet;
 
-},{"./../PredictionContext":20,"./../Utils":24,"./ATN":25,"./SemanticContext":38}],28:[function(require,module,exports){
+},{"./../PredictionContext":21,"./../Utils":25,"./ATN":26,"./SemanticContext":39}],29:[function(require,module,exports){
 //[The "BSD license"]
 // Copyright (c) 2013 Terence Parr
 // Copyright (c) 2013 Sam Harwell
@@ -22349,7 +22362,7 @@ ATNDeserializationOptions.defaultOptions.readOnly = true;
 
 exports.ATNDeserializationOptions = ATNDeserializationOptions;
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 // [The "BSD license"]
 //  Copyright (c) 2013 Terence Parr
 //  Copyright (c) 2013 Sam Harwell
@@ -23040,7 +23053,7 @@ ATNDeserializer.prototype.lexerActionFactory = function(type, data1, data2) {
    
 
 exports.ATNDeserializer = ATNDeserializer;
-},{"./../IntervalSet":15,"./../Token":23,"./ATN":25,"./ATNDeserializationOptions":28,"./ATNState":31,"./ATNType":32,"./LexerAction":34,"./Transition":39}],30:[function(require,module,exports){
+},{"./../IntervalSet":16,"./../Token":24,"./ATN":26,"./ATNDeserializationOptions":29,"./ATNState":32,"./ATNType":33,"./LexerAction":35,"./Transition":40}],31:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2013 Terence Parr
@@ -23117,7 +23130,7 @@ ATNSimulator.prototype.getCachedContext = function(context) {
 
 exports.ATNSimulator = ATNSimulator;
 
-},{"./../PredictionContext":20,"./../dfa/DFAState":43,"./ATNConfigSet":27}],31:[function(require,module,exports){
+},{"./../PredictionContext":21,"./../dfa/DFAState":44,"./ATNConfigSet":28}],32:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -23469,7 +23482,7 @@ exports.PlusBlockStartState = PlusBlockStartState;
 exports.StarBlockStartState = StarBlockStartState;
 exports.BasicBlockStartState = BasicBlockStartState;
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 // [The "BSD license"]
 //  Copyright (c) 2013 Terence Parr
 //  Copyright (c) 2013 Sam Harwell
@@ -23512,7 +23525,7 @@ ATNType.PARSER = 1;
 exports.ATNType = ATNType;
 
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -24175,7 +24188,7 @@ LexerATNSimulator.prototype.getTokenName = function(tt) {
 
 exports.LexerATNSimulator = LexerATNSimulator;
 
-},{"./../Lexer":17,"./../PredictionContext":20,"./../Token":23,"./../dfa/DFAState":43,"./../error/Errors":48,"./ATN":25,"./ATNConfig":26,"./ATNConfigSet":27,"./ATNSimulator":30,"./ATNState":31,"./LexerActionExecutor":35,"./Transition":39}],34:[function(require,module,exports){
+},{"./../Lexer":18,"./../PredictionContext":21,"./../Token":24,"./../dfa/DFAState":44,"./../error/Errors":49,"./ATN":26,"./ATNConfig":27,"./ATNConfigSet":28,"./ATNSimulator":31,"./ATNState":32,"./LexerActionExecutor":36,"./Transition":40}],35:[function(require,module,exports){
 //
  //[The "BSD license"]
  // Copyright (c) 2013 Terence Parr
@@ -24560,7 +24573,7 @@ exports.LexerTypeAction = LexerTypeAction;
 exports.LexerPushModeAction = LexerPushModeAction;
 exports.LexerPopModeAction = LexerPopModeAction;
 exports.LexerModeAction = LexerModeAction;
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2013 Terence Parr
@@ -24737,7 +24750,7 @@ LexerActionExecutor.prototype.equals = function(other) {
 
 exports.LexerActionExecutor = LexerActionExecutor;
 
-},{"./LexerAction":34}],36:[function(require,module,exports){
+},{"./LexerAction":35}],37:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -26424,7 +26437,7 @@ ParserATNSimulator.prototype.reportAmbiguity = function(dfa, D, startIndex, stop
 };
             
 exports.ParserATNSimulator = ParserATNSimulator;
-},{"./../IntervalSet":15,"./../ParserRuleContext":19,"./../PredictionContext":20,"./../RuleContext":22,"./../Token":23,"./../Utils":24,"./../dfa/DFAState":43,"./../error/Errors":48,"./ATN":25,"./ATNConfig":26,"./ATNConfigSet":27,"./ATNSimulator":30,"./ATNState":31,"./PredictionMode":37,"./SemanticContext":38,"./Transition":39}],37:[function(require,module,exports){
+},{"./../IntervalSet":16,"./../ParserRuleContext":20,"./../PredictionContext":21,"./../RuleContext":23,"./../Token":24,"./../Utils":25,"./../dfa/DFAState":44,"./../error/Errors":49,"./ATN":26,"./ATNConfig":27,"./ATNConfigSet":28,"./ATNSimulator":31,"./ATNState":32,"./PredictionMode":38,"./SemanticContext":39,"./Transition":40}],38:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -27008,7 +27021,7 @@ PredictionMode.getSingleViableAlt = function(altsets) {
 };
 
 exports.PredictionMode = PredictionMode;
-},{"./../Utils":24,"./ATN":25,"./ATNState":31}],38:[function(require,module,exports){
+},{"./../Utils":25,"./ATN":26,"./ATNState":32}],39:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -27431,7 +27444,7 @@ exports.SemanticContext = SemanticContext;
 exports.PrecedencePredicate = PrecedencePredicate;
 exports.Predicate = Predicate;
 
-},{"./../Utils":24}],39:[function(require,module,exports){
+},{"./../Utils":25}],40:[function(require,module,exports){
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
 //  Copyright (c) 2012 Sam Harwell
@@ -27772,13 +27785,13 @@ exports.WildcardTransition = WildcardTransition;
 exports.PredicateTransition = PredicateTransition;
 exports.PrecedencePredicateTransition = PrecedencePredicateTransition;
 exports.AbstractPredicateTransition = AbstractPredicateTransition;
-},{"./../IntervalSet":15,"./../Token":23,"./SemanticContext":38}],40:[function(require,module,exports){
+},{"./../IntervalSet":16,"./../Token":24,"./SemanticContext":39}],41:[function(require,module,exports){
 exports.ATN = require('./ATN').ATN;
 exports.ATNDeserializer = require('./ATNDeserializer').ATNDeserializer;
 exports.LexerATNSimulator = require('./LexerATNSimulator').LexerATNSimulator;
 exports.ParserATNSimulator = require('./ParserATNSimulator').ParserATNSimulator;
 exports.PredictionMode = require('./PredictionMode').PredictionMode;
-},{"./ATN":25,"./ATNDeserializer":29,"./LexerATNSimulator":33,"./ParserATNSimulator":36,"./PredictionMode":37}],41:[function(require,module,exports){
+},{"./ATN":26,"./ATNDeserializer":30,"./LexerATNSimulator":34,"./ParserATNSimulator":37,"./PredictionMode":38}],42:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -27957,7 +27970,7 @@ DFA.prototype.toLexerString = function() {
 
 exports.DFA = DFA;
 
-},{"./../atn/ATNConfigSet":27,"./DFASerializer":42,"./DFAState":43}],42:[function(require,module,exports){
+},{"./../atn/ATNConfigSet":28,"./DFASerializer":43,"./DFAState":44}],43:[function(require,module,exports){
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
 //  Copyright (c) 2012 Sam Harwell
@@ -28062,7 +28075,7 @@ exports.DFASerializer = DFASerializer;
 exports.LexerDFASerializer = LexerDFASerializer;
 
 
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -28229,13 +28242,13 @@ DFAState.prototype.hashString = function() {
 
 exports.DFAState = DFAState;
 exports.PredPrediction = PredPrediction;
-},{"./../atn/ATNConfigSet":27}],44:[function(require,module,exports){
+},{"./../atn/ATNConfigSet":28}],45:[function(require,module,exports){
 exports.DFA = require('./DFA').DFA;
 exports.DFASerializer = require('./DFASerializer').DFASerializer;
 exports.LexerDFASerializer = require('./DFASerializer').LexerDFASerializer;
 exports.PredPrediction = require('./DFAState').PredPrediction;
 
-},{"./DFA":41,"./DFASerializer":42,"./DFAState":43}],45:[function(require,module,exports){
+},{"./DFA":42,"./DFASerializer":43,"./DFAState":44}],46:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -28371,7 +28384,7 @@ DiagnosticErrorListener.prototype.getConflictingAlts = function(reportedAlts, co
 };
 
 exports.DiagnosticErrorListener = DiagnosticErrorListener;
-},{"./../IntervalSet":15,"./../Utils":24,"./ErrorListener":46}],46:[function(require,module,exports){
+},{"./../IntervalSet":16,"./../Utils":25,"./ErrorListener":47}],47:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -28484,7 +28497,7 @@ exports.ConsoleErrorListener = ConsoleErrorListener;
 exports.ProxyErrorListener = ProxyErrorListener;
 
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 //
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
@@ -29267,7 +29280,7 @@ BailErrorStrategy.prototype.sync = function(recognizer) {
 
 exports.BailErrorStrategy = BailErrorStrategy;
 exports.DefaultErrorStrategy = DefaultErrorStrategy;
-},{"./../IntervalSet":15,"./../Token":23,"./../atn/ATNState":31,"./Errors":48}],48:[function(require,module,exports){
+},{"./../IntervalSet":16,"./../Token":24,"./../atn/ATNState":32,"./Errors":49}],49:[function(require,module,exports){
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
 //  Copyright (c) 2012 Sam Harwell
@@ -29461,7 +29474,7 @@ exports.LexerNoViableAltException = LexerNoViableAltException;
 exports.InputMismatchException = InputMismatchException;
 exports.FailedPredicateException = FailedPredicateException;
 
-},{"./../atn/Transition":39}],49:[function(require,module,exports){
+},{"./../atn/Transition":40}],50:[function(require,module,exports){
 exports.RecognitionException = require('./Errors').RecognitionException;
 exports.NoViableAltException = require('./Errors').NoViableAltException;
 exports.LexerNoViableAltException = require('./Errors').LexerNoViableAltException;
@@ -29470,7 +29483,7 @@ exports.FailedPredicateException = require('./Errors').FailedPredicateException;
 exports.DiagnosticErrorListener = require('./DiagnosticErrorListener').DiagnosticErrorListener;
 exports.BailErrorStrategy = require('./ErrorStrategy').BailErrorStrategy;
 exports.ErrorListener = require('./ErrorListener').ErrorListener;
-},{"./DiagnosticErrorListener":45,"./ErrorListener":46,"./ErrorStrategy":47,"./Errors":48}],50:[function(require,module,exports){
+},{"./DiagnosticErrorListener":46,"./ErrorListener":47,"./ErrorStrategy":48,"./Errors":49}],51:[function(require,module,exports){
 exports.atn = require('./atn/index');
 exports.dfa = require('./dfa/index');
 exports.tree = require('./tree/index');
@@ -29488,7 +29501,7 @@ exports.ParserRuleContext = require('./ParserRuleContext').ParserRuleContext;
 exports.Interval = require('./IntervalSet').Interval;
 exports.Utils = require('./Utils');
 
-},{"./CommonTokenStream":12,"./FileStream":13,"./InputStream":14,"./IntervalSet":15,"./Lexer":17,"./Parser":18,"./ParserRuleContext":19,"./PredictionContext":20,"./Token":23,"./Utils":24,"./atn/index":40,"./dfa/index":44,"./error/index":49,"./tree/index":53}],51:[function(require,module,exports){
+},{"./CommonTokenStream":13,"./FileStream":14,"./InputStream":15,"./IntervalSet":16,"./Lexer":18,"./Parser":19,"./ParserRuleContext":20,"./PredictionContext":21,"./Token":24,"./Utils":25,"./atn/index":41,"./dfa/index":45,"./error/index":50,"./tree/index":54}],52:[function(require,module,exports){
 // [The "BSD license"]
 //  Copyright (c) 2012 Terence Parr
 //  Copyright (c) 2012 Sam Harwell
@@ -29716,7 +29729,7 @@ exports.ParseTreeListener = ParseTreeListener;
 exports.ParseTreeVisitor = ParseTreeVisitor;
 exports.ParseTreeWalker = ParseTreeWalker;
 exports.INVALID_INTERVAL = INVALID_INTERVAL;
-},{"./../IntervalSet":15,"./../Token":23}],52:[function(require,module,exports){
+},{"./../IntervalSet":16,"./../Token":24}],53:[function(require,module,exports){
 /*
  * [The "BSD license"]
  *  Copyright (c) 2012 Terence Parr
@@ -29876,13 +29889,13 @@ Trees.descendants = function(t) {
 
 
 exports.Trees = Trees;
-},{"./../ParserRuleContext":19,"./../Token":23,"./../Utils":24,"./Tree":51}],53:[function(require,module,exports){
+},{"./../ParserRuleContext":20,"./../Token":24,"./../Utils":25,"./Tree":52}],54:[function(require,module,exports){
 var Tree = require('./Tree');
 exports.Trees = require('./Tree').Trees;
 exports.RuleNode = Tree.RuleNode;
 exports.ParseTreeListener = Tree.ParseTreeListener;
 exports.ParseTreeVisitor = Tree.ParseTreeVisitor;
 exports.ParseTreeWalker = Tree.ParseTreeWalker;
-},{"./Tree":51}],54:[function(require,module,exports){
+},{"./Tree":52}],55:[function(require,module,exports){
 
 },{}]},{},[2]);
