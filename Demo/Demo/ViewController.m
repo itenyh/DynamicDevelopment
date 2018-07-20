@@ -18,30 +18,6 @@
 
 @implementation ViewController
 
-- (void)viewDidLoad {
-  
-    [self.lable mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.equalTo(self.view);
-    }];
-    
-    [self.lable mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.equalTo(self.view);
-    }];
-    
-}
-
-- (CGRect)test2 {
-    return CGRectMake(1, 1, 1, 1);
-}
-
-- (CGRect)test1 {
-    UIView *v = [UIView new];
-    v.frame = CGRectMake(0, 1, 10, 10);
-    return v.frame;
-}
-
-#pragma - mark LazyLoad
-
 - (UILabel *)lable {
     if (!_lable) {
         _lable = [UILabel new];

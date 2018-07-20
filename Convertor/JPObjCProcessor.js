@@ -1,0 +1,90 @@
+
+var JPMethodObject = function() {
+    this.script = null;
+    this.isIn = null;
+    this.isOut = null;
+}
+
+exports.processor = function (script) {
+
+    //Remove comments
+    var replaceComments = function(script) {
+        return script.replace(/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/gm, '');
+    }
+    script = replaceComments(script);
+
+    //Get Method Script
+    var implementationBody = /@implementation[\s\S]*?\n+\s+([\s\S]*?)\s+@end/gm.exec(script)[1];
+
+    var bracesDeep = 0;
+    var didInBody = false;
+    var willLeftBody = false;
+    var methodScript = ''
+
+    var methodObjects = [];
+
+    for (var i = 0;i < implementationBody.length;i++) {
+
+        var curChar = implementationBody[i];
+        methodScript += curChar;
+
+        if (curChar == '{') {
+            bracesDeep++;
+        }
+        else if (curChar == '}') {
+            bracesDeep--;
+        }
+
+        willLeftBody = (didInBody && bracesDeep == 0);
+        didInBody = bracesDeep >= 1;
+
+        if (willLeftBody) {
+            var ms = new JPMethodObject();
+            ms.script = methodScript;
+            methodObjects.push(ms);
+            methodScript = '';
+        }
+
+    }
+
+    //Init Method Object
+    for (var method in methodObjects) {
+        var ms = methodObjects[method];
+        ms.isIn = /#pragma\s+\(\)\s*\n/gm.test(ms.script);
+        ms.isOut = /#pragma\s+\)\(\s*\n/gm.test(ms.script);
+    }
+
+    //Filter Method Object
+    var hasInMethodScript = false;
+    for (var method in methodObjects) {
+        var ms = methodObjects[method];
+        if (ms.isIn) {
+            hasInMethodScript = true;
+            break;
+        }
+    }
+
+    var finalMethodObjects = [];
+    for (var method in methodObjects) {
+        var ms = methodObjects[method];
+        if (hasInMethodScript) {
+            if (ms.isIn) {
+                finalMethodObjects.push(ms);
+            }
+        }
+        else {
+            if (!ms.isOut) {
+                finalMethodObjects.push(ms);
+            }
+        }
+    }
+
+    //Get Result script
+    var finalScripts = '';
+    for (var method in finalMethodObjects) {
+        var ms = finalMethodObjects[method];
+        finalScripts += ms.script;
+    }
+    script = script.replace(/(@implementation[\s\S]*?\n+\s+)[\s\S]*?(\s+@end)/gm, "$1" + finalScripts + "$2");
+    return script;
+}

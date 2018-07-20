@@ -7,13 +7,6 @@ var JPScriptProcessor = require('./JPScriptProcessor').JPScriptProcessor
 
 var convertor = function(script, cb, eb) {
 
-	var replaceComments = function(script) {
-        return script.replace(/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/gm, '');
-    }
-    
-	//pre process
-	script = replaceComments(script);
-
     var ignoreClass = 0, ignoreMethod = 0;
     script = script.replace(/(^\s*)/g,'');
     if (script.indexOf('@implementation') == -1) {
@@ -26,11 +19,8 @@ var convertor = function(script, cb, eb) {
         }
     }
 
-    var newString = '';
-    for (var i = script.indexOf('@implementation') + '@implementation'.length + 1;i < script.length;i++) {
-        newString += script[i];
-    }
-    console.log(newString);
+    var processor = require('./JPObjCProcessor').processor;
+    script = processor(script);
 
     var chars = new antlr4.InputStream(script);
     var lexer = new ObjCLexer(chars);
