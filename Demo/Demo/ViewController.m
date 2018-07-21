@@ -7,12 +7,11 @@
 //
 
 #import "ViewController.h"
-#import "JPEngine.h"
-#import <CoreLocation/CoreLocation.h>
+#import "ReactiveObjC.h"
 
-@interface ViewController ()
+@interface ViewController () <UITableViewDataSource, UITableViewDelegate>
 
-@property (nonatomic, strong) UILabel *lable;
+@property (nonatomic, strong) UITableView *tbView;
 
 @end
 
@@ -20,30 +19,30 @@
 
 - (void)viewDidLoad {
     
-    [self.view addSubview:self.lable];
-    
-    [self updateViewConstraints];
-}
-
-- (void)updateViewConstraints {
-    
-    [self.lable mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.equalTo(self.view);
-        make.height.mas_equalTo(23);
+    [self.view addSubview:self.tbView];
+    [self.tbView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(self.view);
     }];
     
-    [super updateViewConstraints];
 }
 
-- (UILabel *)lable {
-    if (!_lable) {
-        _lable = [UILabel new];
-        _lable.backgroundColor = [UIColor orangeColor];
-        _lable.text = @"流afa";
-        _lable.textAlignment = NSTextAlignmentCenter;
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 10;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"123321"];
+    cell.textLabel.text = [NSString stringWithFormat:@"%ld", (long)indexPath.row];
+    return cell;
+}
+
+- (UITableView *)tbView {
+    if(!_tbView) {
+        _tbView = [UITableView new];
+        _tbView.dataSource = self;
+        _tbView.delegate = self;
     }
-    return _lable;
+    return _tbView;
 }
-
 
 @end

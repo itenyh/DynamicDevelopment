@@ -18,8 +18,10 @@
                              @"keys": @[@"top", @"left", @"bottom", @"right"]
                              }];
 
-    [context evaluateScript:@"global.NSTextAlignmentLeft = 0; \
-                              global.NSTextAlignmentCenter = 1;"];
+    NSString *bundlePath = [[NSBundle mainBundle] bundlePath];
+    NSString *file = [NSString stringWithFormat:@"%@/%@", bundlePath, @"constants.hogcs"];
+    NSString *content = [NSString stringWithContentsOfFile:file encoding:NSUTF8StringEncoding error:nil];
+    [context evaluateScript:content];
     
     __weak JSContext *weakContext = context;
     context[@"CGSizeMake"] = ^() {
