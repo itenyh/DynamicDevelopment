@@ -17,12 +17,18 @@
 
 @implementation ViewController
 
+#pragma ()
 - (void)viewDidLoad {
     
     [self.view addSubview:self.tbView];
     [self.tbView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(self.view);
+//        make.edges.equalTo(self.view);
+        make.size.mas_equalTo(CGSizeMake(200, 100));
     }];
+
+//    self.tbView.frame = @{@"x":@0,@"y":@0,@"width":@100,@"height":@100};
+    
+    self.view.backgroundColor = [UIColor brownColor];
     
 }
 
@@ -32,7 +38,8 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"123321"];
-    cell.textLabel.text = [NSString stringWithFormat:@"%ld", (long)indexPath.row];
+    cell.textLabel.text = [NSString stringWithFormat:@"你爱：%ld", indexPath.row];
+    cell.textLabel.textColor = [UIColor grayColor];
     return cell;
 }
 

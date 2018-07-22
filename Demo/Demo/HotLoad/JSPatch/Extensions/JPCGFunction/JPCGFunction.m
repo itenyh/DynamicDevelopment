@@ -15,7 +15,7 @@
     [JPEngine defineStruct:@{
                              @"name": @"UIEdgeInsets",
                              @"types": @"FFFF",
-                             @"keys": @[@"top", @"left", @"bottom", @"right"]
+                             @"keys": @[@"top", @"right", @"bottom", @"left"]
                              }];
 
     NSString *bundlePath = [[NSBundle mainBundle] bundlePath];
