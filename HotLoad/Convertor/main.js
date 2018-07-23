@@ -1,12 +1,14 @@
+require('UIColor');
 defineClass('ViewController', {
-    updateViewConstraints: function() {
+    viewDidLoad: function() {
 
-        self.lable().mas__makeConstraints(block('void, MASConstraintMaker*', function(make) {
-            make.center().equalTo()(self.view());
-            make.height().equalTo()(MMASBoxValue(121));
+        self.view().addSubview(self.tbView());
+        self.tbView().mas__makeConstraints(block('void, MASConstraintMaker*', function(make) {
+            make.size().equalTo()(MMASBoxValue(CGSizeMake(200, 100)));
         }));
 
 
-        self.super().updateViewConstraints();
+        self.view().setBackgroundColor(UIColor.brownColor());
+
     },
 });

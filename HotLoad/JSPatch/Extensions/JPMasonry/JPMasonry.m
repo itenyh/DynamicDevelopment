@@ -35,9 +35,21 @@
 }
 
 + (NSString *)preProcessSourceCode:(NSString *)sourceCode {
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"mas_equalTo\\((.+)\\)" options:NSRegularExpressionCaseInsensitive error:nil];
-    NSString *modifiedString = [regex stringByReplacingMatchesInString:sourceCode options:0 range:NSMakeRange(0, [sourceCode length]) withTemplate:@"equalTo(MMASBoxValue($1))"];
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(mas_equalTo|mas_offset)\\((.+)\\)" options:NSRegularExpressionCaseInsensitive error:nil];
+    NSArray<NSTextCheckingResult *> *matchResults = [regex matchesInString:sourceCode options:0 range:NSMakeRange(0, [sourceCode length])];
+    NSString *modifiedString;
+    for (NSTextCheckingResult *result in matchResults) {
+        NSString *prefix = [sourceCode substringWithRange:[result rangeAtIndex:1]];
+        if ([prefix isEqualToString:@"mas_equalTo"]) {
+            modifiedString = [regex stringByReplacingMatchesInString:sourceCode options:0 range:NSMakeRange(0, [sourceCode length]) withTemplate:@"equalTo(MMASBoxValue($2))"];
+        }
+        else if ([prefix isEqualToString:@"mas_offset"]) {
+            modifiedString = [regex stringByReplacingMatchesInString:sourceCode options:0 range:NSMakeRange(0, [sourceCode length]) withTemplate:@"valueOffset(MMASBoxValue($2))"];
+        }
+    }
+    
     return modifiedString;
+    
 }
 
 @end

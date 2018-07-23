@@ -1,0 +1,7 @@
+global.NSTextAlignmentLeft = 0;
+global.NSTextAlignmentCenter = 1;
+
+global.UITableViewCellStyleDefault = 0;
+global.UITableViewCellStyleValue1 = 1;
+global.UITableViewCellStyleValue2 = 2;
+global.UITableViewCellStyleSubtitle = 3;
