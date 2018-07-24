@@ -678,29 +678,24 @@ JPObjCListener.prototype.exitKeyword_argument = function(ctx) {
 	this.currContext = preContext.parent;
 };
 
-
-
-
-
 JPObjCListener.prototype.enterDeclaration = function(ctx) {
 
 	// for (var i in ctx.children) {
-     //    console.log(ctx.children[i].start.text, i, ctx.children.length);
+	// 	if (ctx.children[i].start != null)
+     //    	console.log(ctx.children[i].stop.text, i, ctx.children.length);
 	// }
-
-	var strContext = this.addStrContext(ctx.start.start);
+    var strContext = this.addStrContext(ctx.start.start);
 
 	var declarationContext = new JPDeclarationContext();
 	strContext.setNext(declarationContext);
 	this.currContext = declarationContext;
-    this.currContext.currIdx = ctx.children[ctx.children.length - 2].start.stop + 1
+
+	var isObjectType = (ctx.children[1].start.text == '*') ? 1 : 0;
+    this.currContext.currIdx = ctx.children[1].start.stop + isObjectType;
 };
 
 JPObjCListener.prototype.exitDeclaration = function(ctx) {
 };
-
-
-
 
 JPObjCListener.prototype.enterAssignment_expression = function(ctx) {
     if (ctx.children && ctx.children.length == 3 && ctx.children[1].start.text == '=') {
@@ -806,6 +801,32 @@ ObjCListener.prototype.enterFor_statement = function(ctx) {
 
 ObjCListener.prototype.exitFor_statement = function(ctx) {
 };
+
+// // Enter a parse tree produced by ObjCParser#cast_expression.
+// ObjCListener.prototype.enterCast_expression = function(ctx) {
+//
+//     var strContext = this.addStrContext(ctx.start.start);
+//     var commonContext = new JPCommonContext('');
+//     strContext.setNext(commonContext);
+//     this.currContext = commonContext;
+//     if (ctx.children[1] != null)
+//     	this.currContext.currIdx = ctx.children[1].start + 1;
+//
+// 	// for (var i in ctx.children) {
+// 	// 	if (ctx.children[i].start != null && ctx.children[i].stop != null) {
+//      //        console.log(i, ctx.children[i].start.text, ctx.children[i].stop.text);
+//      //    }
+// 	// }
+// 	// console.log(11111111111111111111111)
+// };
+//
+// // 1 NSObject *
+// // 3 [ ]
+//
+// // Exit a parse tree produced by ObjCParser#cast_expression.
+// ObjCListener.prototype.exitCast_expression = function(ctx) {
+//
+// };
 
 exports.JPObjCListener = JPObjCListener;
 },{"./JPContext":1,"./parser/ObjCListener":9}],5:[function(require,module,exports){
