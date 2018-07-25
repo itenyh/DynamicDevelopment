@@ -1,31 +1,7 @@
-// [The "BSD license"]
-//  Copyright (c) 2012 Terence Parr
-//  Copyright (c) 2012 Sam Harwell
-//  Copyright (c) 2014 Eric Vergnaud
-//  All rights reserved.
-//
-//  Redistribution and use in source and binary forms, with or without
-//  modification, are permitted provided that the following conditions
-//  are met:
-//
-//  1. Redistributions of source code must retain the above copyright
-//     notice, this list of conditions and the following disclaimer.
-//  2. Redistributions in binary form must reproduce the above copyright
-//     notice, this list of conditions and the following disclaimer in the
-//     documentation and/or other materials provided with the distribution.
-//  3. The name of the author may not be used to endorse or promote products
-//     derived from this software without specific prior written permission.
-//
-//  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
-//  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-//  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
-//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-//  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-//  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-//  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-//  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-//  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+/* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
+ * Use of this file is governed by the BSD 3-clause license that
+ * can be found in the LICENSE.txt file in the project root.
+ */
 
 //* A rule invocation record for parsing.
 //
@@ -88,6 +64,17 @@ ParserRuleContext.prototype.copyFrom = function(ctx) {
     this.children = null;
     this.start = ctx.start;
     this.stop = ctx.stop;
+    // copy any error nodes to alt label node
+    if(ctx.children) {
+        this.children = [];
+        // reset parent pointer for any error nodes
+    	ctx.children.map(function(child) {
+    		if (child instanceof ErrorNodeImpl) {
+                this.children.push(child);
+                child.parentCtx = this;
+            }
+		}, this);
+	}
 };
 
 // Double dispatch methods for listeners
@@ -132,8 +119,11 @@ ParserRuleContext.prototype.addErrorNode = function(badToken) {
 
 ParserRuleContext.prototype.getChild = function(i, type) {
 	type = type || null;
+	if (this.children === null || i < 0 || i >= this.children.length) {
+		return null;
+	}
 	if (type === null) {
-		return this.children.length>=i ? this.children[i] : null;
+		return this.children[i];
 	} else {
 		for(var j=0; j<this.children.length; j++) {
 			var child = this.children[j];
@@ -151,6 +141,9 @@ ParserRuleContext.prototype.getChild = function(i, type) {
 
 
 ParserRuleContext.prototype.getToken = function(ttype, i) {
+	if (this.children === null || i < 0 || i >= this.children.length) {
+		return null;
+	}
 	for(var j=0; j<this.children.length; j++) {
 		var child = this.children[j];
 		if (child instanceof TerminalNode) {
@@ -214,7 +207,7 @@ ParserRuleContext.prototype.getSourceInterval = function() {
     if( this.start === null || this.stop === null) {
         return INVALID_INTERVAL;
     } else {
-        return Interval(this.start.tokenIndex, this.stop.tokenIndex);
+        return new Interval(this.start.tokenIndex, this.stop.tokenIndex);
     }
 };
 

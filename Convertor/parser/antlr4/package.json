@@ -1,9 +1,35 @@
 {
-  "name": "antlr4",
-  "version": "4.5.1",
+  "_from": "antlr4",
+  "_id": "antlr4@4.7.1",
+  "_inBundle": false,
+  "_integrity": "sha512-haHyTW7Y9joE5MVs37P2lNYfU2RWBLfcRDD8OWldcdZm5TiCE91B5Xl1oWSwiDUSd4rlExpt2pu1fksYQjRBYQ==",
+  "_location": "/antlr4",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "antlr4",
+    "name": "antlr4",
+    "escapedName": "antlr4",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/antlr4/-/antlr4-4.7.1.tgz",
+  "_shasum": "69984014f096e9e775f53dd9744bf994d8959773",
+  "_spec": "antlr4",
+  "_where": "/Users/iten/Desktop/objc/js",
+  "bugs": {
+    "url": "https://github.com/antlr/antlr4/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
   "description": "JavaScript runtime for ANTLR4",
-  "main": "src/antlr4/index.js",
-  "repository": "antlr/antlr4-javascript.git",
+  "homepage": "https://github.com/antlr/antlr4",
   "keywords": [
     "lexer",
     "parser",
@@ -12,8 +38,11 @@
     "grammar"
   ],
   "license": "BSD",
-  "bugs": {
-    "url": "https://github.com/antlr/antlr4-javascript/issues"
+  "main": "src/antlr4/index.js",
+  "name": "antlr4",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antlr/antlr4.git"
   },
-  "homepage": "https://github.com/antlr/antlr4-javascript"
+  "version": "4.7.1"
 }

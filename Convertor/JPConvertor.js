@@ -1,6 +1,6 @@
 var antlr4 = require('./parser/antlr4/index');
-var ObjCLexer = require('./parser/ObjCLexer').ObjCLexer
-var ObjCParser = require('./parser/ObjCParser').ObjCParser
+var ObjCLexer = require('./parser/ObjectiveCLexer').ObjectiveCLexer
+var ObjCParser = require('./parser/ObjectiveCParser').ObjectiveCParser
 var JPObjCListener = require('./JPObjCListener').JPObjCListener
 var JPErrorListener = require('./JPErrorListener').JPErrorListener
 var JPScriptProcessor = require('./JPScriptProcessor').JPScriptProcessor
@@ -33,7 +33,7 @@ var convertor = function(script, cb) {
     parser.addErrorListener(new JPErrorListener(function(e) {
         if (cb) cb(null, null, e);;
     }));
-    var tree = parser.translation_unit();
+    var tree = parser.translationUnit();
     var listener = new JPObjCListener(function(result, className){
         var processor = new JPScriptProcessor(result)
         if (cb) cb(processor.finalScript(), className);
