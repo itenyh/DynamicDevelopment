@@ -14,20 +14,47 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="main.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/main.js">
+      <file leaf-file-name="ObjC.g4" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/parser/ObjC.g4">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="12" selection-start-line="12" selection-end-line="12" />
+            <state relative-caret-position="232">
+              <caret line="396" column="49" lean-forward="true" selection-start-line="396" selection-start-column="49" selection-end-line="396" selection-end-column="49" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="JPConvertor.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="main.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/main.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="15">
+              <caret line="1" selection-start-line="1" selection-end-line="3" selection-end-column="135" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="JPConvertor.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/JPConvertor.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="231">
-              <caret line="16" column="16" lean-forward="true" selection-start-line="16" selection-start-column="16" selection-end-line="16" selection-end-column="16" />
+            <state relative-caret-position="268">
+              <caret line="27" column="34" lean-forward="true" selection-start-line="27" selection-start-column="34" selection-end-line="27" selection-end-column="34" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="JPObjCProcessor.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/JPObjCProcessor.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-588">
+              <caret line="13" column="10" selection-start-line="13" selection-start-column="4" selection-end-line="13" selection-end-column="10" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="JPContext.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/JPContext.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="256">
+              <caret line="292" column="24" selection-start-line="292" selection-start-column="4" selection-end-line="292" selection-end-column="24" />
             </state>
           </provider>
         </entry>
@@ -35,8 +62,8 @@
       <file leaf-file-name="JPObjCListener.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/JPObjCListener.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6420">
-              <caret line="428" selection-start-line="428" selection-end-line="429" selection-end-column="40" />
+            <state relative-caret-position="117">
+              <caret line="404" column="4" lean-forward="true" selection-start-line="404" selection-start-column="4" selection-end-line="416" selection-end-column="5" />
             </state>
           </provider>
         </entry>
@@ -52,19 +79,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>script</find>
-      <find>233</find>
-      <find>delayParsedContexts</find>
-      <find>startStopIndex</find>
-      <find>localSelectors</find>
-      <find>parsedSelector</find>
-      <find>allParesedLocalSelectors</find>
-      <find>&lt;</find>
-      <find>&lt;.+&gt;</find>
-      <find>ANGLE</find>
-      <find>convertor</find>
-      <find>no</find>
-      <find>channel(HIDDEN)</find>
       <find>console</find>
       <find>enterDeclaration</find>
       <find>channel</find>
@@ -72,16 +86,29 @@
       <find>\(.+\)</find>
       <find>Constant</find>
       <find>Identifier</find>
-      <find>cast_expression</find>
       <find>ruleIndex</find>
       <find>ruleindex</find>
       <find>ANGLE_STRING</find>
       <find>67</find>
       <find>type_name</find>
       <find>abstract_declarator</find>
-      <find>addStrContext</find>
-      <find>cast</find>
       <find>JPCommonContext</find>
+      <find>rece</find>
+      <find>primary_expression</find>
+      <find>IDENTIFIER</find>
+      <find>addStrContext</find>
+      <find>abstract_de</find>
+      <find>currIdx</find>
+      <find>cast</find>
+      <find>cast_expression</find>
+      <find>for</find>
+      <find>method</find>
+      <find>assi</find>
+      <find>assignment</find>
+      <find>ocScript</find>
+      <find>enterExpression</find>
+      <find>for_in</find>
+      <find>JPDeclarationContext</find>
     </findStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$</dir>
@@ -98,13 +125,13 @@
         <option value="$PROJECT_DIR$/product/JPObjCProcessor.js" />
         <option value="$PROJECT_DIR$/original_js/JPConvertor.js" />
         <option value="$PROJECT_DIR$/original_js/JPObjCListener.js" />
-        <option value="$PROJECT_DIR$/JPConvertor.js" />
         <option value="$PROJECT_DIR$/JPObjCProcessor.js" />
         <option value="$PROJECT_DIR$/JPContext.js" />
         <option value="$PROJECT_DIR$/product/bundle.js" />
         <option value="$PROJECT_DIR$/parser/ObjCListener.js" />
-        <option value="$PROJECT_DIR$/main.js" />
         <option value="$PROJECT_DIR$/JPObjCListener.js" />
+        <option value="$PROJECT_DIR$/main.js" />
+        <option value="$PROJECT_DIR$/JPConvertor.js" />
       </list>
     </option>
   </component>
@@ -136,11 +163,11 @@
       <path value="$PROJECT_DIR$/parser/antlr4/package.json" />
     </packageJsonPaths>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="34" />
-    <option name="y" value="294" />
-    <option name="width" value="1604" />
-    <option name="height" value="997" />
+  <component name="ProjectFrameBounds" fullScreen="true">
+    <option name="x" value="-6" />
+    <option name="y" value="23" />
+    <option name="width" value="1920" />
+    <option name="height" value="1057" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -203,24 +230,24 @@
   </component>
   <component name="RunManager" selected="Node.js.main.js">
     <configuration name="JPConvertor.js" type="NodeJSConfigurationType" factoryName="Node.js" temporary="true" path-to-node="/usr/local/bin/node" nameIsGenerated="true" path-to-js-file="JPConvertor.js" working-dir="$PROJECT_DIR$" />
+    <configuration name="JPObjCListener.js" type="NodeJSConfigurationType" factoryName="Node.js" temporary="true" nameIsGenerated="true" path-to-js-file="JPObjCListener.js" working-dir="$PROJECT_DIR$" />
     <configuration name="beautify.js" type="NodeJSConfigurationType" factoryName="Node.js" temporary="true" nameIsGenerated="true" path-to-js-file="beautify.js" working-dir="$PROJECT_DIR$/lib" />
     <configuration name="bundle.js" type="NodeJSConfigurationType" factoryName="Node.js" temporary="true" nameIsGenerated="true" path-to-js-file="bundle.js" working-dir="$PROJECT_DIR$" />
     <configuration name="main.js" type="NodeJSConfigurationType" factoryName="Node.js" temporary="true" path-to-node="/usr/local/bin/node" nameIsGenerated="true" path-to-js-file="main.js" working-dir="$PROJECT_DIR$" />
-    <configuration name="say_bundles.js" type="NodeJSConfigurationType" factoryName="Node.js" temporary="true" nameIsGenerated="true" path-to-js-file="say_bundles.js" working-dir="$PROJECT_DIR$" />
     <list>
-      <item itemvalue="Node.js.say_bundles.js" />
       <item itemvalue="Node.js.JPConvertor.js" />
       <item itemvalue="Node.js.bundle.js" />
       <item itemvalue="Node.js.beautify.js" />
       <item itemvalue="Node.js.main.js" />
+      <item itemvalue="Node.js.JPObjCListener.js" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Node.js.main.js" />
+        <item itemvalue="Node.js.JPObjCListener.js" />
         <item itemvalue="Node.js.beautify.js" />
         <item itemvalue="Node.js.bundle.js" />
         <item itemvalue="Node.js.JPConvertor.js" />
-        <item itemvalue="Node.js.say_bundles.js" />
       </list>
     </recent_temporary>
   </component>
@@ -258,28 +285,34 @@
       <workItem from="1532403051411" duration="9000" />
       <workItem from="1532403136636" duration="1095000" />
       <workItem from="1532404266319" duration="13000" />
+      <workItem from="1532414129625" duration="249000" />
+      <workItem from="1532414384317" duration="3210000" />
+      <workItem from="1532418644988" duration="1060000" />
+      <workItem from="1532420263640" duration="781000" />
+      <workItem from="1532485499642" duration="11000" />
+      <workItem from="1532486025749" duration="10917000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="103792000" />
+    <option name="totallyTimeSpent" value="120020000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="34" y="294" width="1604" height="997" extended-state="0" />
+    <frame x="0" y="0" width="1920" height="1080" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19887781" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.16614583" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Tool Output" />
+      <window_info anchor="bottom" id="Tool Output" order="7" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="ANTLR Preview" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.3488624" />
+      <window_info anchor="bottom" id="ANTLR Preview" order="7" weight="0.43093386" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.27140078" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.1510264" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.1510264" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
@@ -530,13 +563,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/JPObjCProcessor.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="90" column="43" selection-start-line="90" selection-start-column="43" selection-end-line="90" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/product/bundle.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="345">
@@ -572,13 +598,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/parser/ObjC.g4">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6810">
-          <caret line="454" column="25" selection-start-line="454" selection-start-column="21" selection-end-line="454" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/parser/ObjCListener.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15975">
@@ -586,31 +605,45 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/JPContext.js">
+    <entry file="file://$PROJECT_DIR$/parser/ObjC.g4">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="25" column="32" selection-start-line="25" selection-start-column="17" selection-end-line="25" selection-end-column="32" />
+        <state relative-caret-position="232">
+          <caret line="396" column="49" lean-forward="true" selection-start-line="396" selection-start-column="49" selection-end-line="396" selection-end-column="49" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.js">
+    <entry file="file://$PROJECT_DIR$/JPObjCProcessor.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" selection-start-line="12" selection-end-line="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/JPObjCListener.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6420">
-          <caret line="428" selection-start-line="428" selection-end-line="429" selection-end-column="40" />
+        <state relative-caret-position="-588">
+          <caret line="13" column="10" selection-start-line="13" selection-start-column="4" selection-end-line="13" selection-end-column="10" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/JPConvertor.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="231">
-          <caret line="16" column="16" lean-forward="true" selection-start-line="16" selection-start-column="16" selection-end-line="16" selection-end-column="16" />
+        <state relative-caret-position="268">
+          <caret line="27" column="34" lean-forward="true" selection-start-line="27" selection-start-column="34" selection-end-line="27" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/JPContext.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="256">
+          <caret line="292" column="24" selection-start-line="292" selection-start-column="4" selection-end-line="292" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/JPObjCListener.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="117">
+          <caret line="404" column="4" lean-forward="true" selection-start-line="404" selection-start-column="4" selection-end-line="416" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" selection-start-line="1" selection-end-line="3" selection-end-column="135" />
         </state>
       </provider>
     </entry>
