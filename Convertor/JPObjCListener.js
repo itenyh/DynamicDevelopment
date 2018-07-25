@@ -284,7 +284,7 @@ JPObjCListener.prototype.enterDeclaration = function(ctx) {
     strContext.setNext(declarationContext);
     this.currContext = declarationContext;
 
-    this.currContext.currIdx = ctx.varDeclaration().initDeclaratorList().initDeclarator()[0].declarator().directDeclarator().stop.stop;
+    this.currContext.currIdx = ctx.varDeclaration().initDeclaratorList().initDeclarator()[0].declarator().directDeclarator().start.start;
 };
 
 // Exit a parse tree produced by ObjectiveCParser#declaration.

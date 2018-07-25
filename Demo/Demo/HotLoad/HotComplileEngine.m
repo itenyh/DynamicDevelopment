@@ -19,6 +19,8 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className);
 
 @interface HotComplileEngine () <FileTransferServiceBrowserDelegate>
 
+@property (nonatomic, strong) JSContext *translatorJSContext;
+@property (nonatomic, strong) JSValue *translator;
 @property (nonatomic, strong) NSMutableArray *extensions;
 
 @property (nonatomic, strong) NSMutableArray *watchDogs;
@@ -47,14 +49,15 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className);
     [JPEngine startEngine];
     [self addExtensions:@[@"JPBlock", @"JPCFunction", @"JPCGFunction", @"JPMasonry", @"JPNSFunction"]];
     
-//    //load global utils
-//    NSString *scriptPath = [[NSBundle mainBundle] pathForResource:@"system_macro" ofType:@"js"];
-//    NSString *scriptString = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:nil];
-//    [JPEngine evaluateScript:scriptString];
-    
     [JPEngine handleException:^(NSString *msg) {
         NSLog(@"JPEngine Exception: %@", msg);
     }];
+    
+    TranslateCallBack initCallBack = ^(NSString *jsScript, NSString *className) {
+        NSLog(@"初始化Translator完毕");
+    };
+    NSString *initScript = @"@\"NSString *hello = @\"world\"";
+    [self.translator callWithArguments:@[initScript, initCallBack]];
 }
 
 - (void)hotReloadProject {
@@ -64,9 +67,14 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className);
 }
 
 - (void)fileTransferServiceReceivedNewCode:(NSString *)code {
+    NSLog(@"============= 【接收到源代码】 ============");
+    NSTimeInterval receiveSourceCodeTime = [NSDate timeIntervalSinceReferenceDate];
     [self translateObj2Js:code callBack:^(NSString *jsScript, NSString *className) {
+        NSTimeInterval translateSourceCodeTime = [NSDate timeIntervalSinceReferenceDate];
+        NSLog(@"============= 【翻译完毕：%f秒】 ============", translateSourceCodeTime - receiveSourceCodeTime);
         [self saveJsScript:jsScript];
         [self refresh:jsScript className:className];
+        NSLog(@"============= 【更新完毕: %f秒】 ============", [NSDate timeIntervalSinceReferenceDate] - translateSourceCodeTime);
     }];
 }
 
@@ -166,23 +174,13 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className);
 }
 
 - (void)translateObj2Js:(NSString *)input callBack:(TranslateCallBack)callBack {
-    
+    NSLog(@"============= 【开始翻译】 ============");
+    NSTimeInterval beginTranslateSourceCodeTime = [NSDate timeIntervalSinceReferenceDate];
     for (Class extension in self.extensions) {
         input = [extension performSelector:@selector(preProcessSourceCode:) withObject:input];
     }
-    
-    NSString *scriptPath = [[NSBundle mainBundle] pathForResource:@"bundle" ofType:@"js"];
-    NSError *error;
-    NSString *scriptString = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
-    JSContext *context = [JSContext new];
-    [context setExceptionHandler:^(JSContext *context, JSValue *exception) {
-        NSString *stacktrace = [exception objectForKeyedSubscript:@"stack"].toString;
-        NSNumber *lineNumber = [exception objectForKeyedSubscript:@"line"].toNumber;
-        NSLog(@"stacktrace: %@ \n lineNumber: %@ \n exception: %@", stacktrace, lineNumber, exception);
-    }];
-    [context evaluateScript:scriptString];
-    JSValue *convertor = [[context objectForKeyedSubscript:@"global"] objectForKeyedSubscript:@"convertor"];
-    [convertor callWithArguments:@[input, callBack]];
+    NSLog(@"============= 【拓展预处理完毕: %f】 ============", [NSDate timeIntervalSinceReferenceDate] - beginTranslateSourceCodeTime);
+    [self.translator callWithArguments:@[input, callBack]];
 }
 
 #pragma - mark lazy load
@@ -192,6 +190,29 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className);
         _extensions = [NSMutableArray array];
     }
     return _extensions;
+}
+    
+- (JSContext *)translatorJSContext {
+    if (!_translatorJSContext) {
+        NSString *scriptPath = [[NSBundle mainBundle] pathForResource:@"bundle" ofType:@"js"];
+        NSError *error;
+        NSString *scriptString = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
+        _translatorJSContext = [JSContext new];
+        [_translatorJSContext setExceptionHandler:^(JSContext *context, JSValue *exception) {
+            NSString *stacktrace = [exception objectForKeyedSubscript:@"stack"].toString;
+            NSNumber *lineNumber = [exception objectForKeyedSubscript:@"line"].toNumber;
+            NSLog(@"stacktrace: %@ \n lineNumber: %@ \n exception: %@", stacktrace, lineNumber, exception);
+        }];
+        [_translatorJSContext evaluateScript:scriptString];
+    }
+    return _translatorJSContext;
+}
+    
+- (JSValue *)translator {
+    if (!_translator) {
+        _translator = [[self.translatorJSContext objectForKeyedSubscript:@"global"] objectForKeyedSubscript:@"convertor"];
+    }
+    return _translator;
 }
 
 @end

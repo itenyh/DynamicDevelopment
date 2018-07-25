@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		7395B36E20FCDD1F004D614B /* main.js in Resources */ = {isa = PBXBuildFile; fileRef = 7395B36D20FCDD1F004D614B /* main.js */; };
 		73C9D8C72104CB2E0081D3A8 /* JPMasonry.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C9D8C62104CB2E0081D3A8 /* JPMasonry.m */; };
+		73F2FE602108B353001C8180 /* TestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F2FE5F2108B353001C8180 /* TestViewController.m */; };
 		AE40BFB38E170D0FB9EB7205 /* libPods-Demo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6ECA50D021CECD28D041DFC1 /* libPods-Demo.a */; };
 		D524D84021031046009F82C8 /* constants.hogcs in Resources */ = {isa = PBXBuildFile; fileRef = D524D83F21031046009F82C8 /* constants.hogcs */; };
 		D5A2BC2520FAF9E900C9694F /* FileTransferServiceBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = D5A2BC2420FAF9E900C9694F /* FileTransferServiceBrowser.m */; };
@@ -47,6 +48,8 @@
 		6ECA50D021CECD28D041DFC1 /* libPods-Demo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Demo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7395B36D20FCDD1F004D614B /* main.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = main.js; sourceTree = "<group>"; };
 		73C9D8C62104CB2E0081D3A8 /* JPMasonry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPMasonry.m; sourceTree = "<group>"; };
+		73F2FE5E2108B353001C8180 /* TestViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestViewController.h; sourceTree = "<group>"; };
+		73F2FE5F2108B353001C8180 /* TestViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestViewController.m; sourceTree = "<group>"; };
 		D524D83F21031046009F82C8 /* constants.hogcs */ = {isa = PBXFileReference; lastKnownFileType = text; path = constants.hogcs; sourceTree = "<group>"; };
 		D5A2BC2320FAF9E900C9694F /* FileTransferServiceBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileTransferServiceBrowser.h; sourceTree = "<group>"; };
 		D5A2BC2420FAF9E900C9694F /* FileTransferServiceBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileTransferServiceBrowser.m; sourceTree = "<group>"; };
@@ -193,6 +196,8 @@
 				FC67496620EB29CD0075F4C4 /* AppDelegate.m */,
 				FC67496820EB29CD0075F4C4 /* ViewController.h */,
 				FC67496920EB29CD0075F4C4 /* ViewController.m */,
+				73F2FE5E2108B353001C8180 /* TestViewController.h */,
+				73F2FE5F2108B353001C8180 /* TestViewController.m */,
 			);
 			path = Demo;
 			sourceTree = "<group>";
@@ -498,6 +503,7 @@
 				FC0C8E1220FC3599003F1C01 /* Packet.m in Sources */,
 				D5A2BC2520FAF9E900C9694F /* FileTransferServiceBrowser.m in Sources */,
 				FC0C8E1320FC3599003F1C01 /* SourceCode.m in Sources */,
+				73F2FE602108B353001C8180 /* TestViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
