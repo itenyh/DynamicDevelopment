@@ -227,7 +227,7 @@ JPBlockContext.prototype.parse = function(){
         return script + this.content.parse() + "}";
     }
     else {
-        var paramTypes = this.types.length ? "'void, " + this.types.join(',') + "', " : '';
+        var paramTypes = this.types.length ? "'void, " + this.types.join(',') + "', " : "'void' , ";
         var script = 'block(' + paramTypes + 'function(' + this.names.join(',') + ') {';
         return script + this.content.parse() + "})";
     }

@@ -1,7 +1,7 @@
 require('./JPConvertor')
 var fs = require('fs');
 
-var data = fs.readFileSync('/Users/iten/Desktop/Working____/Demo/Demo/HotLoad/HotComplileEngine.m', 'utf8');
+// var data = fs.readFileSync('/Users/iten/Desktop/Working____/Demo/Demo/HotLoad/HotComplileEngine.m', 'utf8');
 // var data = "- (void)viewDidLoad {\n" +
 //     "     [super viewDidLoad\n" +
 //     "}\n" +
@@ -9,7 +9,9 @@ var data = fs.readFileSync('/Users/iten/Desktop/Working____/Demo/Demo/HotLoad/Ho
 //     "- (void)didReceiveMemoryWarning {\n" +
 //     "    [super didReceiveMemoryWarning];\n" +
 //     "}";
-// // var data = "[UIView new];";
+var data = "[self animateWithDuration:1 animations:^id(NSString *tt){\n" +
+    "        \n" +
+    "    }];";
 var t1 = new Date().getTime();
 convertor(data, function (result, className, err) {
     console.log(result, className, (err == undefined) ? '' : err);

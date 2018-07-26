@@ -1,18 +1,18 @@
-require('UIColor,UITableViewCell,UITableView');
+require('UIColor,UIView,UITableViewCell,UITableView');
 defineClass('ViewController', {
     viewDidLoad: function() {
-        self.view().addSubview(self.tbView());
-        self.tbView().mas__makeConstraints(block('void, MASConstraintMaker*', function(make) {
-            make.edges().equalTo()(self.view()).valueOffset()(MMASBoxValue(UIEdgeInsetsMake(0, 0, 0, 0)));
-        }));
         self.view().setBackgroundColor(UIColor.lightTextColor());
+
+        UIView.animateWithDuration_animations(10, block('void', function() {
+            self.view().layer().setCornerRadius(2);
+        }));
     },
     tableView_numberOfRowsInSection: function(tableView, section) {
         return 1;
     },
     tableView_cellForRowAtIndexPath: function(tableView, indexPath) {
         var cell = UITableViewCell.alloc().initWithStyle_reuseIdentifier(UITableViewCellStyleDefault, "123321");
-        cell.textLabel().setText(NSStringFormat("你景：%ld", indexPath.row()));
+        cell.textLabel().setText(NSStringFormat("你景12：%ld", indexPath.row()));
         cell.textLabel().setTextColor(UIColor.grayColor());
         return cell;
     },

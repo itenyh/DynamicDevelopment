@@ -18,11 +18,15 @@
 @implementation ViewController
 
 - (void)viewDidLoad {
-    [self.view addSubview:self.tbView];
-    [self.tbView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(self.view).mas_offset(UIEdgeInsetsMake(0, 0, 0, 0));
-    }];
+//    [self.view addSubview:self.tbView];
+//    [self.tbView mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.edges.equalTo(self.view).mas_offset(UIEdgeInsetsMake(0, 0, 0, 0));
+//    }];
     self.view.backgroundColor = [UIColor lightTextColor];
+    
+    [UIView animateWithDuration:10 animations:^{
+        self.view.layer.cornerRadius = 2;
+    }];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -31,7 +35,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"123321"];
-    cell.textLabel.text = [NSString stringWithFormat:@"你景：%ld", (long)indexPath.row];
+    cell.textLabel.text = [NSString stringWithFormat:@"你景12：%ld", (long)indexPath.row];
     cell.textLabel.textColor = [UIColor grayColor];
     return cell;
 }
