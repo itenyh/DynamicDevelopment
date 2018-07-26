@@ -341,21 +341,23 @@ var convertor = function(script, cb) {
     var processor = require('./JPObjCProcessor').processor;
     script = processor(script);
 
+    var translateErrors = [];
+    var errorListener = new JPErrorListener(function(e) {
+        translateErrors.push(e);
+    });
+    errorListener.lines = script.split("\n");
+
     var chars = new antlr4.InputStream(script);
     var lexer = new ObjCLexer(chars);
-    lexer.addErrorListener(new JPErrorListener(function(e) {
-        if (cb) cb(null, null, e);
-    }));
+    lexer.addErrorListener(errorListener);
     var tokens  = new antlr4.CommonTokenStream(lexer);
 
     var parser = new ObjCParser(tokens);
-    parser.addErrorListener(new JPErrorListener(function(e) {
-        if (cb) cb(null, null, e);;
-    }));
+    parser.addErrorListener(errorListener);
     var tree = parser.translationUnit();
     var listener = new JPObjCListener(function(result, className){
         var processor = new JPScriptProcessor(result)
-        if (cb) cb(processor.finalScript(), className);
+        if (cb) cb(processor.finalScript(), className, translateErrors.length > 0 ? translateErrors : null);
     });
     listener.ignoreClass = ignoreClass;
     listener.ignoreMethod = ignoreMethod;
@@ -363,7 +365,8 @@ var convertor = function(script, cb) {
     try {
         antlr4.tree.ParseTreeWalker.DEFAULT.walk(listener, tree);
     } catch(e) {
-        if (cb) cb(null, null, e);;
+        translateErrors.push({error:e, msg:'ParseTreeWalker Error'});
+        if (cb) cb(null, null, translateErrors.length > 0 ? translateErrors : null);
     }
     
 }
@@ -378,6 +381,7 @@ var ErrorListener = require('./parser/antlr4/error/ErrorListener').ErrorListener
 function JPErrorListener(errorCallback) {
 	ErrorListener.call(this);
 	this.errorCallback = errorCallback;
+	this.lines = [];
 	return this;
 }
 
@@ -385,7 +389,7 @@ JPErrorListener.prototype = Object.create(ErrorListener.prototype);
 JPErrorListener.prototype.constructor = JPErrorListener;
 
 JPErrorListener.prototype.syntaxError = function(recognizer, offendingSymbol, line, column, msg, e) {
-	if (this.errorCallback) this.errorCallback(e)
+	if (this.errorCallback) this.errorCallback({line:line, column:column, msg:msg, content:this.lines[line - 1]})
 };
 
 JPErrorListener.prototype.reportAmbiguity = function(recognizer, dfa, startIndex, stopIndex, exact, ambigAlts, configs) {
@@ -684,7 +688,6 @@ JPObjCListener.prototype.enterDeclaration = function(ctx) {
     var declarationContext = new JPDeclarationContext();
     strContext.setNext(declarationContext);
     this.currContext = declarationContext;
-
     this.currContext.currIdx = ctx.varDeclaration().initDeclaratorList().initDeclarator()[0].declarator().directDeclarator().start.start;
 };
 
@@ -803,7 +806,9 @@ exports.processor = function (script) {
     script = replaceComments(script);
 
     //Get Method Script
-    var implementationBody = /@implementation[\s\S]*?\n+\s+([\s\S]*?)\s+@end/gm.exec(script)[1];
+    var matches = /(@implementation[\s\S]*?\n+\s*([\s\S]*?)\s+@end)/gm.exec(script);
+    var implementation = matches[1];
+    var implementationBody = matches[2];
 
     var bracesDeep = 0;
     var didInBody = false;
@@ -869,12 +874,12 @@ exports.processor = function (script) {
     }
 
     //Get Result script
-    var finalScripts = '';
+    var finalMethodBodyScript = '';
     for (var method in finalMethodObjects) {
         var ms = finalMethodObjects[method];
-        finalScripts += ms.script;
+        finalMethodBodyScript += ms.script;
     }
-    script = script.replace(/(@implementation[\s\S]*?\n+\s+)[\s\S]*?(\s+@end)/gm, "$1" + finalScripts + "$2");
+    script = implementation.replace(/(@implementation[\s\S]*?\n+\s+)[\s\S]*?(\s+@end)/gm, "$1" + finalMethodBodyScript + "$2");
 
     //去掉<>，包括了协议和泛型
     script = script.replace(/<.+?>/gm, "");

@@ -14,7 +14,9 @@ exports.processor = function (script) {
     script = replaceComments(script);
 
     //Get Method Script
-    var implementationBody = /@implementation[\s\S]*?\n+\s+([\s\S]*?)\s+@end/gm.exec(script)[1];
+    var matches = /(@implementation[\s\S]*?\n+\s*([\s\S]*?)\s+@end)/gm.exec(script);
+    var implementation = matches[1];
+    var implementationBody = matches[2];
 
     var bracesDeep = 0;
     var didInBody = false;
@@ -80,12 +82,12 @@ exports.processor = function (script) {
     }
 
     //Get Result script
-    var finalScripts = '';
+    var finalMethodBodyScript = '';
     for (var method in finalMethodObjects) {
         var ms = finalMethodObjects[method];
-        finalScripts += ms.script;
+        finalMethodBodyScript += ms.script;
     }
-    script = script.replace(/(@implementation[\s\S]*?\n+\s+)[\s\S]*?(\s+@end)/gm, "$1" + finalScripts + "$2");
+    script = implementation.replace(/(@implementation[\s\S]*?\n+\s+)[\s\S]*?(\s+@end)/gm, "$1" + finalMethodBodyScript + "$2");
 
     //去掉<>，包括了协议和泛型
     script = script.replace(/<.+?>/gm, "");

@@ -3,7 +3,7 @@ defineClass('ViewController', {
     viewDidLoad: function() {
         self.view().addSubview(self.tbView());
         self.tbView().mas__makeConstraints(block('void, MASConstraintMaker*', function(make) {
-            make.edges().equalTo()(self.view()).valueOffset()(MMASBoxValue(UIEdgeInsetsMake(290, 0, 0, 0)));
+            make.edges().equalTo()(self.view()).valueOffset()(MMASBoxValue(UIEdgeInsetsMake(0, 0, 0, 0)));
         }));
         self.view().setBackgroundColor(UIColor.lightTextColor());
     },

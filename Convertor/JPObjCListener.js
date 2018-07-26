@@ -283,7 +283,6 @@ JPObjCListener.prototype.enterDeclaration = function(ctx) {
     var declarationContext = new JPDeclarationContext();
     strContext.setNext(declarationContext);
     this.currContext = declarationContext;
-
     this.currContext.currIdx = ctx.varDeclaration().initDeclaratorList().initDeclarator()[0].declarator().directDeclarator().start.start;
 };
 

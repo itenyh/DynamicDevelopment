@@ -11,8 +11,6 @@
 @interface HotComplileEngine : NSObject
 
 + (instancetype)sharedInstance;
-
-- (void)watchAndHotReload:(NSString *)filename;
 - (void)hotReloadProject;
 + (void)loadMainJs;
 

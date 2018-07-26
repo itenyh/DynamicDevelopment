@@ -20,7 +20,7 @@
 - (void)viewDidLoad {
     [self.view addSubview:self.tbView];
     [self.tbView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(self.view).mas_offset(UIEdgeInsetsMake(290, 0, 0, 0));
+        make.edges.equalTo(self.view).mas_offset(UIEdgeInsetsMake(0, 0, 0, 0));
     }];
     self.view.backgroundColor = [UIColor lightTextColor];
 }

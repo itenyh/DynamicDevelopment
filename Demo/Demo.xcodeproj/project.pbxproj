@@ -23,7 +23,6 @@
 		FC67497520EB29D60075F4C4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FC67497420EB29D60075F4C4 /* main.m */; };
 		FC7A4F2A20EE122D00C138C9 /* HotComplileEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = FC7A4EFE20EE122D00C138C9 /* HotComplileEngine.m */; };
 		FC7A4F3720EE122E00C138C9 /* bundle.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7A4F2720EE122D00C138C9 /* bundle.js */; };
-		FC7A4F3920EE122E00C138C9 /* system_macro.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7A4F2920EE122D00C138C9 /* system_macro.js */; };
 		FC8FFC2420FDDA790097FBE4 /* JPBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = FC8FFC0F20FDDA790097FBE4 /* JPBlock.m */; };
 		FC8FFC2520FDDA790097FBE4 /* JPBlockWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = FC8FFC1120FDDA790097FBE4 /* JPBlockWrapper.m */; };
 		FC8FFC2620FDDA790097FBE4 /* JPCFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = FC8FFC1420FDDA790097FBE4 /* JPCFunction.m */; };
@@ -72,7 +71,6 @@
 		FC7A4EFD20EE122D00C138C9 /* HotComplileEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotComplileEngine.h; sourceTree = "<group>"; };
 		FC7A4EFE20EE122D00C138C9 /* HotComplileEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotComplileEngine.m; sourceTree = "<group>"; };
 		FC7A4F2720EE122D00C138C9 /* bundle.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = bundle.js; sourceTree = "<group>"; };
-		FC7A4F2920EE122D00C138C9 /* system_macro.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = system_macro.js; sourceTree = "<group>"; };
 		FC8FFC0E20FDDA790097FBE4 /* JPBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPBlock.h; sourceTree = "<group>"; };
 		FC8FFC0F20FDDA790097FBE4 /* JPBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPBlock.m; sourceTree = "<group>"; };
 		FC8FFC1020FDDA790097FBE4 /* JPBlockWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPBlockWrapper.h; sourceTree = "<group>"; };
@@ -240,7 +238,6 @@
 			children = (
 				7395B36D20FCDD1F004D614B /* main.js */,
 				FC7A4F2720EE122D00C138C9 /* bundle.js */,
-				FC7A4F2920EE122D00C138C9 /* system_macro.js */,
 			);
 			path = Convertor;
 			sourceTree = "<group>";
@@ -368,8 +365,8 @@
 		FCDE6E6720FEF58B00FEBC0D /* JPMasonry */ = {
 			isa = PBXGroup;
 			children = (
-				73C9D8C62104CB2E0081D3A8 /* JPMasonry.m */,
 				FC8FFC1C20FDDA790097FBE4 /* JPMasonry.h */,
+				73C9D8C62104CB2E0081D3A8 /* JPMasonry.m */,
 			);
 			path = JPMasonry;
 			sourceTree = "<group>";
@@ -446,7 +443,6 @@
 				D524D84021031046009F82C8 /* constants.hogcs in Resources */,
 				FC8FFC2C20FDDA790097FBE4 /* JSPatch.js in Resources */,
 				FC7A4F3720EE122E00C138C9 /* bundle.js in Resources */,
-				FC7A4F3920EE122E00C138C9 /* system_macro.js in Resources */,
 				FC67496D20EB29CD0075F4C4 /* Main.storyboard in Resources */,
 				7395B36E20FCDD1F004D614B /* main.js in Resources */,
 				FC8FFC4820FDDA8F0097FBE4 /* Documentation.html in Resources */,

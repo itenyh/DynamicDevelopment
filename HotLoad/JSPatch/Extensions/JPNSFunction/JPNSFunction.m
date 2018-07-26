@@ -53,8 +53,8 @@
 
 + (NSString *)preProcessSourceCode:(NSString *)sourceCode {
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\[NSString stringWithFormat:(.+)\\]" options:NSRegularExpressionCaseInsensitive error:nil];
-    NSString *modifiedString = [regex stringByReplacingMatchesInString:sourceCode options:0 range:NSMakeRange(0, [sourceCode length]) withTemplate:@"NSStringFormat($1)"];
-    return modifiedString;
+    sourceCode = [regex stringByReplacingMatchesInString:sourceCode options:0 range:NSMakeRange(0, [sourceCode length]) withTemplate:@"NSStringFormat($1)"];
+    return sourceCode;
 }
 
 @end

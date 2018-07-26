@@ -22,21 +22,23 @@ var convertor = function(script, cb) {
     var processor = require('./JPObjCProcessor').processor;
     script = processor(script);
 
+    var translateErrors = [];
+    var errorListener = new JPErrorListener(function(e) {
+        translateErrors.push(e);
+    });
+    errorListener.lines = script.split("\n");
+
     var chars = new antlr4.InputStream(script);
     var lexer = new ObjCLexer(chars);
-    lexer.addErrorListener(new JPErrorListener(function(e) {
-        if (cb) cb(null, null, e);
-    }));
+    lexer.addErrorListener(errorListener);
     var tokens  = new antlr4.CommonTokenStream(lexer);
 
     var parser = new ObjCParser(tokens);
-    parser.addErrorListener(new JPErrorListener(function(e) {
-        if (cb) cb(null, null, e);;
-    }));
+    parser.addErrorListener(errorListener);
     var tree = parser.translationUnit();
     var listener = new JPObjCListener(function(result, className){
         var processor = new JPScriptProcessor(result)
-        if (cb) cb(processor.finalScript(), className);
+        if (cb) cb(processor.finalScript(), className, translateErrors.length > 0 ? translateErrors : null);
     });
     listener.ignoreClass = ignoreClass;
     listener.ignoreMethod = ignoreMethod;
@@ -44,7 +46,8 @@ var convertor = function(script, cb) {
     try {
         antlr4.tree.ParseTreeWalker.DEFAULT.walk(listener, tree);
     } catch(e) {
-        if (cb) cb(null, null, e);;
+        translateErrors.push({error:e, msg:'ParseTreeWalker Error'});
+        if (cb) cb(null, null, translateErrors.length > 0 ? translateErrors : null);
     }
     
 }
