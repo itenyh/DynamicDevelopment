@@ -18,15 +18,12 @@
 @implementation ViewController
 
 - (void)viewDidLoad {
-//    [self.view addSubview:self.tbView];
-//    [self.tbView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.edges.equalTo(self.view).mas_offset(UIEdgeInsetsMake(0, 0, 0, 0));
-//    }];
+    [self.view addSubview:self.tbView];
+    [self.tbView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(self.view).mas_offset(UIEdgeInsetsMake(0, 0, 0, 0));
+    }];
     self.view.backgroundColor = [UIColor lightTextColor];
     
-    [UIView animateWithDuration:10 animations:^{
-        self.view.layer.cornerRadius = 2;
-    }];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {

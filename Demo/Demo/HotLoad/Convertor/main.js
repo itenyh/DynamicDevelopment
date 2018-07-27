@@ -1,11 +1,12 @@
-require('UIColor,UIView,UITableViewCell,UITableView');
+require('UIColor,UITableViewCell,UITableView');
 defineClass('ViewController', {
     viewDidLoad: function() {
+        self.view().addSubview(self.tbView());
+        self.tbView().mas__makeConstraints(block('void, MASConstraintMaker*', function(make) {
+            make.edges().equalTo()(self.view()).valueOffset()(MMASBoxValue(UIEdgeInsetsMake(0, 0, 0, 0)));
+        }));
         self.view().setBackgroundColor(UIColor.lightTextColor());
 
-        UIView.animateWithDuration_animations(10, block('void', function() {
-            self.view().layer().setCornerRadius(2);
-        }));
     },
     tableView_numberOfRowsInSection: function(tableView, section) {
         return 1;
