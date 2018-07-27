@@ -23,16 +23,15 @@
         make.edges.equalTo(self.view).mas_offset(UIEdgeInsetsMake(0, 0, 0, 0));
     }];
     self.view.backgroundColor = [UIColor lightTextColor];
-    
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 1;
+    return 11;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"123321"];
-    cell.textLabel.text = [NSString stringWithFormat:@"你景12：%ld", (long)indexPath.row];
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:NSStringFromClass(self.class)];
+    cell.textLabel.text = [NSString stringWithFormat:@"你景1332：%ld", (long)indexPath.row];
     cell.textLabel.textColor = [UIColor grayColor];
     return cell;
 }

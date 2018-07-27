@@ -11,9 +11,10 @@
 @implementation JPNSFunction
 
 + (void)main:(JSContext *)context {
-    
    
     __weak JSContext *weakContext = context;
+    
+    [context evaluateScript:@"defineCFunction(\"NSStringFromClass\", \"NSString *, Class\")"];
     
     context[@"NSLog"] = ^() {
         NSString *logContent = [[weakContext objectForKeyedSubscript:@"NSStringFormat"] callWithArguments:[JSContext currentArguments]].toString;

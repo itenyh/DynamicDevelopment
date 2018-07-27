@@ -6,14 +6,13 @@ defineClass('ViewController', {
             make.edges().equalTo()(self.view()).valueOffset()(MMASBoxValue(UIEdgeInsetsMake(0, 0, 0, 0)));
         }));
         self.view().setBackgroundColor(UIColor.lightTextColor());
-
     },
     tableView_numberOfRowsInSection: function(tableView, section) {
-        return 1;
+        return 11;
     },
     tableView_cellForRowAtIndexPath: function(tableView, indexPath) {
-        var cell = UITableViewCell.alloc().initWithStyle_reuseIdentifier(UITableViewCellStyleDefault, "123321");
-        cell.textLabel().setText(NSStringFormat("你景12：%ld", indexPath.row()));
+        var cell = UITableViewCell.alloc().initWithStyle_reuseIdentifier(UITableViewCellStyleDefault, NSStringFromClass(self.class()));
+        cell.textLabel().setText(NSStringFormat("你景1332：%ld", indexPath.row()));
         cell.textLabel().setTextColor(UIColor.grayColor());
         return cell;
     },
