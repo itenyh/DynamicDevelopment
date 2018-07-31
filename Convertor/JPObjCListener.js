@@ -12,8 +12,12 @@ var JPCommonContext = c.JPCommonContext,
     JPDeclarationContext = c.JPDeclarationContext,
     JPClassContext = c.JPClassContext,
     JPMethodContext = c.JPMethodContext,
+    JPPostFixContext = c.JPPostfixContext,
+    JPPostfixContentContext = c.JPPostfixContentContext,
+    JPBridgeContext = c.JPBridgeContext,
     JPPropertyCallingContext = c.JPPropertyCallingContext,
     JPPropertyCallerContext = c.JPPropertyCallerContext;
+
 
 var excludeClassNames = [
     'BOOL',
@@ -33,10 +37,10 @@ var JPObjCListener = function(cb) {
     this.rootContext = new JPClassContext();
     this.currContext = this.rootContext;
     this.ocScript = '';
-    this.requireClasses = [];
     this.ignoreClass = 0;
     this.ignoreMethod = 0;
     this.cb = cb;
+    this.messageCtxStack = [];
 
     return this;
 }
@@ -44,11 +48,8 @@ var JPObjCListener = function(cb) {
 JPObjCListener.prototype = Object.create(ObjCListener.prototype);
 
 JPObjCListener.prototype.buildScript = function() {
-    var requires = '';
-    if (this.requireClasses.length) {
-        requires = "require('" + this.requireClasses.join(',') + "');\n";
-    }
-    this.cb(requires + this.rootContext.parse(), this.rootContext.className);
+
+    this.cb(this.rootContext.parse(), this.rootContext.className);
 }
 
 JPObjCListener.prototype.addStrContext = function(stop) {
@@ -206,6 +207,7 @@ JPObjCListener.prototype.enterMessageExpression = function(ctx) {
         this.currContext.setNext(strContext);
         strContext.setNext(newMsgContext);
     }
+    this.messageCtxStack.push(newMsgContext);
     this.currContext = newMsgContext;
 };
 
@@ -216,26 +218,24 @@ JPObjCListener.prototype.exitMessageExpression = function(ctx) {
     } else {
         this.currContext = this.currContext.pre;
     }
-
+    this.messageCtxStack.pop();
     this.currContext.currIdx = ctx.stop.stop + 1
 };
 
 // Enter a parse tree produced by ObjectiveCParser#receiver.
 JPObjCListener.prototype.enterReceiver = function(ctx) {
     if (ctx.start.text != '[') {
-        var receiverName = ctx.start.text;
-        if (receiverName[0] >= 'A' && receiverName[0] <= 'Z') {
-            // if the first letter is upper case, we take it as a class name
-            if (excludeClassNames.indexOf(receiverName) == -1 && this.requireClasses.indexOf(receiverName) == -1) {
-                this.requireClasses.push(receiverName);
-            }
-        }
-        this.currContext.receiver = this.ocScript.substring(ctx.start.start, ctx.stop.stop + 1);
+        var bridgeCtx = new JPBridgeContext();
+        this.currContext.receiver = bridgeCtx;
+        this.currContext = bridgeCtx;
+        this.currContext.currIdx = ctx.start.start;
     }
 };
 
 // Exit a parse tree produced by ObjectiveCParser#receiver.
 JPObjCListener.prototype.exitReceiver = function(ctx) {
+    this.addStrContext(ctx.stop.start + 1);
+    this.currContext = this.messageCtxStack[this.messageCtxStack.length - 1];
 };
 
 
@@ -381,6 +381,35 @@ JPObjCListener.prototype.enterCastExpression = function(ctx) {
     }
 };
 
-// Exit a parse tree produced by ObjectiveCParser#castExpression.
-JPObjCListener.prototype.exitCastExpression = function(ctx) {
+// Enter a parse tree produced by ObjectiveCParser#postfix.
+JPObjCListener.prototype.enterPostfix = function(ctx) {
+    if (ctx.start.text == '[') {
+        var strContext = this.addStrContext(ctx.start.start);
+        this.currContext = strContext;
+        var postfixContext = new JPPostFixContext();
+        this.currContext.setNext(postfixContext);
+
+        var postfixContentContext = new JPPostfixContentContext();
+        postfixContentContext.parent = postfixContext;
+        postfixContext.content = postfixContentContext;
+
+        this.currContext = postfixContentContext;
+        this.currContext.currIdx = ctx.start.start + 1;
+    }
+};
+
+// Exit a parse tree produced by ObjectiveCParser#postfix.
+JPObjCListener.prototype.exitPostfix = function(ctx) {
+    if (ctx.start.text == '[') {
+        this.addStrContext(ctx.stop.start);
+        var preContext = this.currContext;
+        while (preContext) {
+            if (preContext instanceof JPPostfixContentContext) {
+                break;
+            }
+            preContext = preContext.pre;
+        }
+        this.currContext = preContext.parent;
+        this.currContext.currIdx = ctx.stop.stop + 1;
+    }
 };

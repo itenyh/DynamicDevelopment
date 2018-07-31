@@ -24,6 +24,15 @@
     [context evaluateScript:content];
     
     __weak JSContext *weakContext = context;
+    context[@"CGRectMake"] = ^() {
+        NSArray *args = [JSContext currentArguments];
+        NSNumber *xNumber = ((JSValue *)args[0]).toNumber;
+        NSNumber *yNumber = ((JSValue *)args[1]).toNumber;
+        NSNumber *widthNumber = ((JSValue *)args[2]).toNumber;
+        NSNumber *heightNumber = ((JSValue *)args[3]).toNumber;
+        return [JSValue valueWithRect:CGRectMake([xNumber doubleValue], [yNumber doubleValue], [widthNumber doubleValue], [heightNumber doubleValue]) inContext:weakContext];
+    };
+    
     context[@"CGSizeMake"] = ^() {
         NSArray *args = [JSContext currentArguments];
         NSNumber *widthNumber = ((JSValue *)args[0]).toNumber;

@@ -252,24 +252,38 @@ var JPAssignContext = function() {
 JPAssignContext.prototype = Object.create(JPContext.prototype);
 JPAssignContext.prototype.parse = function(){
     var leftStr = this.left.parse();
-    var leftArr = leftStr.split('.')
+    var leftArr = leftStr.split(/\|__dot__\||\./);
     var lastProperty = leftArr[leftArr.length - 1];
     var firstProperty = leftArr[0];
-    //动态获取属性值
-    if (leftArr.length == 1 && lastProperty[0] == '_') {
+
+    if (leftArr.length == 1) {
         return 'self' + '|__dot__|' + 'setProp_forKey(' + this.right.parse() + ", '" + lastProperty.substr(1).trim() + "')";
-    }
-    else if (firstProperty[0] == '_' && leftArr.length > 1) {
-        leftArr.splice(-1);
-        leftArr.splice(0);
-        leftStr = 'self' + '|__dot__|' + "getProp('" + firstProperty.substr(1).trim() +"')" + leftArr.join('.') + '|__dot__|' + 'set' + lastProperty[0].toUpperCase() + lastProperty.substr(1);
-        return leftStr + '(' + this.right.parse() + ')';
-    }
-    else {
-        leftArr.splice(-1);
-        leftStr = leftArr.join('.') + '|__dot__|' + 'set' + lastProperty[0].toUpperCase() + lastProperty.substr(1);
-        return leftStr + '(' + this.right.parse() + ')'
-    }
+	}
+	else {
+        if (firstProperty[0] == '_') {
+            firstProperty = 'self' + '|__dot__|' + "getProp('" + firstProperty.substr(1).trim() +"')";
+        }
+        if (/jp_element\(.+\)\s*$/gm.test(lastProperty)) {
+            lastProperty = lastProperty.replace(/jp_element\((.+)\)\s*$/gm, 'setJp_element($1,' + this.right.parse() + ')');
+        }
+        else {
+            lastProperty = 'set' + lastProperty[0].toUpperCase() + lastProperty.substr(1) + '(' + this.right.parse() + ')';
+		}
+        leftArr = leftArr.slice(1, leftArr.length - 1);
+        return firstProperty + (leftArr.length > 0 ? '.' : '') + leftArr.join('.') + '|__dot__|' + lastProperty;
+	}
+
+    // else if (firstProperty[0] == '_' && leftArr.length > 1) {
+    //     leftArr.splice(-1);
+    //     leftArr.splice(0);
+    //     leftStr = 'self' + '|__dot__|' + "getProp('" + firstProperty.substr(1).trim() +"')" + leftArr.join('.') + '|__dot__|' + 'set' + lastProperty[0].toUpperCase() + lastProperty.substr(1);
+    //     return leftStr + '(' + this.right.parse() + ')';
+    // }
+    // else {
+    //     leftArr.splice(-1);
+    //     leftStr = leftArr.join('.') + '|__dot__|' + 'set' + lastProperty[0].toUpperCase() + lastProperty.substr(1);
+    //     return leftStr + '(' + this.right.parse() + ')'
+    // }
 }
 
 
@@ -298,6 +312,20 @@ JPDeclarationContext.prototype.parse = function(){
 	return 'var ';
 }
 
+/////////////////JPPostfixContext
+
+var JPPostfixContext = function() {
+	this.content = null;
+}
+JPPostfixContext.prototype = Object.create(JPContext.prototype);
+JPPostfixContext.prototype.parse = function() {
+    return '|__dot__|jp_element(' + this.content.parse() + ')';
+}
+
+var JPPostfixContentContext = function() {
+    this.parent = null;
+}
+JPPostfixContentContext.prototype = Object.create(JPBridgeContext.prototype);
 
 /////////////////exports
 
@@ -312,3 +340,6 @@ exports.JPAssignRightContext = JPAssignRightContext;
 exports.JPDeclarationContext = JPDeclarationContext;
 exports.JPClassContext = JPClassContext;
 exports.JPMethodContext = JPMethodContext;
+exports.JPPostfixContext = JPPostfixContext;
+exports.JPPostfixContentContext = JPPostfixContentContext;
+exports.JPBridgeContext = JPBridgeContext;

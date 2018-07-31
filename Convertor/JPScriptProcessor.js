@@ -56,8 +56,35 @@ JPScriptProcessor.prototype = {
         this.script = this.script.replace(/(super\.)/g, 'self.super().');
         return this;
     },
+    requireClasses: function() {
+        function getMatches(string, regex, index) {
+            index || (index = 1); // default to the first capturing group
+            var matches = [];
+            var match;
+            while (match = regex.exec(string)) {
+                matches.push(match[index]);
+            }
+            return matches;
+        }
+        var requires = '';
+        var regex = /([\w|\d]*?)\./gm;
+        var matches = getMatches(this.script, regex, 1);
+        matches = matches.filter(function (match, index, self) {
+            return match[0] <= 'Z' && match[0] >= 'A';
+        })
+        matches = matches.filter(function (match, index, self) {
+            return index == self.indexOf(match);
+        })
+        if (matches.length > 0) requires = "require('" + matches.join(',') + "');\n";
+        this.script = requires + this.script;
+        return this;
+    },
+    rectFormat: function() {
+        this.script = this.script.replace(/(frame|bounds).(size|origin)/gm, "$1");
+        return this;
+    },
     finalScript: function() {
-        this.stripSymbolAt().replaceString().processPropertyGetter().uglyDynamicPropertyGetter().restoreDot().replaceNil().replaceSuper().restoreString().beautify();
+        this.stripSymbolAt().replaceString().rectFormat().processPropertyGetter().uglyDynamicPropertyGetter().restoreDot().requireClasses().replaceNil().replaceSuper().restoreString().beautify();
         return this.script;
     }
 }

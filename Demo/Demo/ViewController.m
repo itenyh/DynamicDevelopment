@@ -7,42 +7,46 @@
 //
 
 #import "ViewController.h"
-#import "ReactiveObjC.h"
+#import "AnnotatedPhotoCell.h"
+#import "PinterestLayout.h"
 
-@interface ViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface ViewController () <UICollectionViewDataSource>
 
-@property (nonatomic, strong) UITableView *tbView;
+@property (nonatomic, strong) UICollectionView *collectionView;
 
 @end
 
 @implementation ViewController
 
 - (void)viewDidLoad {
-    [self.view addSubview:self.tbView];
-    [self.tbView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.view addSubview:self.collectionView];
+    [self.collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(self.view).mas_offset(UIEdgeInsetsMake(0, 0, 0, 0));
     }];
     self.view.backgroundColor = [UIColor lightTextColor];
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 11;
+#pragma CollectionView Delegate
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    return 10;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:NSStringFromClass(self.class)];
-    cell.textLabel.text = [NSString stringWithFormat:@"你景1332：%ld", (long)indexPath.row];
-    cell.textLabel.textColor = [UIColor grayColor];
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    AnnotatedPhotoCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:NSStringFromClass(AnnotatedPhotoCell.class) forIndexPath:indexPath];
+    cell.backgroundColor = [UIColor brownColor];
     return cell;
 }
 
-- (UITableView *)tbView {
-    if(!_tbView) {
-        _tbView = [UITableView new];
-        _tbView.dataSource = self;
-        _tbView.delegate = self;
+- (UICollectionView *)collectionView {
+    if (!_collectionView) {
+        PinterestLayout *layout = [PinterestLayout new];    
+        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
+        _collectionView.dataSource = self;
+        [_collectionView registerClass:AnnotatedPhotoCell.class forCellWithReuseIdentifier:NSStringFromClass(AnnotatedPhotoCell.class)];
     }
-    return _tbView;
+    return _collectionView;
 }
+
 
 @end

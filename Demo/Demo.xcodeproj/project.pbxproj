@@ -39,6 +39,9 @@
 		FC8FFC4C20FDDA8F0097FBE4 /* SGDirWatchdog.m in Sources */ = {isa = PBXBuildFile; fileRef = FC8FFC3920FDDA8F0097FBE4 /* SGDirWatchdog.m */; };
 		FC8FFC4D20FDDA8F0097FBE4 /* JPMethodSignature.m in Sources */ = {isa = PBXBuildFile; fileRef = FC8FFC4620FDDA8F0097FBE4 /* JPMethodSignature.m */; };
 		FC8FFC4E20FDDA8F0097FBE4 /* libffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FC8FFC4720FDDA8F0097FBE4 /* libffi.a */; };
+		FCBAD5D9210EA264001A8BF5 /* constants_user.hogcs in Resources */ = {isa = PBXBuildFile; fileRef = FCBAD5D8210EA263001A8BF5 /* constants_user.hogcs */; };
+		FCBAD5DC210EACA0001A8BF5 /* AnnotatedPhotoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBAD5DB210EACA0001A8BF5 /* AnnotatedPhotoCell.m */; };
+		FCBAD5DF210EB03B001A8BF5 /* PinterestLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBAD5DE210EB03B001A8BF5 /* PinterestLayout.m */; };
 		FCDE6E6620FEF55400FEBC0D /* JPNSFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = FCDE6E6520FEF55400FEBC0D /* JPNSFunction.m */; };
 /* End PBXBuildFile section */
 
@@ -111,6 +114,11 @@
 		FC8FFC4520FDDA8F0097FBE4 /* JPMethodSignature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPMethodSignature.h; sourceTree = "<group>"; };
 		FC8FFC4620FDDA8F0097FBE4 /* JPMethodSignature.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPMethodSignature.m; sourceTree = "<group>"; };
 		FC8FFC4720FDDA8F0097FBE4 /* libffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libffi.a; sourceTree = "<group>"; };
+		FCBAD5D8210EA263001A8BF5 /* constants_user.hogcs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = constants_user.hogcs; sourceTree = "<group>"; };
+		FCBAD5DA210EACA0001A8BF5 /* AnnotatedPhotoCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AnnotatedPhotoCell.h; sourceTree = "<group>"; };
+		FCBAD5DB210EACA0001A8BF5 /* AnnotatedPhotoCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AnnotatedPhotoCell.m; sourceTree = "<group>"; };
+		FCBAD5DD210EB03B001A8BF5 /* PinterestLayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PinterestLayout.h; sourceTree = "<group>"; };
+		FCBAD5DE210EB03B001A8BF5 /* PinterestLayout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PinterestLayout.m; sourceTree = "<group>"; };
 		FCDE6E6420FEF55400FEBC0D /* JPNSFunction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JPNSFunction.h; sourceTree = "<group>"; };
 		FCDE6E6520FEF55400FEBC0D /* JPNSFunction.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JPNSFunction.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -196,6 +204,10 @@
 				FC67496920EB29CD0075F4C4 /* ViewController.m */,
 				73F2FE5E2108B353001C8180 /* TestViewController.h */,
 				73F2FE5F2108B353001C8180 /* TestViewController.m */,
+				FCBAD5DA210EACA0001A8BF5 /* AnnotatedPhotoCell.h */,
+				FCBAD5DB210EACA0001A8BF5 /* AnnotatedPhotoCell.m */,
+				FCBAD5DD210EB03B001A8BF5 /* PinterestLayout.h */,
+				FCBAD5DE210EB03B001A8BF5 /* PinterestLayout.m */,
 			);
 			path = Demo;
 			sourceTree = "<group>";
@@ -257,12 +269,13 @@
 		FC8FFC0C20FDDA790097FBE4 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				FCBAD5D8210EA263001A8BF5 /* constants_user.hogcs */,
+				D524D83F21031046009F82C8 /* constants.hogcs */,
 				FC8FFC0D20FDDA790097FBE4 /* JPBlock */,
 				FC8FFC1220FDDA790097FBE4 /* JPCFunction */,
 				FC8FFC1920FDDA790097FBE4 /* JPCGFunction */,
 				FCDE6E6820FEF59200FEBC0D /* JPNSFunction */,
 				FCDE6E6720FEF58B00FEBC0D /* JPMasonry */,
-				D524D83F21031046009F82C8 /* constants.hogcs */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -445,6 +458,7 @@
 				FC7A4F3720EE122E00C138C9 /* bundle.js in Resources */,
 				FC67496D20EB29CD0075F4C4 /* Main.storyboard in Resources */,
 				7395B36E20FCDD1F004D614B /* main.js in Resources */,
+				FCBAD5D9210EA264001A8BF5 /* constants_user.hogcs in Resources */,
 				FC8FFC4820FDDA8F0097FBE4 /* Documentation.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -482,8 +496,10 @@
 				FC8FFC2520FDDA790097FBE4 /* JPBlockWrapper.m in Sources */,
 				FC67496A20EB29CD0075F4C4 /* ViewController.m in Sources */,
 				FC8FFC2720FDDA790097FBE4 /* JPMemory.m in Sources */,
+				FCBAD5DF210EB03B001A8BF5 /* PinterestLayout.m in Sources */,
 				FC8FFC2820FDDA790097FBE4 /* JPStructPointer.m in Sources */,
 				FCDE6E6620FEF55400FEBC0D /* JPNSFunction.m in Sources */,
+				FCBAD5DC210EACA0001A8BF5 /* AnnotatedPhotoCell.m in Sources */,
 				FC8FFC4920FDDA8F0097FBE4 /* GCDAsyncSocket.m in Sources */,
 				FC8FFC2D20FDDA790097FBE4 /* JPCleaner.m in Sources */,
 				FC67497520EB29D60075F4C4 /* main.m in Sources */,

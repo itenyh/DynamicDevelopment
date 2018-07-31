@@ -1,7 +1,11 @@
 require('./JPConvertor')
+// require('./product/bundle');
+
 var fs = require('fs');
 
-var data = fs.readFileSync('/Users/iten/Desktop/iOS_BigData/cqBigData/cqBigData/MainFrame/iCMCity/MainPageModule/View/ChartView/EXChartView.m', 'utf8');
+// var data = "@implementation Temp \n - (void)test { [[self d] floatValue]; } @end";
+var data = "@implementation Temp \n - (void)test { _e[@\"fsdf\"] = 3; } @end";
+// var data = fs.readFileSync('/Users/iten/Desktop/Working____/Demo/Demo/PinterestLayout.m', 'utf8');
 // var data = "- (void)viewDidLoad {\n" +
 //     "     [super viewDidLoad\n" +
 //     "}\n" +

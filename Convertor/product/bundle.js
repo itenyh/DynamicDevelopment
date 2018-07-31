@@ -317,6 +317,13 @@ exports.JPMethodContext = JPMethodContext;
 
 },{}],2:[function(require,module,exports){
 (function (global){
+// var antlr4 = require('./original_js/parser/antlr4/index');
+// var ObjCLexer = require('./original_js/parser/ObjCLexer').ObjCLexer;
+// var ObjCParser = require('./original_js/parser/ObjCParser').ObjCParser;
+// var JPObjCListener = require('./original_js/JPObjCListener').JPObjCListener
+// var JPErrorListener = require('./original_js/JPErrorListener').JPErrorListener
+// var JPScriptProcessor = require('./original_js/JPScriptProcessor').JPScriptProcessor
+
 var antlr4 = require('./parser/antlr4/index');
 var ObjCLexer = require('./parser/ObjectiveCLexer').ObjectiveCLexer
 var ObjCParser = require('./parser/ObjectiveCParser').ObjectiveCParser
@@ -438,7 +445,6 @@ var JPObjCListener = function(cb) {
     this.rootContext = new JPClassContext();
     this.currContext = this.rootContext;
     this.ocScript = '';
-    this.requireClasses = [];
     this.ignoreClass = 0;
     this.ignoreMethod = 0;
     this.cb = cb;
@@ -449,11 +455,8 @@ var JPObjCListener = function(cb) {
 JPObjCListener.prototype = Object.create(ObjCListener.prototype);
 
 JPObjCListener.prototype.buildScript = function() {
-    var requires = '';
-    if (this.requireClasses.length) {
-        requires = "require('" + this.requireClasses.join(',') + "');\n";
-    }
-    this.cb(requires + this.rootContext.parse(), this.rootContext.className);
+
+    this.cb(this.rootContext.parse(), this.rootContext.className);
 }
 
 JPObjCListener.prototype.addStrContext = function(stop) {
@@ -628,20 +631,10 @@ JPObjCListener.prototype.exitMessageExpression = function(ctx) {
 // Enter a parse tree produced by ObjectiveCParser#receiver.
 JPObjCListener.prototype.enterReceiver = function(ctx) {
     if (ctx.start.text != '[') {
-        var receiverName = ctx.start.text;
-        if (receiverName[0] >= 'A' && receiverName[0] <= 'Z') {
-            // if the first letter is upper case, we take it as a class name
-            if (excludeClassNames.indexOf(receiverName) == -1 && this.requireClasses.indexOf(receiverName) == -1) {
-                this.requireClasses.push(receiverName);
-            }
-        }
         this.currContext.receiver = this.ocScript.substring(ctx.start.start, ctx.stop.stop + 1);
     }
 };
 
-// Exit a parse tree produced by ObjectiveCParser#receiver.
-JPObjCListener.prototype.exitReceiver = function(ctx) {
-};
 
 
 // Enter a parse tree produced by ObjectiveCParser#messageSelector.
@@ -786,9 +779,6 @@ JPObjCListener.prototype.enterCastExpression = function(ctx) {
     }
 };
 
-// Exit a parse tree produced by ObjectiveCParser#castExpression.
-JPObjCListener.prototype.exitCastExpression = function(ctx) {
-};
 },{"./JPContext":1,"./parser/ObjectiveCParserListener":10}],5:[function(require,module,exports){
 
 var JPMethodObject = function() {
@@ -945,8 +935,35 @@ JPScriptProcessor.prototype = {
         this.script = this.script.replace(/(super\.)/g, 'self.super().');
         return this;
     },
+    requireClasses: function() {
+        function getMatches(string, regex, index) {
+            index || (index = 1); // default to the first capturing group
+            var matches = [];
+            var match;
+            while (match = regex.exec(string)) {
+                matches.push(match[index]);
+            }
+            return matches;
+        }
+        var requires = '';
+        var regex = /([\w|\d]*?)\./gm;
+        var matches = getMatches(this.script, regex, 1);
+        matches = matches.filter(function (match, index, self) {
+            return match[0] <= 'Z' && match[0] >= 'A';
+        })
+        matches = matches.filter(function (match, index, self) {
+            return index == self.indexOf(match);
+        })
+        if (matches.length > 0) requires = "require('" + matches.join(',') + "');\n";
+        this.script = requires + this.script;
+        return this;
+    },
+    rectFormat: function() {
+        this.script = this.script.replace(/(frame|bounds).(size|origin)/gm, "$1");
+        return this;
+    },
     finalScript: function() {
-        this.stripSymbolAt().replaceString().processPropertyGetter().uglyDynamicPropertyGetter().restoreDot().replaceNil().replaceSuper().restoreString().beautify();
+        this.stripSymbolAt().replaceString().rectFormat().processPropertyGetter().uglyDynamicPropertyGetter().restoreDot().requireClasses().replaceNil().replaceSuper().restoreString().beautify();
         return this.script;
     }
 }

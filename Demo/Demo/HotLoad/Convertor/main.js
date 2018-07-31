@@ -1,27 +1,22 @@
-require('UIColor,UITableViewCell,UITableView');
-defineClass('ViewController', {
+defineClass('TestViewController', {
     viewDidLoad: function() {
-        self.view().addSubview(self.tbView());
-        self.tbView().mas__makeConstraints(block('void, MASConstraintMaker*', function(make) {
-            make.edges().equalTo()(self.view()).valueOffset()(MMASBoxValue(UIEdgeInsetsMake(0, 0, 0, 0)));
-        }));
-        self.view().setBackgroundColor(UIColor.lightTextColor());
+        var b;
+        var blk = block('void, MASConstraintMaker*', function(make) {
+            var p1 = make.edges();
+            var p2 = self.view();
+            var p3 = self.view();
+            var p4 = self.view();
+            var p5 = self.view();
+            var p6 = self.view();
+            var a1 = p1.equalTo()(p2);
+            var a2 = a1.equalTo()(p3);
+            var a3 = a2.equalTo()(p4);
+            a3.equalTo()(p5);
+        });
+        self.view().mas__makeConstraints(blk);
     },
-    tableView_numberOfRowsInSection: function(tableView, section) {
-        return 11;
-    },
-    tableView_cellForRowAtIndexPath: function(tableView, indexPath) {
-        var cell = UITableViewCell.alloc().initWithStyle_reuseIdentifier(UITableViewCellStyleDefault, NSStringFromClass(self.class()));
-        cell.textLabel().setText(NSStringFormat("你景1332：%ld", indexPath.row()));
-        cell.textLabel().setTextColor(UIColor.grayColor());
-        return cell;
-    },
-    tbView: function() {
-        if (!self.getProp('tbView')) {
-            self.setProp_forKey(UITableView.new(), 'tbView');
-            self.getProp('tbView').setDataSource(self);
-            self.getProp('tbView').setDelegate(self);
-        }
-        return self.getProp('tbView');
+    didReceiveMemoryWarning: function() {
+        self.super().didReceiveMemoryWarning();
+
     },
 });

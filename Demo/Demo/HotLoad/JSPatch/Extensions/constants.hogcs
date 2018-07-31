@@ -5,3 +5,5 @@ global.UITableViewCellStyleDefault = 0;
 global.UITableViewCellStyleValue1 = 1;
 global.UITableViewCellStyleValue2 = 2;
 global.UITableViewCellStyleSubtitle = 3;
+
+global.CGRectZero = {x:0, y:0, width:0, height:0}

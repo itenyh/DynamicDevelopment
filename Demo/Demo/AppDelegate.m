@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "HotComplileEngine.h"
 #import "ViewController.h"
+#import "TestViewController.h"
 
 @interface AppDelegate ()
 
@@ -22,12 +23,11 @@
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     [self.window makeKeyAndVisible];
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:[ViewController new]];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:[TestViewController new]];
     navController.navigationBar.hidden = YES;
     self.window.rootViewController = navController;
     [self.window makeKeyAndVisible];
     
-//    [[HotComplileEngine sharedInstance] watchAndHotReload:@"ViewController.m"];
     [[HotComplileEngine sharedInstance] hotReloadProject];
     
     UIButton *button = [UIButton new];
