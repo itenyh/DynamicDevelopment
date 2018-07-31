@@ -234,7 +234,7 @@ JPObjCListener.prototype.enterReceiver = function(ctx) {
 
 // Exit a parse tree produced by ObjectiveCParser#receiver.
 JPObjCListener.prototype.exitReceiver = function(ctx) {
-    this.addStrContext(ctx.stop.start + 1);
+    this.addStrContext(ctx.stop.stop + 1);
     this.currContext = this.messageCtxStack[this.messageCtxStack.length - 1];
 };
 

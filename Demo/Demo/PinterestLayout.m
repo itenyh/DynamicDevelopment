@@ -41,7 +41,25 @@
         UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
         attributes.frame = insetFrame;
         [self.cache addObject:attributes];
+        
+        // 6
+        self.contentHeight = [self findMax:self.contentHeight n2:frame.origin.y];
+        yOffset[column] = [NSNumber numberWithFloat:[yOffset[column] floatValue] + height];
+        column = column < (self.numberOfColumns - 1) ? (column + 1) : 0;
     }
+
+}
+
+- (NSArray<UICollectionViewLayoutAttributes *> *)layoutAttributesForElementsInRect:(CGRect)rect {
+    NSMutableArray<UICollectionViewLayoutAttributes *> *visibleLayoutAttributes = [NSMutableArray array];
+    for (UICollectionViewLayoutAttributes *attribute in self.cache) {
+        
+    }
+}
+
+#pragma )(
+- (CGFloat)findMax:(CGFloat)n1 n2:(CGFloat)n2 {
+    return MAX(n1, n2);
 }
 
 - (CGFloat)cellPadding {

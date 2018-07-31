@@ -254,24 +254,31 @@ var JPAssignContext = function() {
 JPAssignContext.prototype = Object.create(JPContext.prototype);
 JPAssignContext.prototype.parse = function(){
     var leftStr = this.left.parse();
-    var leftArr = leftStr.split('.')
+    var leftArr = leftStr.split(/\|__dot__\||\./);
     var lastProperty = leftArr[leftArr.length - 1];
     var firstProperty = leftArr[0];
-    //动态获取属性值
-    if (leftArr.length == 1 && lastProperty[0] == '_') {
-        return 'self' + '|__dot__|' + 'setProp_forKey(' + this.right.parse() + ", '" + lastProperty.substr(1).trim() + "')";
-    }
-    else if (firstProperty[0] == '_' && leftArr.length > 1) {
-        leftArr.splice(-1);
-        leftArr.splice(0);
-        leftStr = 'self' + '|__dot__|' + "getProp('" + firstProperty.substr(1).trim() +"')" + leftArr.join('.') + '|__dot__|' + 'set' + lastProperty[0].toUpperCase() + lastProperty.substr(1);
-        return leftStr + '(' + this.right.parse() + ')';
-    }
-    else {
-        leftArr.splice(-1);
-        leftStr = leftArr.join('.') + '|__dot__|' + 'set' + lastProperty[0].toUpperCase() + lastProperty.substr(1);
-        return leftStr + '(' + this.right.parse() + ')'
-    }
+
+    if (leftArr.length == 1) {
+    	if (firstProperty[0] == '_') {
+            return 'self' + '|__dot__|' + 'setProp_forKey(' + this.right.parse() + ", '" + lastProperty.substr(1).trim() + "')";
+        }
+    	else {
+    		return firstProperty + ' = ' + this.right.parse();
+		}
+	}
+	else {
+        if (firstProperty[0] == '_') {
+            firstProperty = 'self' + '|__dot__|' + "getProp('" + firstProperty.substr(1).trim() +"')";
+        }
+        if (/jp_element\(.+\)\s*$/gm.test(lastProperty)) {
+            lastProperty = lastProperty.replace(/jp_element\((.+)\)\s*$/gm, 'setJp_element($1,' + this.right.parse() + ')');
+        }
+        else {
+            lastProperty = 'set' + lastProperty[0].toUpperCase() + lastProperty.substr(1) + '(' + this.right.parse() + ')';
+		}
+        leftArr = leftArr.slice(1, leftArr.length - 1);
+        return firstProperty + (leftArr.length > 0 ? '.' : '') + leftArr.join('.') + '|__dot__|' + lastProperty;
+	}
 }
 
 
@@ -300,6 +307,20 @@ JPDeclarationContext.prototype.parse = function(){
 	return 'var ';
 }
 
+/////////////////JPPostfixContext
+
+var JPPostfixContext = function() {
+	this.content = null;
+}
+JPPostfixContext.prototype = Object.create(JPContext.prototype);
+JPPostfixContext.prototype.parse = function() {
+    return '|__dot__|jp_element(' + this.content.parse() + ')';
+}
+
+var JPPostfixContentContext = function() {
+    this.parent = null;
+}
+JPPostfixContentContext.prototype = Object.create(JPBridgeContext.prototype);
 
 /////////////////exports
 
@@ -314,16 +335,11 @@ exports.JPAssignRightContext = JPAssignRightContext;
 exports.JPDeclarationContext = JPDeclarationContext;
 exports.JPClassContext = JPClassContext;
 exports.JPMethodContext = JPMethodContext;
-
+exports.JPPostfixContext = JPPostfixContext;
+exports.JPPostfixContentContext = JPPostfixContentContext;
+exports.JPBridgeContext = JPBridgeContext;
 },{}],2:[function(require,module,exports){
 (function (global){
-// var antlr4 = require('./original_js/parser/antlr4/index');
-// var ObjCLexer = require('./original_js/parser/ObjCLexer').ObjCLexer;
-// var ObjCParser = require('./original_js/parser/ObjCParser').ObjCParser;
-// var JPObjCListener = require('./original_js/JPObjCListener').JPObjCListener
-// var JPErrorListener = require('./original_js/JPErrorListener').JPErrorListener
-// var JPScriptProcessor = require('./original_js/JPScriptProcessor').JPScriptProcessor
-
 var antlr4 = require('./parser/antlr4/index');
 var ObjCLexer = require('./parser/ObjectiveCLexer').ObjectiveCLexer
 var ObjCParser = require('./parser/ObjectiveCParser').ObjectiveCParser
@@ -424,8 +440,12 @@ var JPCommonContext = c.JPCommonContext,
     JPDeclarationContext = c.JPDeclarationContext,
     JPClassContext = c.JPClassContext,
     JPMethodContext = c.JPMethodContext,
+    JPPostFixContext = c.JPPostfixContext,
+    JPPostfixContentContext = c.JPPostfixContentContext,
+    JPBridgeContext = c.JPBridgeContext,
     JPPropertyCallingContext = c.JPPropertyCallingContext,
     JPPropertyCallerContext = c.JPPropertyCallerContext;
+
 
 var excludeClassNames = [
     'BOOL',
@@ -448,6 +468,7 @@ var JPObjCListener = function(cb) {
     this.ignoreClass = 0;
     this.ignoreMethod = 0;
     this.cb = cb;
+    this.messageCtxStack = [];
 
     return this;
 }
@@ -614,6 +635,7 @@ JPObjCListener.prototype.enterMessageExpression = function(ctx) {
         this.currContext.setNext(strContext);
         strContext.setNext(newMsgContext);
     }
+    this.messageCtxStack.push(newMsgContext);
     this.currContext = newMsgContext;
 };
 
@@ -624,17 +646,25 @@ JPObjCListener.prototype.exitMessageExpression = function(ctx) {
     } else {
         this.currContext = this.currContext.pre;
     }
-
+    this.messageCtxStack.pop();
     this.currContext.currIdx = ctx.stop.stop + 1
 };
 
 // Enter a parse tree produced by ObjectiveCParser#receiver.
 JPObjCListener.prototype.enterReceiver = function(ctx) {
     if (ctx.start.text != '[') {
-        this.currContext.receiver = this.ocScript.substring(ctx.start.start, ctx.stop.stop + 1);
+        var bridgeCtx = new JPBridgeContext();
+        this.currContext.receiver = bridgeCtx;
+        this.currContext = bridgeCtx;
+        this.currContext.currIdx = ctx.start.start;
     }
 };
 
+// Exit a parse tree produced by ObjectiveCParser#receiver.
+JPObjCListener.prototype.exitReceiver = function(ctx) {
+    this.addStrContext(ctx.stop.stop + 1);
+    this.currContext = this.messageCtxStack[this.messageCtxStack.length - 1];
+};
 
 
 // Enter a parse tree produced by ObjectiveCParser#messageSelector.
@@ -779,6 +809,38 @@ JPObjCListener.prototype.enterCastExpression = function(ctx) {
     }
 };
 
+// Enter a parse tree produced by ObjectiveCParser#postfix.
+JPObjCListener.prototype.enterPostfix = function(ctx) {
+    if (ctx.start.text == '[') {
+        var strContext = this.addStrContext(ctx.start.start);
+        this.currContext = strContext;
+        var postfixContext = new JPPostFixContext();
+        this.currContext.setNext(postfixContext);
+
+        var postfixContentContext = new JPPostfixContentContext();
+        postfixContentContext.parent = postfixContext;
+        postfixContext.content = postfixContentContext;
+
+        this.currContext = postfixContentContext;
+        this.currContext.currIdx = ctx.start.start + 1;
+    }
+};
+
+// Exit a parse tree produced by ObjectiveCParser#postfix.
+JPObjCListener.prototype.exitPostfix = function(ctx) {
+    if (ctx.start.text == '[') {
+        this.addStrContext(ctx.stop.start);
+        var preContext = this.currContext;
+        while (preContext) {
+            if (preContext instanceof JPPostfixContentContext) {
+                break;
+            }
+            preContext = preContext.pre;
+        }
+        this.currContext = preContext.parent;
+        this.currContext.currIdx = ctx.stop.stop + 1;
+    }
+};
 },{"./JPContext":1,"./parser/ObjectiveCParserListener":10}],5:[function(require,module,exports){
 
 var JPMethodObject = function() {

@@ -257,7 +257,12 @@ JPAssignContext.prototype.parse = function(){
     var firstProperty = leftArr[0];
 
     if (leftArr.length == 1) {
-        return 'self' + '|__dot__|' + 'setProp_forKey(' + this.right.parse() + ", '" + lastProperty.substr(1).trim() + "')";
+    	if (firstProperty[0] == '_') {
+            return 'self' + '|__dot__|' + 'setProp_forKey(' + this.right.parse() + ", '" + lastProperty.substr(1).trim() + "')";
+        }
+    	else {
+    		return firstProperty + ' = ' + this.right.parse();
+		}
 	}
 	else {
         if (firstProperty[0] == '_') {
@@ -272,18 +277,6 @@ JPAssignContext.prototype.parse = function(){
         leftArr = leftArr.slice(1, leftArr.length - 1);
         return firstProperty + (leftArr.length > 0 ? '.' : '') + leftArr.join('.') + '|__dot__|' + lastProperty;
 	}
-
-    // else if (firstProperty[0] == '_' && leftArr.length > 1) {
-    //     leftArr.splice(-1);
-    //     leftArr.splice(0);
-    //     leftStr = 'self' + '|__dot__|' + "getProp('" + firstProperty.substr(1).trim() +"')" + leftArr.join('.') + '|__dot__|' + 'set' + lastProperty[0].toUpperCase() + lastProperty.substr(1);
-    //     return leftStr + '(' + this.right.parse() + ')';
-    // }
-    // else {
-    //     leftArr.splice(-1);
-    //     leftStr = leftArr.join('.') + '|__dot__|' + 'set' + lastProperty[0].toUpperCase() + lastProperty.substr(1);
-    //     return leftStr + '(' + this.right.parse() + ')'
-    // }
 }
 
 
