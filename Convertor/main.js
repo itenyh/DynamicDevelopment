@@ -3,7 +3,7 @@ require('./JPConvertor')
 
 var fs = require('fs');
 
-var data = "@implementation Temp \n - (void)test { _a = 1 } @end";
+var data = "@implementation Temp \n - (void)test { for (NSObject *obj in arr) { } } @end";
 // var data = "@implementation Temp \n - (void)test { [NSArray arrayWithObjects:@\"1\"]; } @end";
 // var data = fs.readFileSync('/Users/iten/Desktop/Working____/Demo/Demo/PinterestLayout.m', 'utf8');
 // var data = "- (void)viewDidLoad {\n" +

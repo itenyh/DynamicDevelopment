@@ -14,6 +14,8 @@ var JPCommonContext = c.JPCommonContext,
     JPMethodContext = c.JPMethodContext,
     JPPostFixContext = c.JPPostfixContext,
     JPPostfixContentContext = c.JPPostfixContentContext,
+    JPForInContext = c.JPForInContext,
+    JPForInContentContext = c.JPForInContentContext,
     JPBridgeContext = c.JPBridgeContext,
     JPPropertyCallingContext = c.JPPropertyCallingContext,
     JPPropertyCallerContext = c.JPPropertyCallerContext;
@@ -371,6 +373,21 @@ JPObjCListener.prototype.enterForStatement = function(ctx) {
 
 // Exit a parse tree produced by ObjectiveCParser#forStatement.
 JPObjCListener.prototype.exitForStatement = function(ctx) {
+};
+
+// Enter a parse tree produced by ObjectiveCParser#forInStatement.
+JPObjCListener.prototype.enterForInStatement = function(ctx) {
+    var strContext = this.addStrContext(ctx.start.start);
+    this.currContext = strContext;
+    var forInContext = new JPForInContext();
+    forInContext.variableSet = new JPBridgeContext();
+    forInContext.variableDeclarator = ctx.typeVariableDeclarator().declarationSpecifiers().getText();
+    forInContext.content = new JPForInContentContext();
+    this.currContext.setNext(forInContext);
+};
+
+// Exit a parse tree produced by ObjectiveCParser#forInStatement.
+JPObjCListener.prototype.exitForInStatement = function(ctx) {
 };
 
 // Enter a parse tree produced by ObjectiveCParser#castExpression.
