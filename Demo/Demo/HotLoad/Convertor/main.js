@@ -1,6 +1,9 @@
 require('NSMutableArray,NSNumber,NSIndexPath,UICollectionViewLayoutAttributes');
 defineClass('PinterestLayout', {
     prepareLayout: function() {
+
+        self.super().prepareLayout();
+
         var columnWidth = self.contentWidth() / self.numberOfColumns();
         var xOffset = NSMutableArray.array();
         var column = 0;
@@ -16,7 +19,7 @@ defineClass('PinterestLayout', {
             var photoHeight = self.delegate().collectionView_heightForPhotoAtIndexPath(self.collectionView(), indexPath);
             var height = self.cellPadding() * 2 + photoHeight;
             var frame = CGRectMake(xOffset.jp_element(column).floatValue(), yOffset.jp_element(column).floatValue(), columnWidth, height);
-            var insetFrame = CGRectMake(self.cellPadding(), self.cellPadding(), frame.width() - 2 * self.cellPadding(), frame.height() - 2 * self.cellPadding());
+            var insetFrame = CGRectMake(frame.x() + self.cellPadding(), frame.y() + self.cellPadding(), frame.width() - 2 * self.cellPadding(), frame.height() - 2 * self.cellPadding());
 
             var attributes = UICollectionViewLayoutAttributes.layoutAttributesForCellWithIndexPath(indexPath);
             attributes.setFrame(insetFrame);
@@ -27,19 +30,24 @@ defineClass('PinterestLayout', {
             yOffset.setJp_element(column, NSNumber.numberWithFloat(yOffset.jp_element(column).floatValue() + height));
             column = column < (self.numberOfColumns() - 1) ? (column + 1) : 0;
         }
-
     },
     layoutAttributesForElementsInRect: function(rect) {
         var visibleLayoutAttributes = NSMutableArray.array();
-        for (UICollectionViewLayoutAttributes * attribute in self.cache()) {
 
+        for (var i = 0; i < self.cache().count(); i++) {
+            var attributes = self.cache().jp_element(i);
+            if (CGRectIntersectsRect(attributes.frame(), rect)) {
+                visibleLayoutAttributes.addObject(attributes);
+            }
         }
+        return visibleLayoutAttributes;
+    },
+    layoutAttributesForItemAtIndexPath: function(indexPath) {
+        NSLog("insdf : %@", self.cache().jp_element(indexPath.item()));
+        return self.cache().jp_element(indexPath.item());
     },
     cellPadding: function() {
         return 6;
-    },
-    contentHeight: function() {
-        return 0;
     },
     numberOfColumns: function() {
         return 2;
@@ -53,5 +61,11 @@ defineClass('PinterestLayout', {
     },
     collectionViewContentSize: function() {
         return CGSizeMake(self.contentWidth(), self.contentHeight());
+    },
+    cache: function() {
+        if (!self.getProp('cache')) {
+            self.setProp_forKey(NSMutableArray.array(), 'cache');
+        }
+        return self.getProp('cache');
     },
 });

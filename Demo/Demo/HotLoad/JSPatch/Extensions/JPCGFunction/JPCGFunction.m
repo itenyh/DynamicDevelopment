@@ -41,6 +41,13 @@
         return [JSValue valueWithSize:size inContext:weakContext];
     };
     
+    context[@"CGRectIntersectsRect"] = ^() {
+        NSArray *args = [JSContext currentArguments];
+        CGRect rect1 = ((JSValue *)args[0]).toRect;
+        CGRect rect2 = ((JSValue *)args[1]).toRect;
+        return CGRectIntersectsRect(rect1, rect2);
+    };
+    
     context[@"UIEdgeInsetsMake"] = ^() {
         NSArray *args = [JSContext currentArguments];
         UIEdgeInsets insets = UIEdgeInsetsMake(((JSValue *)args[0]).toNumber.doubleValue, ((JSValue *)args[1]).toNumber.doubleValue, ((JSValue *)args[2]).toNumber.doubleValue, ((JSValue *)args[3]).toNumber.doubleValue);

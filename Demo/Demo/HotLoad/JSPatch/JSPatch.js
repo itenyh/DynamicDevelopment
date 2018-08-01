@@ -94,20 +94,20 @@ var global = this
       }
 
   if (methodName == 'jp_element') {
-  if (slf.__clsName == '__NSArrayI' || slf.__clsName == '__NSArrayM') {
-  methodName = 'objectAtIndex';
-  }
-  else if (slf.__clsName == '__NSDictionaryI' || slf.__clsName == '__NSDictionaryM') {
-  methodName = 'objectForKey';
-  }
+    if (slf.__clsName == '__NSArrayI' || slf.__clsName == '__NSArrayM') {
+        methodName = 'objectAtIndex';
+    }
+    else if (slf.__clsName == '__NSDictionaryI' || slf.__clsName == '__NSDictionaryM') {
+        methodName = 'objectForKey';
+    }
   }
   else if (methodName == 'setJp_element') {
-  if (slf.__clsName == '__NSArrayM') {
-  methodName = 'replaceObjectAtIndex_withObject';
-  }
-  else if (slf.__clsName == '__NSDictionaryM') {
-  methodName = 'setObject_forKey';
-  }
+    if (slf.__clsName == '__NSArrayM') {
+        methodName = 'replaceObjectAtIndex_withObject';
+    }
+    else if (slf.__clsName == '__NSDictionaryM') {
+        methodName = 'setObject_forKey';
+    }
   }
   
       return function(){

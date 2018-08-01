@@ -10,7 +10,7 @@
 #import "AnnotatedPhotoCell.h"
 #import "PinterestLayout.h"
 
-@interface ViewController () <UICollectionViewDataSource>
+@interface ViewController () <UICollectionViewDataSource, PinterestLayoutDelegate>
 
 @property (nonatomic, strong) UICollectionView *collectionView;
 
@@ -28,6 +28,10 @@
 
 #pragma CollectionView Delegate
 
+- (CGFloat)collectionView:(UICollectionView *)collectionView heightForPhotoAtIndexPath:(NSIndexPath *)indexPath {
+return 100 / (indexPath.row + 3.421);
+}
+
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return 10;
 }
@@ -38,9 +42,11 @@
     return cell;
 }
 
+#pragma )(
 - (UICollectionView *)collectionView {
     if (!_collectionView) {
-        PinterestLayout *layout = [PinterestLayout new];    
+        PinterestLayout *layout = [PinterestLayout new];
+        layout.delegate = self;
         _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
         _collectionView.dataSource = self;
         [_collectionView registerClass:AnnotatedPhotoCell.class forCellWithReuseIdentifier:NSStringFromClass(AnnotatedPhotoCell.class)];

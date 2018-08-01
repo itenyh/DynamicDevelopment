@@ -21,6 +21,9 @@
 @implementation PinterestLayout
 
 - (void)prepareLayout {
+    
+    [super prepareLayout];
+    
     CGFloat columnWidth = self.contentWidth / (CGFloat)self.numberOfColumns;
     NSMutableArray *xOffset = [NSMutableArray array];
     int column = 0;
@@ -36,7 +39,7 @@
         CGFloat photoHeight = [self.delegate collectionView:self.collectionView heightForPhotoAtIndexPath:indexPath];
         CGFloat height = self.cellPadding * 2 + photoHeight;
         CGRect frame = CGRectMake([xOffset[column] floatValue], [yOffset[column] floatValue], columnWidth, height);
-        CGRect insetFrame = CGRectMake(self.cellPadding, self.cellPadding, frame.size.width - 2 * self.cellPadding, frame.size.height - 2 * self.cellPadding);
+        CGRect insetFrame = CGRectMake(frame.origin.x + self.cellPadding, frame.origin.y + self.cellPadding, frame.size.width - 2 * self.cellPadding, frame.size.height - 2 * self.cellPadding);
         // 5
         UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
         attributes.frame = insetFrame;
@@ -47,14 +50,23 @@
         yOffset[column] = [NSNumber numberWithFloat:[yOffset[column] floatValue] + height];
         column = column < (self.numberOfColumns - 1) ? (column + 1) : 0;
     }
-
 }
 
 - (NSArray<UICollectionViewLayoutAttributes *> *)layoutAttributesForElementsInRect:(CGRect)rect {
     NSMutableArray<UICollectionViewLayoutAttributes *> *visibleLayoutAttributes = [NSMutableArray array];
-    for (UICollectionViewLayoutAttributes *attribute in self.cache) {
-        
+
+    for (int i = 0;i < self.cache.count;i++) {
+        UICollectionViewLayoutAttributes *attributes = self.cache[i];
+        if (CGRectIntersectsRect(attributes.frame, rect)) {
+            [visibleLayoutAttributes addObject:attributes];
+        }
     }
+    return visibleLayoutAttributes;
+}
+
+- (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"insdf : %@", self.cache[indexPath.item]);
+    return self.cache[indexPath.item];
 }
 
 #pragma )(
@@ -64,10 +76,6 @@
 
 - (CGFloat)cellPadding {
     return 6;
-}
-
-- (CGFloat)contentHeight {
-    return 0;
 }
 
 - (int)numberOfColumns {
@@ -84,6 +92,13 @@
 
 - (CGSize)collectionViewContentSize {
     return CGSizeMake(self.contentWidth, self.contentHeight);
+}
+
+- (NSMutableArray<UICollectionViewLayoutAttributes *> *)cache {
+    if (!_cache) {
+        _cache = [NSMutableArray array];
+    }
+    return _cache;
 }
 
 @end
