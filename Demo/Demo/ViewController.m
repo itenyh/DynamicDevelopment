@@ -13,6 +13,7 @@
 @interface ViewController () <UICollectionViewDataSource, PinterestLayoutDelegate>
 
 @property (nonatomic, strong) UICollectionView *collectionView;
+@property (nonatomic, copy) NSArray *photoHeight;
 
 @end
 
@@ -29,11 +30,11 @@
 #pragma CollectionView Delegate
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView heightForPhotoAtIndexPath:(NSIndexPath *)indexPath {
-    return 100 / (indexPath.row + 1.52);
+    return [self.photoHeight[indexPath.row] floatValue];
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return 30;
+    return self.photoHeight.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -54,5 +55,11 @@
     return _collectionView;
 }
 
+- (NSArray *)photoHeight {
+    if (!_photoHeight) {
+        _photoHeight = [NSArray arrayWithObjects:@20, @90, @53, @94, @111, @67, @20, @99, nil];
+    }
+    return _photoHeight;
+}
 
 @end

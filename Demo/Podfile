@@ -9,5 +9,6 @@ target 'Demo' do
 
   pod 'Masonry'
   pod 'ReactiveObjC'
+  pod 'SDWebImage'                                           # 处理网络图片
   
 end
