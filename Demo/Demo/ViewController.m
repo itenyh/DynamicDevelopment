@@ -29,16 +29,16 @@
 #pragma CollectionView Delegate
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView heightForPhotoAtIndexPath:(NSIndexPath *)indexPath {
-return 100 / (indexPath.row + 3.421);
+    return 100 / (indexPath.row + 1.52);
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return 10;
+    return 30;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     AnnotatedPhotoCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:NSStringFromClass(AnnotatedPhotoCell.class) forIndexPath:indexPath];
-    cell.backgroundColor = [UIColor brownColor];
+    cell.backgroundColor = [UIColor purpleColor];
     return cell;
 }
 
