@@ -17,6 +17,7 @@ var JPCommonContext = c.JPCommonContext,
     JPForInContext = c.JPForInContext,
     JPForInContentContext = c.JPForInContentContext,
     JPBridgeContext = c.JPBridgeContext,
+    JPForInVariableSetContext = c.JPForInVariableSetContext,
     JPPropertyCallingContext = c.JPPropertyCallingContext,
     JPPropertyCallerContext = c.JPPropertyCallerContext;
 
@@ -43,6 +44,7 @@ var JPObjCListener = function(cb) {
     this.ignoreMethod = 0;
     this.cb = cb;
     this.messageCtxStack = [];
+    this.forInStatementContextCtx = {};
 
     return this;
 }
@@ -182,6 +184,32 @@ JPObjCListener.prototype.enterBlockParameters = function(ctx) {
 
 // Exit a parse tree produced by ObjectiveCParser#blockParameters.
 JPObjCListener.prototype.exitBlockParameters = function(ctx) {
+};
+
+// Enter a parse tree produced by ObjectiveCParser#statement.
+JPObjCListener.prototype.enterStatement = function(ctx) {
+    if (this.currContext instanceof JPForInContentContext && !this.forInStatementContextCtx[ctx]) {
+        this.forInStatementContextCtx[ctx] = this.currContext;
+        // console.log(ctx.getText())
+        // console.log(this.ocScript.substring(0, ctx.start.start) + '|' + this.ocScript.substring(ctx.start.start))
+        this.currContext.currIdx = ctx.start.start + 1;
+        this.currContext = this.addStrContext('');
+    }
+};
+
+// Exit a parse tree produced by ObjectiveCParser#statement.
+JPObjCListener.prototype.exitStatement = function(ctx) {
+    if (this.forInStatementContextCtx[ctx]) {
+        var pre = this.currContext;
+        while (pre) {
+            if (pre instanceof JPForInContentContext) {
+                break;
+            }
+            pre = pre.pre;
+        }
+        this.addStrContext(ctx.stop.stop);
+        this.currContext = pre.parent;
+    }
 };
 
 // Enter a parse tree produced by ObjectiveCParser#compoundStatement.
@@ -330,6 +358,12 @@ JPObjCListener.prototype.exitExpression = function(ctx) {
             } while (preContext = preContext.pre)
         // }
     }
+    else if (this.currContext instanceof JPForInVariableSetContext) {
+        this.addStrContext(ctx.stop.stop + 1);
+        var forInContext = this.currContext.parent;
+        this.currContext = forInContext.content;
+        this.currContext.currIdx = ctx.stop.stop + 2;
+    }
 };
 
 // Enter a parse tree produced by ObjectiveCParser#assignmentOperator.
@@ -379,15 +413,26 @@ JPObjCListener.prototype.exitForStatement = function(ctx) {
 JPObjCListener.prototype.enterForInStatement = function(ctx) {
     var strContext = this.addStrContext(ctx.start.start);
     this.currContext = strContext;
+
     var forInContext = new JPForInContext();
-    forInContext.variableSet = new JPBridgeContext();
-    forInContext.variableDeclarator = ctx.typeVariableDeclarator().declarationSpecifiers().getText();
-    forInContext.content = new JPForInContentContext();
+
+    var forInVariableSetContext = new JPForInVariableSetContext();
+    forInVariableSetContext.parent = forInContext;
+    forInContext.variableSet = forInVariableSetContext;
+
+    forInContext.variableDeclarator = ctx.typeVariableDeclarator().declarator().directDeclarator().getText();
+    var forInContentContext = new JPForInContentContext();
+    forInContentContext.parent = forInContext;
+    forInContext.content = forInContentContext;
+
     this.currContext.setNext(forInContext);
+    this.currContext = forInVariableSetContext;
+    this.currContext.currIdx = ctx.children[3].symbol.stop + 1;
 };
 
 // Exit a parse tree produced by ObjectiveCParser#forInStatement.
 JPObjCListener.prototype.exitForInStatement = function(ctx) {
+    this.currContext.currIdx = ctx.stop.stop + 1;
 };
 
 // Enter a parse tree produced by ObjectiveCParser#castExpression.

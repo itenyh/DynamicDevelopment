@@ -332,7 +332,7 @@ JPForInContext.prototype.parse = function() {
 	var indexVariable = this.variableDeclarator + '_index';
 	var variableSetString = this.variableSet.parse();
     return 'for (var ' + indexVariable + ' in ' + variableSetString + ') { \n' +
-		'var ' + this.variableDeclarator + ' = ' + variableSetString + '[' + indexVariable + '] \n' +
+		'var ' + this.variableDeclarator + ' = ' + variableSetString + '[' + indexVariable + ']; \n' +
 		this.content.parse();
 }
 
@@ -341,6 +341,10 @@ var JPForInContentContext = function() {
 }
 JPForInContentContext.prototype = Object.create(JPBridgeContext.prototype);
 
+var JPForInVariableSetContext = function() {
+    this.parent = null;
+}
+JPForInVariableSetContext.prototype = Object.create(JPBridgeContext.prototype);
 /////////////////exports
 
 exports.JPCommonContext = JPCommonContext;
@@ -358,4 +362,5 @@ exports.JPPostfixContext = JPPostfixContext;
 exports.JPPostfixContentContext = JPPostfixContentContext;
 exports.JPForInContext = JPForInContext;
 exports.JPForInContentContext = JPForInContentContext;
+exports.JPForInVariableSetContext = JPForInVariableSetContext;
 exports.JPBridgeContext = JPBridgeContext;

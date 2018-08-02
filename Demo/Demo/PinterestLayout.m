@@ -51,8 +51,7 @@
 
 - (NSArray<UICollectionViewLayoutAttributes *> *)layoutAttributesForElementsInRect:(CGRect)rect {
     NSMutableArray<UICollectionViewLayoutAttributes *> *visibleLayoutAttributes = [NSMutableArray array];
-    for (int i = 0;i < self.cache.count;i++) {
-        UICollectionViewLayoutAttributes *attributes = self.cache[i];
+    for (UICollectionViewLayoutAttributes *attributes in self.cache) {
         if (CGRectIntersectsRect(attributes.frame, rect)) {
             [visibleLayoutAttributes addObject:attributes];
         }
