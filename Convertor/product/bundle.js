@@ -322,6 +322,35 @@ var JPPostfixContentContext = function() {
 }
 JPPostfixContentContext.prototype = Object.create(JPBridgeContext.prototype);
 
+/////////////////JPForInContext
+
+var JPForInContext = function() {
+    this.content = null;
+    this.variableDeclarator = null;
+    this.variableSet = null;
+}
+JPForInContext.prototype = Object.create(JPContext.prototype);
+JPForInContext.prototype.parse = function() {
+    // var predefinedVariable = 'converted_' + this.variableDeclarator;
+    // var indexVariable = this.variableDeclarator + '_index';
+    // var variableSetString = this.variableSet.parse();
+    // var predefined = 'var ' + predefinedVariable + ' = toAutoConvertObj(' + variableSetString + ');';
+    // return predefined + '\n' + 'for (var ' + indexVariable + ' in ' + predefinedVariable + ') { \n' +
+    //     'var ' + this.variableDeclarator + ' = _OC_formatOCToJS(' + predefinedVariable + '[' + indexVariable + ']); \n' +
+    //     this.content.parse()
+    //     + '\n }';
+	return 'jp_enumerate(' + this.variableSet.parse() + ', function(' + this.variableDeclarator + ') {\n' + this.content.parse() + '\n});\n';
+}
+
+var JPForInContentContext = function() {
+    this.parent = null;
+}
+JPForInContentContext.prototype = Object.create(JPBridgeContext.prototype);
+
+var JPForInVariableSetContext = function() {
+    this.parent = null;
+}
+JPForInVariableSetContext.prototype = Object.create(JPBridgeContext.prototype);
 /////////////////exports
 
 exports.JPCommonContext = JPCommonContext;
@@ -337,6 +366,9 @@ exports.JPClassContext = JPClassContext;
 exports.JPMethodContext = JPMethodContext;
 exports.JPPostfixContext = JPPostfixContext;
 exports.JPPostfixContentContext = JPPostfixContentContext;
+exports.JPForInContext = JPForInContext;
+exports.JPForInContentContext = JPForInContentContext;
+exports.JPForInVariableSetContext = JPForInVariableSetContext;
 exports.JPBridgeContext = JPBridgeContext;
 },{}],2:[function(require,module,exports){
 (function (global){
@@ -442,7 +474,10 @@ var JPCommonContext = c.JPCommonContext,
     JPMethodContext = c.JPMethodContext,
     JPPostFixContext = c.JPPostfixContext,
     JPPostfixContentContext = c.JPPostfixContentContext,
+    JPForInContext = c.JPForInContext,
+    JPForInContentContext = c.JPForInContentContext,
     JPBridgeContext = c.JPBridgeContext,
+    JPForInVariableSetContext = c.JPForInVariableSetContext,
     JPPropertyCallingContext = c.JPPropertyCallingContext,
     JPPropertyCallerContext = c.JPPropertyCallerContext;
 
@@ -469,6 +504,7 @@ var JPObjCListener = function(cb) {
     this.ignoreMethod = 0;
     this.cb = cb;
     this.messageCtxStack = [];
+    this.forInStatementContextCtx = {};
 
     return this;
 }
@@ -608,6 +644,37 @@ JPObjCListener.prototype.enterBlockParameters = function(ctx) {
 
 // Exit a parse tree produced by ObjectiveCParser#blockParameters.
 JPObjCListener.prototype.exitBlockParameters = function(ctx) {
+};
+
+// Enter a parse tree produced by ObjectiveCParser#statement.
+JPObjCListener.prototype.enterStatement = function(ctx) {
+    if (this.currContext instanceof JPForInContentContext && !this.forInStatementContextCtx[ctx]) {
+        this.forInStatementContextCtx[ctx] = this.currContext;
+        // console.log(this.ocScript.substring(0, ctx.start.start) + '|' + this.ocScript.substring(ctx.start.start))
+        var emptyContext = new JPCommonContext('');
+        this.currContext.setNext(emptyContext);
+        this.currContext = emptyContext;
+        this.currContext.currIdx = ctx.start.start + 1;
+    }
+};
+
+// Exit a parse tree produced by ObjectiveCParser#statement.
+JPObjCListener.prototype.exitStatement = function(ctx) {
+    if (this.forInStatementContextCtx[ctx]) {
+
+        var pre = this.currContext;
+        while (pre) {
+            if (pre instanceof JPForInContentContext) {
+                break;
+            }
+            pre = pre.pre;
+        }
+        var strContext = this.addStrContext(ctx.stop.stop);
+        // console.log(ctx.getText())
+        // console.log(this.ocScript.substring(0, ctx.stop.stop) + '|' + this.ocScript.substring(ctx.stop.stop));
+        this.currContext = pre.parent;
+        this.currContext.currIdx = ctx.stop.stop + 1;
+    }
 };
 
 // Enter a parse tree produced by ObjectiveCParser#compoundStatement.
@@ -756,6 +823,12 @@ JPObjCListener.prototype.exitExpression = function(ctx) {
             } while (preContext = preContext.pre)
         // }
     }
+    else if (this.currContext instanceof JPForInVariableSetContext) {
+        this.addStrContext(ctx.stop.stop + 1);
+        var forInContext = this.currContext.parent;
+        this.currContext = forInContext.content;
+        this.currContext.currIdx = ctx.stop.stop + 2;
+    }
 };
 
 // Enter a parse tree produced by ObjectiveCParser#assignmentOperator.
@@ -799,6 +872,43 @@ JPObjCListener.prototype.enterForStatement = function(ctx) {
 
 // Exit a parse tree produced by ObjectiveCParser#forStatement.
 JPObjCListener.prototype.exitForStatement = function(ctx) {
+};
+
+// Enter a parse tree produced by ObjectiveCParser#forInStatement.
+JPObjCListener.prototype.enterForInStatement = function(ctx) {
+    var strContext = this.addStrContext(ctx.start.start);
+    this.currContext = strContext;
+
+    var forInContext = new JPForInContext();
+
+    var forInVariableSetContext = new JPForInVariableSetContext();
+    forInVariableSetContext.parent = forInContext;
+    forInContext.variableSet = forInVariableSetContext;
+
+    forInContext.variableDeclarator = ctx.typeVariableDeclarator().declarator().directDeclarator().getText();
+    var forInContentContext = new JPForInContentContext();
+    forInContentContext.parent = forInContext;
+    forInContext.content = forInContentContext;
+
+    this.currContext.setNext(forInContext);
+    this.currContext = forInVariableSetContext;
+    this.currContext.currIdx = ctx.children[3].symbol.stop + 1;
+};
+
+// Exit a parse tree produced by ObjectiveCParser#forInStatement.
+JPObjCListener.prototype.exitForInStatement = function(ctx) {
+    // var pre = this.currContext;
+    // while (pre) {
+    //     if (pre instanceof JPForInContentContext) {
+    //         break;
+    //     }
+    //     pre = pre.pre;
+    // }
+    // this.currContext = pre.parent;
+    // console.log(this.ocScript.substring(0, this.currContext.currIdx) + '|' + this.ocScript.substring(this.currContext.currIdx));
+    // console.log(this.ocScript.substring(0, ctx.stop.stop + 1) + '|' + this.ocScript.substring(ctx.stop.stop + 1));
+
+    this.currContext.currIdx = ctx.stop.stop + 1;
 };
 
 // Enter a parse tree produced by ObjectiveCParser#castExpression.

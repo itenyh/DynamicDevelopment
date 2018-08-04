@@ -329,11 +329,7 @@ var JPForInContext = function() {
 }
 JPForInContext.prototype = Object.create(JPContext.prototype);
 JPForInContext.prototype.parse = function() {
-	var indexVariable = this.variableDeclarator + '_index';
-	var variableSetString = this.variableSet.parse();
-    return 'for (var ' + indexVariable + ' in ' + variableSetString + ') { \n' +
-		'var ' + this.variableDeclarator + ' = ' + variableSetString + '[' + indexVariable + ']; \n' +
-		this.content.parse();
+	return 'jp_enumerate(' + this.variableSet.parse() + ', function(' + this.variableDeclarator + ')' + this.content.parse() + ');';
 }
 
 var JPForInContentContext = function() {

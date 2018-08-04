@@ -41,3 +41,7 @@ for (var i = 0;i<input.length;i++) {
     }
 }
 
+var a = {};
+a[1] = 2;
+delete a[1];
+console.log(!!a[1]);

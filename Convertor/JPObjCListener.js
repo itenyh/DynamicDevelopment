@@ -33,7 +33,6 @@ var excludeClassNames = [
     'CGPoint'
 ];
 
-
 var JPObjCListener = function(cb) {
 
     ObjCListener.call(this);
@@ -44,7 +43,7 @@ var JPObjCListener = function(cb) {
     this.ignoreMethod = 0;
     this.cb = cb;
     this.messageCtxStack = [];
-    this.forInStatementContextCtx = {};
+    this.contextBinder = new JPContextBinder();
 
     return this;
 }
@@ -186,32 +185,6 @@ JPObjCListener.prototype.enterBlockParameters = function(ctx) {
 JPObjCListener.prototype.exitBlockParameters = function(ctx) {
 };
 
-// Enter a parse tree produced by ObjectiveCParser#statement.
-JPObjCListener.prototype.enterStatement = function(ctx) {
-    if (this.currContext instanceof JPForInContentContext && !this.forInStatementContextCtx[ctx]) {
-        this.forInStatementContextCtx[ctx] = this.currContext;
-        // console.log(ctx.getText())
-        // console.log(this.ocScript.substring(0, ctx.start.start) + '|' + this.ocScript.substring(ctx.start.start))
-        this.currContext.currIdx = ctx.start.start + 1;
-        this.currContext = this.addStrContext('');
-    }
-};
-
-// Exit a parse tree produced by ObjectiveCParser#statement.
-JPObjCListener.prototype.exitStatement = function(ctx) {
-    if (this.forInStatementContextCtx[ctx]) {
-        var pre = this.currContext;
-        while (pre) {
-            if (pre instanceof JPForInContentContext) {
-                break;
-            }
-            pre = pre.pre;
-        }
-        this.addStrContext(ctx.stop.stop);
-        this.currContext = pre.parent;
-    }
-};
-
 // Enter a parse tree produced by ObjectiveCParser#compoundStatement.
 JPObjCListener.prototype.enterCompoundStatement = function(ctx) {
     //if enter block body
@@ -322,7 +295,10 @@ JPObjCListener.prototype.exitDeclaration = function(ctx) {
 
 // Enter a parse tree produced by ObjectiveCParser#expressions.
 JPObjCListener.prototype.enterExpression = function(ctx) {
-
+    // if (ctx.getText() == 'arr') {
+    //     console.log(ctx.getText())
+    // }
+    this.contextBinder.bind(ctx, this.currContext);
     if (ctx.assignmentOperator() && ctx.assignmentOperator().getText() == '=') {
         // var leftStr = ctx.start.source[1].strdata.substring(ctx.children[0].start.start, ctx.children[0].stop.stop + 1)
         // if (leftStr.indexOf('.') > -1 || leftStr.indexOf('_') == 0) {
@@ -343,6 +319,7 @@ JPObjCListener.prototype.enterExpression = function(ctx) {
 
 // Exit a parse tree produced by ObjectiveCParser#expressions.
 JPObjCListener.prototype.exitExpression = function(ctx) {
+    var context = this.contextBinder.unbind(ctx);
     if (ctx.assignmentOperator() && ctx.assignmentOperator().getText() == '=') {
         // var leftStr = ctx.start.source[1].strdata.substring(ctx.children[0].start.start, ctx.children[0].stop.stop + 1)
         // if (leftStr.indexOf('.') > -1 || leftStr.indexOf('_') == 0) {
@@ -358,9 +335,9 @@ JPObjCListener.prototype.exitExpression = function(ctx) {
             } while (preContext = preContext.pre)
         // }
     }
-    else if (this.currContext instanceof JPForInVariableSetContext) {
+    else if (context instanceof JPForInVariableSetContext) {
         this.addStrContext(ctx.stop.stop + 1);
-        var forInContext = this.currContext.parent;
+        var forInContext = context.parent;
         this.currContext = forInContext.content;
         this.currContext.currIdx = ctx.stop.stop + 2;
     }
@@ -415,6 +392,7 @@ JPObjCListener.prototype.enterForInStatement = function(ctx) {
     this.currContext = strContext;
 
     var forInContext = new JPForInContext();
+    this.currContext.setNext(forInContext);
 
     var forInVariableSetContext = new JPForInVariableSetContext();
     forInVariableSetContext.parent = forInContext;
@@ -425,13 +403,23 @@ JPObjCListener.prototype.enterForInStatement = function(ctx) {
     forInContentContext.parent = forInContext;
     forInContext.content = forInContentContext;
 
-    this.currContext.setNext(forInContext);
     this.currContext = forInVariableSetContext;
     this.currContext.currIdx = ctx.children[3].symbol.stop + 1;
 };
 
 // Exit a parse tree produced by ObjectiveCParser#forInStatement.
 JPObjCListener.prototype.exitForInStatement = function(ctx) {
+    var strContext = this.addStrContext(ctx.stop.stop + 1);
+    this.currContext = strContext;
+
+    var preContext = this.currContext;
+    while (!preContext.parent) {
+        preContext = preContext.pre;
+        if (!preContext) {
+            throw new Error('forIn parse fail');
+        }
+    }
+    this.currContext = preContext.parent;
     this.currContext.currIdx = ctx.stop.stop + 1;
 };
 
@@ -473,5 +461,32 @@ JPObjCListener.prototype.exitPostfix = function(ctx) {
         }
         this.currContext = preContext.parent;
         this.currContext.currIdx = ctx.stop.stop + 1;
+    }
+};
+
+//Helper Methods
+function showIndexIndicator(source, index) {
+    console.log(source.substring(0, index) + '|' + source.substring(index));
+}
+
+var JPContextBinder = function () {
+    this.mapper = {},
+    this.filter = {},
+    this.bind = function (ctx, context) {
+        // console.log('bind ====>' + ctx.getText());
+        if (!this.filter[context]) {
+            // console.log('bind ====>' + ctx.getText(), context);
+            this.mapper[ctx] = context;
+            this.filter[context] = 1;
+        }
+    },
+    this.unbind = function (ctx) {
+        var context = this.mapper[ctx];
+        delete this.filter[context];
+        delete this.mapper[ctx];
+        return context;
+    }
+    this.isContextBind = function (context) {
+        return !!this.filter[context];
     }
 };

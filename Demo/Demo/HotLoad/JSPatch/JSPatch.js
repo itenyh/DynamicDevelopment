@@ -350,6 +350,15 @@ var global = this
     _jsCls[clsName] = o
   }
   
+  global.jp_enumerate = function(set, body) {
+    if (set.__clsName == '__NSDictionaryI' || set.__clsName == '__NSDictionaryM') {
+        set.__c('enumerateKeysAndObjectsUsingBlock')(block('void, id', body));
+    }
+    else {
+        set.__c('enumerateObjectsUsingBlock')(block('void, id', body));
+    }
+  }
+  
   global.YES = 1
   global.NO = 0
   global.nsnull = _OC_null

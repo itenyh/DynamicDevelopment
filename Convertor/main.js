@@ -4,17 +4,18 @@ require('./JPConvertor')
 var fs = require('fs');
 
 var data = "@implementation Temp \n " +
-    "- (void)test { " +
-        "for (NSObject *obj in arr) { " +
-            "for (NSObject *obj1 in arr1) {" +
-                "int b = 1;" +
-            "} " +
-        "} " +
-    "} " +
+    "- (void)test {\n" +
+        "for (NSObject *obj in drr) {\n" +
+        "for (NSString *ooo in [NSArray array]) {" +
+        " int a = ooo;  " +
+    "}" +
+        "}\n" +
+        "return 1;\n" +
+    "}\n" +
     "@end";
 // var data = "if (a) { }";
 // var data = "@implementation Temp \n - (void)test { [NSArray arrayWithObjects:@\"1\"]; } @end";
-// var data = fs.readFileSync('/Users/mkeqi/Desktop/Working____/Demo/Demo/PinterestLayout.m', 'utf8');
+// var data = fs.readFileSync('/Users/mkeqi/Desktop/Working____/Demo/Demo/TestViewController.m', 'utf8');
 // var data = "- (void)viewDidLoad {\n" +
 //     "     [super viewDidLoad\n" +
 //     "}\n" +
@@ -29,7 +30,7 @@ var data = "@implementation Temp \n " +
 var t1 = new Date().getTime();
 convertor(data, function (result, className, err) {
     console.log(result, className, (err == undefined) ? '' : err);
-    // console.log('Time Used: ' + (new Date().getTime() - t1));
+    console.log('Time Used: ' + (new Date().getTime() - t1));
 });
 
 // var t2 = new Date().getTime();
