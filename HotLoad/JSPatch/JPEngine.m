@@ -1770,7 +1770,7 @@ static id formatOCToJS(id obj)
         return _autoConvert ? obj: _wrapObj([JPBoxing boxObj:obj]);
     }
     if ([obj isKindOfClass:[NSNumber class]]) {
-        return _convertOCNumberToString ? [(NSNumber*)obj stringValue] : obj;
+        return _convertOCNumberToString ? [(NSNumber*)obj stringValue] : _wrapObj([JPBoxing boxObj:obj]);
     }
     if ([obj isKindOfClass:NSClassFromString(@"NSBlock")] || [obj isKindOfClass:[JSValue class]]) {
         return obj;

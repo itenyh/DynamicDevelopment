@@ -93,6 +93,23 @@ var global = this
         }
       }
 
+  if (methodName == 'jp_element') {
+    if (slf.__clsName == '__NSArrayI' || slf.__clsName == '__NSArrayM') {
+        methodName = 'objectAtIndex';
+    }
+    else if (slf.__clsName == '__NSDictionaryI' || slf.__clsName == '__NSDictionaryM') {
+        methodName = 'objectForKey';
+    }
+  }
+  else if (methodName == 'setJp_element') {
+    if (slf.__clsName == '__NSArrayM') {
+        methodName = 'replaceObjectAtIndex_withObject';
+    }
+    else if (slf.__clsName == '__NSDictionaryM') {
+        methodName = 'setObject_forKey';
+    }
+  }
+  
       return function(){
         var args = Array.prototype.slice.call(arguments)
         return _methodFunc(slf.__obj, slf.__clsName, methodName, args, slf.__isSuper)
@@ -331,6 +348,15 @@ var global = this
     }
     global[clsName] = cls
     _jsCls[clsName] = o
+  }
+  
+  global.jp_enumerate = function(set, body) {
+    if (set.__clsName == '__NSDictionaryI' || set.__clsName == '__NSDictionaryM') {
+        set.__c('enumerateKeysAndObjectsUsingBlock')(block('void, id', body));
+    }
+    else {
+        set.__c('enumerateObjectsUsingBlock')(block('void, id', body));
+    }
   }
   
   global.YES = 1

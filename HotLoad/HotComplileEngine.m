@@ -51,6 +51,11 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
     [JPEngine handleException:^(NSString *msg) {
         NSLog(@"JPEngine Exception: %@", msg);
     }];
+    
+    NSString *bundlePath = [[NSBundle mainBundle] bundlePath];
+    NSString *file = [NSString stringWithFormat:@"%@/%@", bundlePath, @"constants_user.hogcs"];
+    NSString *content = [NSString stringWithContentsOfFile:file encoding:NSUTF8StringEncoding error:nil];
+    [[JPEngine context] evaluateScript:content];
 }
 
 - (void)hotReloadProject {
@@ -183,5 +188,25 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
     }
     return _translator;
 }
+
+@end
+
+@interface HotComplileEngine (UIApplication)
+
+@end
+
+@implementation HotComplileEngine (UIApplication)
+
++ (void)load {
+    [[HotComplileEngine sharedInstance] hotReloadProject];
+}
+
+@end
+
+@interface HotComplileEngine (UIWindow)
+
+@end
+
+@implementation HotComplileEngine (UIWindow)
 
 @end
