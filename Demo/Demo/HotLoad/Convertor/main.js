@@ -1,68 +1,37 @@
-require('NSMutableArray,NSNumber,NSIndexPath,UICollectionViewLayoutAttributes');
-defineClass('PinterestLayout', {
-    prepareLayout: function() {
-
-        self.super().prepareLayout();
-
-        var columnWidth = self.contentWidth() / self.numberOfColumns();
-        var xOffset = NSMutableArray.array();
-        var column = 0;
-        var yOffset = NSMutableArray.array();
-        for (var i = 0; i < self.numberOfColumns(); i++) {
-            xOffset.addObject(NSNumber.numberWithFloat(i * columnWidth));
-            yOffset.addObject(NSNumber.numberWithFloat(0));
+require('AnnotatedPhotoCell,UIColor,PinterestLayout,UICollectionView,NSArray');
+defineClass('ViewController', {
+    viewDidLoad: function() {
+        self.view().addSubview(self.collectionView());
+        self.collectionView().mas__makeConstraints(block('void, MASConstraintMaker*', function(make) {
+            make.edges().equalTo()(self.view()).valueOffset()(MMASBoxValue(UIEdgeInsetsMake(0, 0, 0, 0)));
+        }));
+    },
+    collectionView_heightForPhotoAtIndexPath: function(collectionView, indexPath) {
+        return self.photoHeight().jp_element(indexPath.row()).floatValue();
+    },
+    collectionView_numberOfItemsInSection: function(collectionView, section) {
+        return self.photoHeight().count();
+    },
+    collectionView_cellForItemAtIndexPath: function(collectionView, indexPath) {
+        var cell = collectionView.dequeueReusableCellWithReuseIdentifier_forIndexPath(NSStringFromClass(AnnotatedPhotoCell.class()), indexPath);
+        cell.setBackgroundColor(UIColor.purpleColor());
+        return cell;
+    },
+    collectionView: function() {
+        if (!self.getProp('collectionView')) {
+            var layout = PinterestLayout.new();
+            layout.setDelegate(self);
+            self.setProp_forKey(UICollectionView.alloc().initWithFrame_collectionViewLayout(CGRectZero, layout), 'collectionView');
+            self.getProp('collectionView').setDataSource(self);
+            self.getProp('collectionView').setBackgroundColor(UIColor.whiteColor());
+            self.getProp('collectionView').registerClass_forCellWithReuseIdentifier(AnnotatedPhotoCell.class(), NSStringFromClass(AnnotatedPhotoCell.class()));
         }
-
-        for (var i = 0; i < self.collectionView().numberOfItemsInSection(0); i++) {
-            var indexPath = NSIndexPath.indexPathForItem_inSection(i, 0);
-            var photoHeight = self.delegate().collectionView_heightForPhotoAtIndexPath(self.collectionView(), indexPath);
-            var height = self.cellPadding() * 2 + photoHeight;
-            var frame = CGRectMake(xOffset.jp_element(column).floatValue(), yOffset.jp_element(column).floatValue(), columnWidth, height);
-            var insetFrame = CGRectMake(frame.x() + self.cellPadding(), frame.y() + self.cellPadding(), frame.width() - 2 * self.cellPadding(), frame.height() - 2 * self.cellPadding());
-            var attributes = UICollectionViewLayoutAttributes.layoutAttributesForCellWithIndexPath(indexPath);
-            attributes.setFrame(insetFrame);
-            self.cache().addObject(attributes);
-
-            self.setContentHeight(self.findMax_n2(self.contentHeight(), frame.y()));
-            yOffset.setJp_element(column, NSNumber.numberWithFloat(yOffset.jp_element(column).floatValue() + height));
-            column = column < (self.numberOfColumns() - 1) ? (column + 1) : 0;
+        return self.getProp('collectionView');
+    },
+    photoHeight: function() {
+        if (!self.getProp('photoHeight')) {
+            self.setProp_forKey(NSArray.arrayWithObjects(210, 90, 91, 94, 111, 67, 20, 199, 89, null), 'photoHeight');
         }
-    },
-    layoutAttributesForElementsInRect: function(rect) {
-        var visibleLayoutAttributes = NSMutableArray.array();
-        jp_enumerate(self.cache(), function(attributes) {
-
-            if (CGRectIntersectsRect(attributes.frame(), rect)) {
-                visibleLayoutAttributes.addObject(attributes);
-            }
-
-        });
-
-        return visibleLayoutAttributes;
-    },
-    layoutAttributesForItemAtIndexPath: function(indexPath) {
-        return self.cache().jp_element(indexPath.item());
-    },
-    cellPadding: function() {
-        return 2;
-    },
-    numberOfColumns: function() {
-        return 3;
-    },
-    contentWidth: function() {
-        if (self.collectionView()) {
-            var insets = self.collectionView().contentInset();
-            return self.collectionView().bounds().width() - (insets.left() + insets.right());
-        }
-        return 0;
-    },
-    collectionViewContentSize: function() {
-        return CGSizeMake(self.contentWidth(), self.contentHeight());
-    },
-    cache: function() {
-        if (!self.getProp('cache')) {
-            self.setProp_forKey(NSMutableArray.array(), 'cache');
-        }
-        return self.getProp('cache');
+        return self.getProp('photoHeight');
     },
 });

@@ -41,7 +41,31 @@ for (var i = 0;i<input.length;i++) {
     }
 }
 
-var a = {};
-a[1] = 2;
-delete a[1];
-console.log(!!a[1]);
+
+class Polygon {
+    constructor(height, width) {
+        this.height = height;
+        this.width = width;
+    }
+}
+
+class Square extends Polygon {
+    constructor(sideLength) {
+        super(sideLength, sideLength);
+    }
+    get area() {
+        return this.height * this.width;
+    }
+    set sideLength(newLength) {
+        this.height = newLength;
+        this.width = newLength;
+    }
+    fuck () {
+        console.log(123);
+    }
+}
+
+var p = new Polygon()
+var s = new Square()
+s.fuck();
+console.log(p.constructor.name, s.constructor.name);

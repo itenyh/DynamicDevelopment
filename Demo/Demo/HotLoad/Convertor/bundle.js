@@ -1,356 +1,468 @@
 var global = {};
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+var flatten = require('flattree').flatten;
+var c = require('./JPContext')
+var JPCommonContext = c.JPCommonContext,
+    JPMsgContext = c.JPMsgContext,
+    JPParamContext = c.JPParamContext,
+    JPBlockContext = c.JPBlockContext,
+    JPBlockContentContext = c.JPBlockContentContext,
+    JPAssignContext = c.JPAssignContext,
+    JPAssignLeftContext = c.JPAssignLeftContext,
+    JPAssignRightContext = c.JPAssignRightContext,
+    JPDeclarationContext = c.JPDeclarationContext,
+    JPClassContext = c.JPClassContext,
+    JPMethodContext = c.JPMethodContext,
+    JPPostfixContext = c.JPPostfixContext,
+    JPPostfixContentContext = c.JPPostfixContentContext,
+    JPForInContext = c.JPForInContext,
+    JPForInContentContext = c.JPForInContentContext,
+    JPBridgeContext = c.JPBridgeContext,
+    JPForInVariableSetContext = c.JPForInVariableSetContext
+
+
+
+function viewTree(tree) {
+    var nodes = flatten(tree, {
+        openNodes: [],
+        openAllNodes: true, // Defaults to false
+        throwOnEerror: false // Defaults to false
+    });
+
+    nodes.forEach((node, index) => {
+        // console.log(node)
+        const { state, label = '', children = [] } = node;
+        const { depth, open, prefixMask } = state;
+
+        if (depth === 0) {
+            console.log('%s', label);
+            return;
+        }
+
+        const prefix = prefixMask.substr(1).split('')
+            .map(s => (Number(s) === 0) ? '  ' : '| ').join('');
+
+        console.log('%s%s─%s %s', prefix, (node.isLastChild() ? '└' : '├'), (node.hasChildren() && open ? '┬' : '─'), label);
+    });
+}
+
+function view(rootContext) {
+    var tree = createStructure(rootContext)
+    viewTree(tree);
+}
+
+function createStructure(context) {
+
+    if (context == null) {
+        return {
+            id: 'EOT',
+            label: 'EOT',
+        }
+    }
+
+    var id = context.constructor.name;
+    var label = id;
+    if (context instanceof JPMethodContext) {
+        label += ': "' + context.parsedMethodName + '"';
+    }
+    else if (context instanceof JPCommonContext) {
+        var str = context.str.replace(/[\n\s]+/gm, ' ');
+        label += ': "' + str + '"';
+    }
+    var children = getAllChildren(context);
+    var tree = { // tree can either be object or array
+        id: id,
+        label: label,
+        children: children
+    };
+    return tree;
+}
+
+function getAllChildren(context) {
+    var childrenTree = [];
+    if (context instanceof JPClassContext) {
+        for (var index in context.instanceMethods) {
+            var method = context.instanceMethods[index];
+            childrenTree.push(createStructure(method));
+        }
+    }
+    else if (context instanceof JPForInContext) {
+        var variableSetContext = context.variableSet;
+        var contentContext = context.content;
+        childrenTree.push(createStructure(variableSetContext));
+        childrenTree.push(createStructure(contentContext));
+    }
+    else if (context instanceof JPAssignContext) {
+        childrenTree.push(createStructure(context.left));
+        childrenTree.push(createStructure(context.right));
+    }
+    else if (context instanceof JPMsgContext) {
+        childrenTree.push(createStructure(context.receiver));
+    }
+    else if (context instanceof JPPostfixContext) {
+        childrenTree.push(createStructure(context.content));
+    }
+    else {
+        childrenTree.push(createStructure(context.next));
+    }
+    return childrenTree;
+}
+
+exports.view = view;
+},{"./JPContext":2,"flattree":11}],2:[function(require,module,exports){
 var localMethods = [];
 var delayParsedContexts = [];	//{locationMark:"###1###", context:context}
 var isFinishedParsed = false;
 
 /////////////////Base
-var JPContext = function() {
-	this.next = null;
-	this.pre = null;
-	this.currIdx = 0;
-}
-
-JPContext.prototype.parse = function() {
-	return ''
-}
-
-JPContext.prototype.setNext = function(ctx) {
-	ctx.pre = this;
-	if (this.next) {
-		this.next.next = ctx;
-	} else {
-		this.next = ctx;
+class JPContext {
+	constructor() {
+		this.next = null;
+        this.pre = null;
+        this.currIdx = 0;
 	}
-}
 
+    parse () {
+        return ''
+    }
+
+    setNext (ctx) {
+        ctx.pre = this;
+        if (this.next) {
+            this.next.next = ctx;
+        } else {
+            this.next = ctx;
+        }
+    }
+}
 
 /////////////////JPCommonContext
-var JPCommonContext = function(str) {
-	//找到property属性
-    if (/(\.[a-zA-z_]{1}[a-zA-z_1-9]*)/g.test(str)) {
-    	var isStartWith_ = str.indexOf('_') == 0;
-    	if (isStartWith_) {
-    		str = str.substring(1);
-		}
-        str = str.replace(/_/g,'__');
-    	if (isStartWith_) {
-    		str = '_' + str;
-		}
+class JPCommonContext extends JPContext {
+	constructor(str) {
+		super()
+        // if (/(\.[a-zA-z_]{1}[a-zA-z_1-9]*)/g.test(str)) {
+        //     var isStartWith_ = str.indexOf('_') == 0;
+        //     if (isStartWith_) {
+        //         str = str.substring(1);
+        //     }
+        //     str = str.replace(/_/g,'__');
+        //     if (isStartWith_) {
+        //         str = '_' + str;
+        //     }
+        // }
+        this.str = str;
+	}
+    parse () {
+        return this.str ? this.str : '';
     }
-    this.str = str;
 }
-
-JPCommonContext.prototype = Object.create(JPContext.prototype);
-JPCommonContext.prototype.parse = function() {
-	return this.str ? this.str : '';
-}
-
 
 /////////////////JPBridgeContext
-var JPBridgeContext = function() {
-
-}
-JPBridgeContext.prototype = Object.create(JPContext.prototype);
-JPBridgeContext.prototype.parse = function() {
-	var ctx = this;
-	var script = '';
-	while (ctx = ctx.next) {
-		script += ctx.parse();
+class JPBridgeContext extends JPContext {
+	constructor () {
+		super()
 	}
-	return script;
+    parse () {
+        var ctx = this;
+        var script = '';
+        while (ctx = ctx.next) {
+            script += ctx.parse();
+        }
+        return script;
+    }
 }
-
-
 
 /////////////////JPClassContext
 
-var JPClassContext = function(className) {
-	this.className = className;
-	this.instanceMethods = [];
-	this.classMethods = [];
-	this.ignore = 0;
+class JPClassContext extends JPContext {
+	constructor () {
+		super()
+        this.className = '';
+        this.instanceMethods = [];
+        this.classMethods = [];
+        this.ignore = 0;
+	}
+
+	parse () {
+        var script = this.ignore ? '' : "defineClass('" + this.className + "', {";
+        for (var i = 0; i < this.instanceMethods.length; i ++) {
+            var separator = this.ignore && this.instanceMethods.length <= 1 ? '': ',';
+            script += this.instanceMethods[i].parse() + separator;
+            localMethods.push(this.instanceMethods[i].parsedMethodName);
+        }
+        script += this.ignore ? '' : '}';
+        if (this.classMethods.length) {
+            script += this.ignore ? '' : ',{';
+            for (var i = 0; i < this.classMethods.length; i ++) {
+                var separator = this.ignore && this.classMethods.length <= 1 ? '': ','
+                script += this.classMethods[i].parse() + separator;
+                localMethods.push(this.classMethods[i].parsedMethodName);
+            }
+            script += this.ignore ? '' : '}'
+        }
+        script += this.ignore ? '' : ');';
+
+        isFinishedParsed = true;
+        for (var i in delayParsedContexts) {
+            var locationMark = delayParsedContexts[i]['locationMark'];
+            var context = delayParsedContexts[i]['context'];
+            script = script.replace(locationMark, context.parse());
+        }
+
+        return script;
+	}
 }
-JPClassContext.prototype = Object.create(JPContext.prototype);
-JPClassContext.prototype.parse = function(){
-
-
-	var script = this.ignore ? '' : "defineClass('" + this.className + "', {";
-	for (var i = 0; i < this.instanceMethods.length; i ++) {
-		var separator = this.ignore && this.instanceMethods.length <= 1 ? '': ',';
-		script += this.instanceMethods[i].parse() + separator;
-        localMethods.push(this.instanceMethods[i].parsedMethodName);
-	}
-	script += this.ignore ? '' : '}';
-	if (this.classMethods.length) {
-		script += this.ignore ? '' : ',{';
-		for (var i = 0; i < this.classMethods.length; i ++) {
-			var separator = this.ignore && this.classMethods.length <= 1 ? '': ','
-			script += this.classMethods[i].parse() + separator;
-            localMethods.push(this.classMethods[i].parsedMethodName);
-		}
-		script += this.ignore ? '' : '}'
-	}
-	script += this.ignore ? '' : ');';
-
-	isFinishedParsed = true;
-	for (var i in delayParsedContexts) {
-		var locationMark = delayParsedContexts[i]['locationMark'];
-		var context = delayParsedContexts[i]['context'];
-        script = script.replace(locationMark, context.parse());
-	}
-
-	return script;
- }
-
 
 /////////////////JPMethodContext
 
-var JPMethodContext = function() {
-	this.names = [];
-	this.params = [];
-	this.parsedMethodName = ''
-	this.ignore = 0;
-}
-JPMethodContext.prototype = Object.create(JPContext.prototype);
-JPMethodContext.prototype.parse = function(){
-	var ctx = this;
-	var script = ''
-	if (!this.ignore) {
-		var firstName = this.names[0]
-		if (firstName[0] == '_') {
-			// 处理下划线开头函数名
-			firstName = "_" + firstName;
-			this.names[0] = firstName;
-		}
-        this.parsedMethodName = this.names.join('_');
-		script = this.parsedMethodName + ": function(" + this.params.join(',') + ") {"
+class JPMethodContext extends  JPContext {
+	constructor () {
+		super()
+        this.names = [];
+        this.params = [];
+        this.parsedMethodName = ''
+        this.ignore = 0;
 	}
 
-	while (ctx = ctx.next) {
-		script += ctx.parse();
-	} 
-	script += this.ignore ? '' : '}'
-	return script;
-}
+    parse (){
+        var ctx = this;
+        var script = ''
+        if (!this.ignore) {
+            var firstName = this.names[0]
+            if (firstName[0] == '_') {
+                // 处理下划线开头函数名
+                firstName = "_" + firstName;
+                this.names[0] = firstName;
+            }
+            this.parsedMethodName = this.names.join('_');
+            script = this.parsedMethodName + ": function(" + this.params.join(',') + ") {"
+        }
 
+        while (ctx = ctx.next) {
+            script += ctx.parse();
+        }
+        script += this.ignore ? '' : '}'
+        return script;
+    }
+}
 
 /////////////////JPMsgContext
 
-var JPMsgContext = function() {
-	this.receiver = null;
-	this.selector = [];
-	this.parsedSelector = null;
-	this.preMsg = null;
+class JPMsgContext extends JPContext {
+	constructor() {
+		super()
+        this.receiver = null;
+        this.selector = [];
+        this.parsedSelector = null;
+        this.preMsg = null;
 
-	this.argumentIndex = 0;
-}
+        this.argumentIndex = 0;
+	}
 
-JPMsgContext.prototype = Object.create(JPContext.prototype);
-
-JPMsgContext.prototype.parse = function() {
-	var code = '';
-	if (typeof this.receiver == "string") {
-        if (this.receiver.indexOf('_') == 0) {
-            var receivers = this.receiver.split('.');
-            code += 'self' + '|__dot__|' + "getProp('" + receivers.shift().substr(1).trim() + "')";
+    parse () {
+        var code = this.receiver.parse();
+        if (code.indexOf('_') == 0) {
+            var receivers = code.split('.');
+            code = 'self' + '|__dot__|' + "getProp('" + receivers.shift().substr(1).trim() + "')";
             if (receivers.length > 0) {
                 code += '.' + receivers.join('.');
             }
         }
-        else {
-            code += this.receiver;
+
+        var funcName = [];
+        var params = [];
+        for (var i = 0; i < this.selector.length; i ++) {
+            var name = this.selector[i].name.replace(/_/g, '__');
+            funcName.push(name);
+            if (typeof this.selector[i].param == "string") {
+                params.push(this.selector[i].param);
+            } else if (this.selector[i].param) {
+                params.push(this.selector[i].param.parse());
+            }
         }
-	} else {
-		code += this.receiver.parse();
-	}
 
-	var funcName = [];
-	var params = [];
-	for (var i = 0; i < this.selector.length; i ++) {
-		var name = this.selector[i].name.replace(/_/g, '__');
-		funcName.push(name);
-		if (typeof this.selector[i].param == "string") {
-			params.push(this.selector[i].param);
-		} else if (this.selector[i].param) {
-			params.push(this.selector[i].param.parse());
-		}
-	}
-
-	this.parsedSelector = funcName.join('_');
-    code += '|__dot__|' + this.parsedSelector + '(' + params.join(',') + ')';
-	return code;
+        this.parsedSelector = funcName.join('_');
+        code += '|__dot__|' + this.parsedSelector + '(' + params.join(',') + ')';
+        return code;
+    }
 }
 
 /////////////////JPParamContext
 
-var JPParamContext = function() {
-	this.parent = null;
+class JPParamContext extends JPBridgeContext {
+	constructor () {
+		super();
+        this.parent = null;
+	}
 }
-
-JPParamContext.prototype = Object.create(JPBridgeContext.prototype);
-
 
 /////////////////JPBlockContext
 
-var JPBlockContext = function() {
-	this.types = [];
-	this.names = [];
-	this.msg = null;
-	this.content = null;
-}
-
-JPBlockContext.prototype = Object.create(JPContext.prototype);
-JPBlockContext.prototype.parse = function(){
-
-    var isLocalMethod = false;
-
-	//如果作为参数的block，要等所有的解析完成后，再解析
-	if (this.msg) {
-		if (!isFinishedParsed) {
-            var locationMark = '####' + delayParsedContexts.length + '####';
-            delayParsedContexts.push({locationMark: locationMark, context: this});
-            return locationMark;
-        }
-        else {
-            var blockSelector = this.msg.parsedSelector;
-            for (var i in localMethods) {
-                var selector = localMethods[i];
-                if (selector === blockSelector) {
-                    isLocalMethod = true;
-                    break;
-                }
-            }
-		}
+class JPBlockContext extends JPContext {
+	constructor () {
+		super()
+        this.types = [];
+        this.names = [];
+        this.msg = null;
+        this.content = null;
 	}
 
-    if (isLocalMethod) {
-        var script = 'function(' + this.names.join(',') + ') {';
-        return script + this.content.parse() + "}";
-    }
-    else {
-        var paramTypes = this.types.length ? "'void, " + this.types.join(',') + "', " : "'void' , ";
-        var script = 'block(' + paramTypes + 'function(' + this.names.join(',') + ') {';
-        return script + this.content.parse() + "})";
-    }
+    parse () {
 
+        var isLocalMethod = false;
+
+        //如果作为参数的block，要等所有的解析完成后，再解析
+        if (this.msg) {
+            if (!isFinishedParsed) {
+                var locationMark = '####' + delayParsedContexts.length + '####';
+                delayParsedContexts.push({locationMark: locationMark, context: this});
+                return locationMark;
+            }
+            else {
+                var blockSelector = this.msg.parsedSelector;
+                for (var i in localMethods) {
+                    var selector = localMethods[i];
+                    if (selector === blockSelector) {
+                        isLocalMethod = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (isLocalMethod) {
+            var script = 'function(' + this.names.join(',') + ') {';
+            return script + this.content.parse() + "}";
+        }
+        else {
+            var paramTypes = this.types.length ? "'void, " + this.types.join(',') + "', " : "'void' , ";
+            var script = 'block(' + paramTypes + 'function(' + this.names.join(',') + ') {';
+            return script + this.content.parse() + "})";
+        }
+
+    }
 }
 
-
-var JPBlockContentContext = function() {
-	this.parent = null;
+class JPBlockContentContext extends JPBridgeContext {
+	constructor () {
+		super()
+        this.parent = null;
+	}
 }
-
-JPBlockContentContext.prototype = Object.create(JPBridgeContext.prototype);
-
 
 /////////////////JPAssignContext
 
-var JPAssignContext = function() {
-	this.left = null;
-	this.right = null;
-}
-
-JPAssignContext.prototype = Object.create(JPContext.prototype);
-JPAssignContext.prototype.parse = function(){
-    var leftStr = this.left.parse();
-    var leftArr = leftStr.split(/\|__dot__\||\./);
-    var lastProperty = leftArr[leftArr.length - 1];
-    var firstProperty = leftArr[0];
-
-    if (leftArr.length == 1) {
-    	if (firstProperty[0] == '_') {
-            return 'self' + '|__dot__|' + 'setProp_forKey(' + this.right.parse() + ", '" + lastProperty.substr(1).trim() + "')";
-        }
-    	else {
-    		return firstProperty + ' = ' + this.right.parse();
-		}
+class JPAssignContext extends JPContext {
+	constructor() {
+		super()
+        this.left = null;
+        this.right = null;
 	}
-	else {
-        if (firstProperty[0] == '_') {
-            firstProperty = 'self' + '|__dot__|' + "getProp('" + firstProperty.substr(1).trim() +"')";
-        }
-        if (/jp_element\(.+\)\s*$/gm.test(lastProperty)) {
-            lastProperty = lastProperty.replace(/jp_element\((.+)\)\s*$/gm, 'setJp_element($1,' + this.right.parse() + ')');
+	parse () {
+        var leftStr = this.left.parse();
+        var leftArr = leftStr.split(/\|__dot__\||\./);
+        var lastProperty = leftArr[leftArr.length - 1];
+        var firstProperty = leftArr[0];
+
+        if (leftArr.length == 1) {
+            if (firstProperty[0] == '_') {
+                return 'self' + '|__dot__|' + 'setProp_forKey(' + this.right.parse() + ", '" + lastProperty.substr(1).trim() + "')";
+            }
+            else {
+                return firstProperty + ' = ' + this.right.parse();
+            }
         }
         else {
-            lastProperty = 'set' + lastProperty[0].toUpperCase() + lastProperty.substr(1) + '(' + this.right.parse() + ')';
-		}
-        leftArr = leftArr.slice(1, leftArr.length - 1);
-        return firstProperty + (leftArr.length > 0 ? '.' : '') + leftArr.join('.') + '|__dot__|' + lastProperty;
+            if (firstProperty[0] == '_') {
+                firstProperty = 'self' + '|__dot__|' + "getProp('" + firstProperty.substr(1).trim() +"')";
+            }
+            if (/jp_element\(.+\)\s*$/gm.test(lastProperty)) {
+                lastProperty = lastProperty.replace(/jp_element\((.+)\)\s*$/gm, 'setJp_element($1,' + this.right.parse() + ')');
+            }
+            else {
+                lastProperty = 'set' + lastProperty[0].toUpperCase() + lastProperty.substr(1) + '(' + this.right.parse() + ')';
+            }
+            leftArr = leftArr.slice(1, leftArr.length - 1);
+            return firstProperty + (leftArr.length > 0 ? '.' : '') + leftArr.join('.') + '|__dot__|' + lastProperty;
+        }
+    }
+}
+
+class JPAssignLeftContext extends JPBridgeContext {
+	constructor () {
+		super()
+        this.parent = null;
 	}
 }
 
-
-
-var JPAssignLeftContext = function() {
-	this.parent = null;
+class JPAssignRightContext extends JPBridgeContext {
+	constructor () {
+		super()
+        this.parent = null;
+	}
 }
-JPAssignLeftContext.prototype = Object.create(JPBridgeContext.prototype);
-
-
-var JPAssignRightContext = function() {
-	this.parent = null;
-}
-JPAssignRightContext.prototype = Object.create(JPBridgeContext.prototype);
-
-
-
 
 /////////////////JPDeclarationContext
 
-var JPDeclarationContext = function() {
-	this.parent = null;
-}
-JPDeclarationContext.prototype = Object.create(JPContext.prototype);
-JPDeclarationContext.prototype.parse = function(){
-	return 'var ';
+class JPDeclarationContext extends JPContext {
+	constructor () {
+		super()
+        this.parent = null;
+	}
+
+    parse (){
+        return 'var ';
+    }
 }
 
 /////////////////JPPostfixContext
 
-var JPPostfixContext = function() {
-	this.content = null;
-}
-JPPostfixContext.prototype = Object.create(JPContext.prototype);
-JPPostfixContext.prototype.parse = function() {
-    return '|__dot__|jp_element(' + this.content.parse() + ')';
+class JPPostfixContext extends JPContext {
+	constructor () {
+		super()
+        this.content = null;
+	}
+
+    parse () {
+        return '|__dot__|jp_element(' + this.content.parse() + ')';
+    }
 }
 
-var JPPostfixContentContext = function() {
-    this.parent = null;
+class JPPostfixContentContext extends JPBridgeContext {
+	constructor () {
+		super();
+        this.parent = null;
+	}
 }
-JPPostfixContentContext.prototype = Object.create(JPBridgeContext.prototype);
 
 /////////////////JPForInContext
 
-var JPForInContext = function() {
-    this.content = null;
-    this.variableDeclarator = null;
-    this.variableSet = null;
-}
-JPForInContext.prototype = Object.create(JPContext.prototype);
-JPForInContext.prototype.parse = function() {
-    // var predefinedVariable = 'converted_' + this.variableDeclarator;
-    // var indexVariable = this.variableDeclarator + '_index';
-    // var variableSetString = this.variableSet.parse();
-    // var predefined = 'var ' + predefinedVariable + ' = toAutoConvertObj(' + variableSetString + ');';
-    // return predefined + '\n' + 'for (var ' + indexVariable + ' in ' + predefinedVariable + ') { \n' +
-    //     'var ' + this.variableDeclarator + ' = _OC_formatOCToJS(' + predefinedVariable + '[' + indexVariable + ']); \n' +
-    //     this.content.parse()
-    //     + '\n }';
-	return 'jp_enumerate(' + this.variableSet.parse() + ', function(' + this.variableDeclarator + ') {\n' + this.content.parse() + '\n});\n';
+class JPForInContext extends JPContext {
+	constructor () {
+		super()
+        this.content = null;
+        this.variableDeclarator = null;
+        this.variableSet = null;
+	}
+    parse () {
+        return 'jp_enumerate(' + this.variableSet.parse() + ', function(' + this.variableDeclarator + ')' + this.content.parse() + ');';
+    }
 }
 
-var JPForInContentContext = function() {
-    this.parent = null;
+class JPForInContentContext extends JPBridgeContext {
+    constructor () {
+        super();
+        this.parent = null;
+    }
 }
-JPForInContentContext.prototype = Object.create(JPBridgeContext.prototype);
 
-var JPForInVariableSetContext = function() {
-    this.parent = null;
+class JPForInVariableSetContext extends JPBridgeContext {
+    constructor () {
+        super();
+        this.parent = null;
+    }
 }
-JPForInVariableSetContext.prototype = Object.create(JPBridgeContext.prototype);
+
 /////////////////exports
 
 exports.JPCommonContext = JPCommonContext;
@@ -370,7 +482,7 @@ exports.JPForInContext = JPForInContext;
 exports.JPForInContentContext = JPForInContentContext;
 exports.JPForInVariableSetContext = JPForInVariableSetContext;
 exports.JPBridgeContext = JPBridgeContext;
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 (function (global){
 var antlr4 = require('./parser/antlr4/index');
 var ObjCLexer = require('./parser/ObjectiveCLexer').ObjectiveCLexer
@@ -430,7 +542,7 @@ global.convertor = convertor;
 exports.convertor = convertor;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./JPErrorListener":3,"./JPObjCListener":4,"./JPObjCProcessor":5,"./JPScriptProcessor":6,"./parser/ObjectiveCLexer":8,"./parser/ObjectiveCParser":9,"./parser/antlr4/index":52}],3:[function(require,module,exports){
+},{"./JPErrorListener":4,"./JPObjCListener":5,"./JPObjCProcessor":6,"./JPScriptProcessor":7,"./parser/ObjectiveCLexer":13,"./parser/ObjectiveCParser":14,"./parser/antlr4/index":57}],4:[function(require,module,exports){
 var ErrorListener = require('./parser/antlr4/error/ErrorListener').ErrorListener;
 
 function JPErrorListener(errorCallback) {
@@ -457,7 +569,7 @@ JPErrorListener.prototype.reportContextSensitivity = function(recognizer, dfa, s
 };
 
 exports.JPErrorListener = JPErrorListener;
-},{"./parser/antlr4/error/ErrorListener":48}],4:[function(require,module,exports){
+},{"./parser/antlr4/error/ErrorListener":53}],5:[function(require,module,exports){
 // JPObjCListener
 var ObjCListener = require('./parser/ObjectiveCParserListener').ObjectiveCParserListener
 var c = require('./JPContext')
@@ -477,10 +589,9 @@ var JPCommonContext = c.JPCommonContext,
     JPForInContext = c.JPForInContext,
     JPForInContentContext = c.JPForInContentContext,
     JPBridgeContext = c.JPBridgeContext,
-    JPForInVariableSetContext = c.JPForInVariableSetContext,
-    JPPropertyCallingContext = c.JPPropertyCallingContext,
-    JPPropertyCallerContext = c.JPPropertyCallerContext;
+    JPForInVariableSetContext = c.JPForInVariableSetContext
 
+var treeView = require('./HHTreeViewer')
 
 var excludeClassNames = [
     'BOOL',
@@ -493,7 +604,6 @@ var excludeClassNames = [
     'CGPoint'
 ];
 
-
 var JPObjCListener = function(cb) {
 
     ObjCListener.call(this);
@@ -504,7 +614,7 @@ var JPObjCListener = function(cb) {
     this.ignoreMethod = 0;
     this.cb = cb;
     this.messageCtxStack = [];
-    this.forInStatementContextCtx = {};
+    this.contextBinder = new JPContextBinder();
 
     return this;
 }
@@ -512,8 +622,8 @@ var JPObjCListener = function(cb) {
 JPObjCListener.prototype = Object.create(ObjCListener.prototype);
 
 JPObjCListener.prototype.buildScript = function() {
-
     this.cb(this.rootContext.parse(), this.rootContext.className);
+    // treeView.view(this.rootContext);
 }
 
 JPObjCListener.prototype.addStrContext = function(stop) {
@@ -646,37 +756,6 @@ JPObjCListener.prototype.enterBlockParameters = function(ctx) {
 JPObjCListener.prototype.exitBlockParameters = function(ctx) {
 };
 
-// Enter a parse tree produced by ObjectiveCParser#statement.
-JPObjCListener.prototype.enterStatement = function(ctx) {
-    if (this.currContext instanceof JPForInContentContext && !this.forInStatementContextCtx[ctx]) {
-        this.forInStatementContextCtx[ctx] = this.currContext;
-        // console.log(this.ocScript.substring(0, ctx.start.start) + '|' + this.ocScript.substring(ctx.start.start))
-        var emptyContext = new JPCommonContext('');
-        this.currContext.setNext(emptyContext);
-        this.currContext = emptyContext;
-        this.currContext.currIdx = ctx.start.start + 1;
-    }
-};
-
-// Exit a parse tree produced by ObjectiveCParser#statement.
-JPObjCListener.prototype.exitStatement = function(ctx) {
-    if (this.forInStatementContextCtx[ctx]) {
-
-        var pre = this.currContext;
-        while (pre) {
-            if (pre instanceof JPForInContentContext) {
-                break;
-            }
-            pre = pre.pre;
-        }
-        var strContext = this.addStrContext(ctx.stop.stop);
-        // console.log(ctx.getText())
-        // console.log(this.ocScript.substring(0, ctx.stop.stop) + '|' + this.ocScript.substring(ctx.stop.stop));
-        this.currContext = pre.parent;
-        this.currContext.currIdx = ctx.stop.stop + 1;
-    }
-};
-
 // Enter a parse tree produced by ObjectiveCParser#compoundStatement.
 JPObjCListener.prototype.enterCompoundStatement = function(ctx) {
     //if enter block body
@@ -787,9 +866,10 @@ JPObjCListener.prototype.exitDeclaration = function(ctx) {
 
 // Enter a parse tree produced by ObjectiveCParser#expressions.
 JPObjCListener.prototype.enterExpression = function(ctx) {
-
+    this.contextBinder.bind(ctx, this.currContext);
     if (ctx.assignmentOperator() && ctx.assignmentOperator().getText() == '=') {
-        // var leftStr = ctx.start.source[1].strdata.substring(ctx.children[0].start.start, ctx.children[0].stop.stop + 1)
+
+        // var leftStr = this.ocScript.substring(ctx.start.start, ctx.assignmentOperator().start.start);
         // if (leftStr.indexOf('.') > -1 || leftStr.indexOf('_') == 0) {
             var assignContext = new JPAssignContext();
 
@@ -808,8 +888,10 @@ JPObjCListener.prototype.enterExpression = function(ctx) {
 
 // Exit a parse tree produced by ObjectiveCParser#expressions.
 JPObjCListener.prototype.exitExpression = function(ctx) {
+    var context = this.contextBinder.unbind(ctx);
     if (ctx.assignmentOperator() && ctx.assignmentOperator().getText() == '=') {
-        // var leftStr = ctx.start.source[1].strdata.substring(ctx.children[0].start.start, ctx.children[0].stop.stop + 1)
+
+        // var leftStr = this.ocScript.substring(ctx.start.start, ctx.assignmentOperator().start.start);
         // if (leftStr.indexOf('.') > -1 || leftStr.indexOf('_') == 0) {
             this.addStrContext(ctx.stop.stop + 1)
 
@@ -823,9 +905,9 @@ JPObjCListener.prototype.exitExpression = function(ctx) {
             } while (preContext = preContext.pre)
         // }
     }
-    else if (this.currContext instanceof JPForInVariableSetContext) {
+    else if (context instanceof JPForInVariableSetContext) {
         this.addStrContext(ctx.stop.stop + 1);
-        var forInContext = this.currContext.parent;
+        var forInContext = context.parent;
         this.currContext = forInContext.content;
         this.currContext.currIdx = ctx.stop.stop + 2;
     }
@@ -840,7 +922,7 @@ JPObjCListener.prototype.enterAssignmentOperator = function(ctx) {
                 this.addStrContext(ctx.start.start)
 
                 var assignRightContext = new JPAssignRightContext();
-                assignContext = preContext.parent;
+                var assignContext = preContext.parent;
                 assignContext.right = assignRightContext;
                 assignRightContext.parent = assignContext;
 
@@ -880,6 +962,7 @@ JPObjCListener.prototype.enterForInStatement = function(ctx) {
     this.currContext = strContext;
 
     var forInContext = new JPForInContext();
+    this.currContext.setNext(forInContext);
 
     var forInVariableSetContext = new JPForInVariableSetContext();
     forInVariableSetContext.parent = forInContext;
@@ -890,24 +973,23 @@ JPObjCListener.prototype.enterForInStatement = function(ctx) {
     forInContentContext.parent = forInContext;
     forInContext.content = forInContentContext;
 
-    this.currContext.setNext(forInContext);
     this.currContext = forInVariableSetContext;
     this.currContext.currIdx = ctx.children[3].symbol.stop + 1;
 };
 
 // Exit a parse tree produced by ObjectiveCParser#forInStatement.
 JPObjCListener.prototype.exitForInStatement = function(ctx) {
-    // var pre = this.currContext;
-    // while (pre) {
-    //     if (pre instanceof JPForInContentContext) {
-    //         break;
-    //     }
-    //     pre = pre.pre;
-    // }
-    // this.currContext = pre.parent;
-    // console.log(this.ocScript.substring(0, this.currContext.currIdx) + '|' + this.ocScript.substring(this.currContext.currIdx));
-    // console.log(this.ocScript.substring(0, ctx.stop.stop + 1) + '|' + this.ocScript.substring(ctx.stop.stop + 1));
+    var strContext = this.addStrContext(ctx.stop.stop + 1);
+    this.currContext = strContext;
 
+    var preContext = this.currContext;
+    while (!preContext.parent) {
+        preContext = preContext.pre;
+        if (!preContext) {
+            throw new Error('forIn parse fail');
+        }
+    }
+    this.currContext = preContext.parent;
     this.currContext.currIdx = ctx.stop.stop + 1;
 };
 
@@ -951,7 +1033,34 @@ JPObjCListener.prototype.exitPostfix = function(ctx) {
         this.currContext.currIdx = ctx.stop.stop + 1;
     }
 };
-},{"./JPContext":1,"./parser/ObjectiveCParserListener":10}],5:[function(require,module,exports){
+
+//Helper Methods
+function showIndexIndicator(source, index) {
+    console.log(source.substring(0, index) + '|' + source.substring(index));
+}
+
+var JPContextBinder = function () {
+    this.mapper = {},
+    this.filter = {},
+    this.bind = function (ctx, context) {
+        // console.log('bind ====>' + ctx.getText());
+        if (!this.filter[context]) {
+            // console.log('bind ====>' + ctx.getText(), context);
+            this.mapper[ctx] = context;
+            this.filter[context] = 1;
+        }
+    },
+    this.unbind = function (ctx) {
+        var context = this.mapper[ctx];
+        delete this.filter[context];
+        delete this.mapper[ctx];
+        return context;
+    }
+    this.isContextBind = function (context) {
+        return !!this.filter[context];
+    }
+};
+},{"./HHTreeViewer":1,"./JPContext":2,"./parser/ObjectiveCParserListener":15}],6:[function(require,module,exports){
 
 var JPMethodObject = function() {
     this.script = null;
@@ -1048,7 +1157,7 @@ exports.processor = function (script) {
 
     return script;
 }
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 var beautify = require('./lib/beautify').js_beautify
 
 var JPScriptProcessor = function(script) {
@@ -1142,7 +1251,7 @@ JPScriptProcessor.prototype = {
 
 
 exports.JPScriptProcessor = JPScriptProcessor;
-},{"./lib/beautify":7}],7:[function(require,module,exports){
+},{"./lib/beautify":8}],8:[function(require,module,exports){
 (function (global){
 /*jshint curly:true, eqeqeq:true, laxbreak:true, noempty:false */
 /*
@@ -3240,7 +3349,395 @@ exports.JPScriptProcessor = JPScriptProcessor;
 
 }());
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+/* eslint no-restricted-syntax: 0 */
+var extend = function extend(target) {
+    for (var _len = arguments.length, sources = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        sources[_key - 1] = arguments[_key];
+    }
+
+    if (target === undefined || target === null) {
+        throw new TypeError('Cannot convert undefined or null to object');
+    }
+
+    var output = Object(target);
+    for (var index = 0; index < sources.length; index++) {
+        var source = sources[index];
+        if (source !== undefined && source !== null) {
+            for (var key in source) {
+                if (source.hasOwnProperty(key)) {
+                    output[key] = source[key];
+                }
+            }
+        }
+    }
+    return output;
+};
+
+exports['default'] = extend;
+},{}],10:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+
+var _extend = require('./extend');
+
+var _extend2 = _interopRequireDefault(_extend);
+
+var _node = require('./node');
+
+var _node2 = _interopRequireDefault(_node);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+// @param {object|array} nodes The tree nodes
+// @param {object} [options] The options object
+// @param {boolean} [options.openAllNodes] True to open all nodes. Defaults to false.
+// @param {array} [options.openNodes] An array that contains the ids of open nodes
+// @return {array}
+/* eslint no-console: 0 */
+var flatten = function flatten() {
+    var nodes = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    nodes = [].concat(nodes);
+
+    var flatten = [];
+    var stack = [];
+    var pool = {
+        lastChild: {}
+    };
+
+    options.openAllNodes = !!options.openAllNodes;
+    options.openNodes = options.openNodes || [];
+    options.throwOnError = !!options.throwOnError;
+
+    {
+        // root node
+        var firstNode = nodes.length > 0 ? nodes[0] : null;
+        var parentNode = firstNode ? firstNode.parent : null;
+        if (parentNode && !(parentNode instanceof _node2['default'])) {
+            parentNode = new _node2['default'](parentNode);
+        }
+        var rootNode = parentNode || new _node2['default']({ // defaults
+            parent: null,
+            children: nodes,
+            state: {
+                depth: -1,
+                open: true, // always open
+                path: '',
+                prefixMask: '',
+                total: 0
+            }
+        });
+
+        if (rootNode === parentNode) {
+            var subtotal = rootNode.state.total || 0;
+
+            // Traversing up through its ancestors
+            var p = rootNode;
+            while (p) {
+                var _p$state = p.state,
+                    path = _p$state.path,
+                    _p$state$total = _p$state.total,
+                    total = _p$state$total === undefined ? 0 : _p$state$total;
+
+                // Rebuild the lastChild pool
+
+                if (p.isLastChild() && path) {
+                    pool.lastChild[path] = true;
+                }
+
+                // Subtract the number 'subtotal' from the total of the root node and all its ancestors
+                p.state.total = total - subtotal;
+                if (p.state.total < 0) {
+                    if (options.throwOnError) {
+                        throw new Error('The node might have been corrupted: id=' + JSON.stringify(p.id) + ', state=' + JSON.stringify(p.state));
+                    } else {
+                        console && console.log('Error: The node might have been corrupted: id=%s, parent=%s, children=%s, state=%s', JSON.stringify(p.id), p.parent, p.children, JSON.stringify(p.state));
+                    }
+                }
+
+                p = p.parent;
+            }
+        }
+
+        stack.push([rootNode, rootNode.state.depth, 0]);
+    }
+
+    while (stack.length > 0) {
+        var _stack$pop = stack.pop(),
+            current = _stack$pop[0],
+            depth = _stack$pop[1],
+            index = _stack$pop[2];
+
+        var _loop = function _loop() {
+            var node = current.children[index];
+            if (!(node instanceof _node2['default'])) {
+                node = new _node2['default'](node);
+            }
+            node.parent = current;
+            node.children = node.children || [];
+
+            // Ensure parent.children[index] is equal to the current node
+            node.parent.children[index] = node;
+
+            var path = current.state.path + '.' + index;
+            var open = node.hasChildren() && function () {
+                var openAllNodes = options.openAllNodes,
+                    openNodes = options.openNodes;
+
+                if (openAllNodes) {
+                    return true;
+                }
+                // determine from input
+                if (node.state && node.state.open) {
+                    return true;
+                }
+                // determine by node object
+                if (openNodes.indexOf(node) >= 0) {
+                    return true;
+                }
+                // determine by node id
+                if (openNodes.indexOf(node.id) >= 0) {
+                    return true;
+                }
+                return false;
+            }();
+            var prefixMask = function (prefix) {
+                var mask = '';
+                while (prefix.length > 0) {
+                    prefix = prefix.replace(/\.\d+$/, '');
+                    if (!prefix || pool.lastChild[prefix]) {
+                        mask = '0' + mask;
+                    } else {
+                        mask = '1' + mask;
+                    }
+                }
+                return mask;
+            }(path);
+
+            if (node.isLastChild()) {
+                pool.lastChild[path] = true;
+            }
+
+            // This allows you to put extra information to node.state
+            node.state = (0, _extend2['default'])({}, node.state, {
+                depth: depth + 1,
+                open: open,
+                path: path,
+                prefixMask: prefixMask,
+                total: 0
+            });
+
+            var parentDidOpen = true;
+
+            {
+                // Check the open state from its ancestors
+                var _p = node;
+                while (_p.parent !== null) {
+                    if (_p.parent.state.open === false) {
+                        parentDidOpen = false;
+                        break;
+                    }
+                    _p = _p.parent;
+                }
+            }
+
+            if (parentDidOpen) {
+                // Push the node to flatten list only if all of its parent nodes have the open state set to true
+                flatten.push(node);
+
+                // Update the total number of visible child nodes
+                var _p2 = node;
+                while (_p2.parent !== null) {
+                    _p2.parent.state.total++;
+                    _p2 = _p2.parent;
+                }
+            }
+
+            ++index;
+
+            if (node.hasChildren()) {
+                // Push back parent node to the stack that will be able to continue
+                // the next iteration once all the child nodes of the current node
+                // have been completely explored.
+                stack.push([current, depth, index]);
+
+                index = 0;
+                depth = depth + 1;
+                current = node;
+            }
+        };
+
+        while (index < current.children.length) {
+            _loop();
+        }
+    }
+
+    return flatten;
+};
+
+exports['default'] = flatten;
+},{"./extend":9,"./node":12}],11:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+exports.Node = exports.flatten = undefined;
+
+var _flatten = require('./flatten');
+
+var _flatten2 = _interopRequireDefault(_flatten);
+
+var _node = require('./node');
+
+var _node2 = _interopRequireDefault(_node);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+// IE8 compatibility output
+exports.flatten = _flatten2['default'];
+exports.Node = _node2['default'];
+},{"./flatten":10,"./node":12}],12:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+
+var _extend = require('./extend');
+
+var _extend2 = _interopRequireDefault(_extend);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Node = function () {
+    function Node(node) {
+        _classCallCheck(this, Node);
+
+        this.id = null;
+        this.parent = null;
+        this.children = [];
+        this.state = {};
+
+        (0, _extend2['default'])(this, node);
+
+        this.children = this.children || [];
+    }
+    // Returns a boolean value indicating whether a node is a descendant of a given node or not.
+    // @param {object} node Specifies the node that may be contained by (a descendant of) a specified node.
+    // @return {boolean} Returns true if a node is a descendant of a specified node, otherwise false. A descendant can be a child, grandchild, great-grandchild, and so on.
+
+
+    Node.prototype.contains = function contains(node) {
+        while (node instanceof Node && node !== this) {
+            if (node.parent === this) {
+                return true;
+            }
+            node = node.parent;
+        }
+        return false;
+    };
+    // Gets a child node at the specified index.
+    // @param {number} The index of the child node.
+    // @return {object} Returns an object that defines the node, null otherwise.
+
+
+    Node.prototype.getChildAt = function getChildAt(index) {
+        var node = null;
+        if (this.children.length > 0 && index >= 0 && index < this.children.length) {
+            node = this.children[index];
+        }
+        return node;
+    };
+    // Gets the child nodes.
+    // @return {array} Returns an array of objects that define the nodes.
+
+
+    Node.prototype.getChildren = function getChildren() {
+        return this.children;
+    };
+    // Gets the first child node.
+    // @return {object} Returns an object that defines the node, null otherwise.
+
+
+    Node.prototype.getFirstChild = function getFirstChild() {
+        var node = null;
+        if (this.children.length > 0) {
+            node = this.children[0];
+        }
+        return node;
+    };
+    // Gets the last child node.
+    // @return {object} Returns an object that defines the node, null otherwise.
+
+
+    Node.prototype.getLastChild = function getLastChild() {
+        var node = null;
+        if (this.children.length > 0) {
+            node = this.children[this.children.length - 1];
+        }
+        return node;
+    };
+    // Gets the next sibling node.
+    // @return {object} Returns an object that defines the node, null otherwise.
+
+
+    Node.prototype.getNextSibling = function getNextSibling() {
+        var node = null;
+        if (this.parent) {
+            var index = this.parent.children.indexOf(this);
+            if (index >= 0 && index < this.parent.children.length - 1) {
+                node = this.parent.children[index + 1];
+            }
+        }
+        return node;
+    };
+    // Gets the parent node.
+    // @return {object} Returns an object that defines the node, null otherwise.
+
+
+    Node.prototype.getParent = function getParent() {
+        return this.parent;
+    };
+    // Gets the previous sibling node.
+    // @return {object} Returns an object that defines the node, null otherwise.
+
+
+    Node.prototype.getPreviousSibling = function getPreviousSibling() {
+        var node = null;
+        if (this.parent) {
+            var index = this.parent.children.indexOf(this);
+            if (index > 0 && index < this.parent.children.length) {
+                node = this.parent.children[index - 1];
+            }
+        }
+        return node;
+    };
+    // Checks whether this node has children.
+    // @return {boolean} Returns true if the node has children, false otherwise.
+
+
+    Node.prototype.hasChildren = function hasChildren() {
+        return this.children.length > 0;
+    };
+    // Checks whether this node is the last child of its parent.
+    // @return {boolean} Returns true if the node is the last child of its parent, false otherwise.
+
+
+    Node.prototype.isLastChild = function isLastChild() {
+        var hasNextSibling = this.getNextSibling();
+        return !hasNextSibling;
+    };
+
+    return Node;
+}();
+
+exports['default'] = Node;
+},{"./extend":9}],13:[function(require,module,exports){
 // Generated from ObjectiveCLexer.g4 by ANTLR 4.7.1
 // jshint ignore: start
 var antlr4 = require('./antlr4/index');
@@ -5364,7 +5861,7 @@ ObjectiveCLexer.prototype.grammarFileName = "ObjectiveCLexer.g4";
 exports.ObjectiveCLexer = ObjectiveCLexer;
 
 
-},{"./antlr4/index":52}],9:[function(require,module,exports){
+},{"./antlr4/index":57}],14:[function(require,module,exports){
 // Generated from ObjectiveCParser.g4 by ANTLR 4.7.1
 // jshint ignore: start
 var antlr4 = require('./antlr4/index');
@@ -22287,7 +22784,7 @@ ObjectiveCParser.prototype.postfixExpression_sempred = function(localctx, predIn
 
 exports.ObjectiveCParser = ObjectiveCParser;
 
-},{"./ObjectiveCParserListener":10,"./antlr4/index":52}],10:[function(require,module,exports){
+},{"./ObjectiveCParserListener":15,"./antlr4/index":57}],15:[function(require,module,exports){
 // Generated from ObjectiveCParser.g4 by ANTLR 4.7.1
 // jshint ignore: start
 var antlr4 = require('./antlr4/index');
@@ -23599,7 +24096,7 @@ ObjectiveCParserListener.prototype.exitIdentifier = function(ctx) {
 
 
 exports.ObjectiveCParserListener = ObjectiveCParserListener;
-},{"./antlr4/index":52}],11:[function(require,module,exports){
+},{"./antlr4/index":57}],16:[function(require,module,exports){
 //
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
@@ -23976,7 +24473,7 @@ BufferedTokenStream.prototype.fill = function() {
 
 exports.BufferedTokenStream = BufferedTokenStream;
 
-},{"./IntervalSet":17,"./Lexer":19,"./Token":25}],12:[function(require,module,exports){
+},{"./IntervalSet":22,"./Lexer":24,"./Token":30}],17:[function(require,module,exports){
 //
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
@@ -24049,7 +24546,7 @@ var CharStreams = {
 
 exports.CharStreams = CharStreams;
 
-},{"./InputStream":16,"fs":58}],13:[function(require,module,exports){
+},{"./InputStream":21,"fs":63}],18:[function(require,module,exports){
 //
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
@@ -24120,7 +24617,7 @@ CommonTokenFactory.prototype.createThin = function(type, text) {
 
 exports.CommonTokenFactory = CommonTokenFactory;
 
-},{"./Token":25}],14:[function(require,module,exports){
+},{"./Token":30}],19:[function(require,module,exports){
 //
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
@@ -24225,7 +24722,7 @@ CommonTokenStream.prototype.getNumberOfOnChannelTokens = function() {
 };
 
 exports.CommonTokenStream = CommonTokenStream;
-},{"./BufferedTokenStream":11,"./Token":25}],15:[function(require,module,exports){
+},{"./BufferedTokenStream":16,"./Token":30}],20:[function(require,module,exports){
 //
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
@@ -24253,7 +24750,7 @@ FileStream.prototype.constructor = FileStream;
 
 exports.FileStream = FileStream;
 
-},{"./InputStream":16,"fs":58}],16:[function(require,module,exports){
+},{"./InputStream":21,"fs":63}],21:[function(require,module,exports){
 //
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
@@ -24390,7 +24887,7 @@ InputStream.prototype.toString = function() {
 
 exports.InputStream = InputStream;
 
-},{"./Token":25,"./polyfills/codepointat":53,"./polyfills/fromcodepoint":54}],17:[function(require,module,exports){
+},{"./Token":30,"./polyfills/codepointat":58,"./polyfills/fromcodepoint":59}],22:[function(require,module,exports){
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
  * can be found in the LICENSE.txt file in the project root.
@@ -24690,7 +25187,7 @@ IntervalSet.prototype.elementName = function(literalNames, symbolicNames, a) {
 exports.Interval = Interval;
 exports.IntervalSet = IntervalSet;
 
-},{"./Token":25}],18:[function(require,module,exports){
+},{"./Token":30}],23:[function(require,module,exports){
 //
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
@@ -24891,7 +25388,7 @@ LL1Analyzer.prototype._LOOK = function(s, stopState , ctx, look, lookBusy, calle
 exports.LL1Analyzer = LL1Analyzer;
 
 
-},{"./IntervalSet":17,"./PredictionContext":22,"./Token":25,"./Utils":26,"./atn/ATNConfig":28,"./atn/ATNState":33,"./atn/Transition":41}],19:[function(require,module,exports){
+},{"./IntervalSet":22,"./PredictionContext":27,"./Token":30,"./Utils":31,"./atn/ATNConfig":33,"./atn/ATNState":38,"./atn/Transition":46}],24:[function(require,module,exports){
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
  * can be found in the LICENSE.txt file in the project root.
@@ -25264,7 +25761,7 @@ Lexer.prototype.recover = function(re) {
 
 exports.Lexer = Lexer;
 
-},{"./CommonTokenFactory":13,"./Recognizer":23,"./Token":25,"./error/Errors":50}],20:[function(require,module,exports){
+},{"./CommonTokenFactory":18,"./Recognizer":28,"./Token":30,"./error/Errors":55}],25:[function(require,module,exports){
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
  * can be found in the LICENSE.txt file in the project root.
@@ -25939,7 +26436,7 @@ Parser.prototype.setTrace = function(trace) {
 };
 
 exports.Parser = Parser;
-},{"./Lexer":19,"./Recognizer":23,"./Token":25,"./atn/ATNDeserializationOptions":30,"./atn/ATNDeserializer":31,"./error/ErrorStrategy":49,"./tree/Tree":55}],21:[function(require,module,exports){
+},{"./Lexer":24,"./Recognizer":28,"./Token":30,"./atn/ATNDeserializationOptions":35,"./atn/ATNDeserializer":36,"./error/ErrorStrategy":54,"./tree/Tree":60}],26:[function(require,module,exports){
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
  * can be found in the LICENSE.txt file in the project root.
@@ -26165,7 +26662,7 @@ InterpreterRuleContext.prototype = Object.create(ParserRuleContext.prototype);
 InterpreterRuleContext.prototype.constructor = InterpreterRuleContext;
 
 exports.ParserRuleContext = ParserRuleContext;
-},{"./IntervalSet":17,"./RuleContext":24,"./tree/Tree":55}],22:[function(require,module,exports){
+},{"./IntervalSet":22,"./RuleContext":29,"./tree/Tree":60}],27:[function(require,module,exports){
 //
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
@@ -26898,7 +27395,7 @@ exports.SingletonPredictionContext = SingletonPredictionContext;
 exports.predictionContextFromRuleContext = predictionContextFromRuleContext;
 exports.getCachedPredictionContext = getCachedPredictionContext;
 
-},{"./RuleContext":24,"./Utils":26}],23:[function(require,module,exports){
+},{"./RuleContext":29,"./Utils":31}],28:[function(require,module,exports){
 //
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
@@ -27047,7 +27544,7 @@ Object.defineProperty(Recognizer.prototype, "state", {
 
 exports.Recognizer = Recognizer;
 
-},{"./Token":25,"./error/ErrorListener":48}],24:[function(require,module,exports){
+},{"./Token":30,"./error/ErrorListener":53}],29:[function(require,module,exports){
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
  * can be found in the LICENSE.txt file in the project root.
@@ -27206,7 +27703,7 @@ RuleContext.prototype.toString = function(ruleNames, stop) {
 };
 
 
-},{"./atn/ATN":27,"./tree/Tree":55,"./tree/Trees":56}],25:[function(require,module,exports){
+},{"./atn/ATN":32,"./tree/Tree":60,"./tree/Trees":61}],30:[function(require,module,exports){
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
  * can be found in the LICENSE.txt file in the project root.
@@ -27359,7 +27856,7 @@ CommonToken.prototype.toString = function() {
 exports.Token = Token;
 exports.CommonToken = CommonToken;
 
-},{}],26:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
  * can be found in the LICENSE.txt file in the project root.
@@ -27807,7 +28304,7 @@ exports.arrayToString = arrayToString;
 exports.titleCase = titleCase;
 exports.equalArrays = equalArrays;
 
-},{}],27:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
  * can be found in the LICENSE.txt file in the project root.
@@ -27950,7 +28447,7 @@ ATN.prototype.getExpectedTokens = function( stateNumber, ctx ) {
 ATN.INVALID_ALT_NUMBER = 0;
 
 exports.ATN = ATN;
-},{"./../IntervalSet":17,"./../LL1Analyzer":18,"./../Token":25}],28:[function(require,module,exports){
+},{"./../IntervalSet":22,"./../LL1Analyzer":23,"./../Token":30}],33:[function(require,module,exports){
 //
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
@@ -28127,7 +28624,7 @@ LexerATNConfig.prototype.checkNonGreedyDecision = function(source, target) {
 
 exports.ATNConfig = ATNConfig;
 exports.LexerATNConfig = LexerATNConfig;
-},{"../Utils":26,"./ATNState":33,"./SemanticContext":40}],29:[function(require,module,exports){
+},{"../Utils":31,"./ATNState":38,"./SemanticContext":45}],34:[function(require,module,exports){
 //
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
@@ -28384,7 +28881,7 @@ OrderedATNConfigSet.prototype.constructor = OrderedATNConfigSet;
 exports.ATNConfigSet = ATNConfigSet;
 exports.OrderedATNConfigSet = OrderedATNConfigSet;
 
-},{"./../PredictionContext":22,"./../Utils":26,"./ATN":27,"./SemanticContext":40}],30:[function(require,module,exports){
+},{"./../PredictionContext":27,"./../Utils":31,"./ATN":32,"./SemanticContext":45}],35:[function(require,module,exports){
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
  * can be found in the LICENSE.txt file in the project root.
@@ -28411,7 +28908,7 @@ ATNDeserializationOptions.defaultOptions.readOnly = true;
 
 exports.ATNDeserializationOptions = ATNDeserializationOptions;
 
-},{}],31:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
  * can be found in the LICENSE.txt file in the project root.
@@ -29090,7 +29587,7 @@ ATNDeserializer.prototype.lexerActionFactory = function(type, data1, data2) {
 
 
 exports.ATNDeserializer = ATNDeserializer;
-},{"./../IntervalSet":17,"./../Token":25,"./ATN":27,"./ATNDeserializationOptions":30,"./ATNState":33,"./ATNType":34,"./LexerAction":36,"./Transition":41}],32:[function(require,module,exports){
+},{"./../IntervalSet":22,"./../Token":30,"./ATN":32,"./ATNDeserializationOptions":35,"./ATNState":38,"./ATNType":39,"./LexerAction":41,"./Transition":46}],37:[function(require,module,exports){
 //
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
@@ -29143,7 +29640,7 @@ ATNSimulator.prototype.getCachedContext = function(context) {
 
 exports.ATNSimulator = ATNSimulator;
 
-},{"./../PredictionContext":22,"./../dfa/DFAState":45,"./ATNConfigSet":29}],33:[function(require,module,exports){
+},{"./../PredictionContext":27,"./../dfa/DFAState":50,"./ATNConfigSet":34}],38:[function(require,module,exports){
 //
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
@@ -29471,7 +29968,7 @@ exports.PlusBlockStartState = PlusBlockStartState;
 exports.StarBlockStartState = StarBlockStartState;
 exports.BasicBlockStartState = BasicBlockStartState;
 
-},{}],34:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
  * can be found in the LICENSE.txt file in the project root.
@@ -29490,7 +29987,7 @@ ATNType.PARSER = 1;
 exports.ATNType = ATNType;
 
 
-},{}],35:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 //
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
@@ -30128,7 +30625,7 @@ LexerATNSimulator.prototype.getTokenName = function(tt) {
 
 exports.LexerATNSimulator = LexerATNSimulator;
 
-},{"./../Lexer":19,"./../PredictionContext":22,"./../Token":25,"./../dfa/DFAState":45,"./../error/Errors":50,"./ATN":27,"./ATNConfig":28,"./ATNConfigSet":29,"./ATNSimulator":32,"./ATNState":33,"./LexerActionExecutor":37,"./Transition":41}],36:[function(require,module,exports){
+},{"./../Lexer":24,"./../PredictionContext":27,"./../Token":30,"./../dfa/DFAState":50,"./../error/Errors":55,"./ATN":32,"./ATNConfig":33,"./ATNConfigSet":34,"./ATNSimulator":37,"./ATNState":38,"./LexerActionExecutor":42,"./Transition":46}],41:[function(require,module,exports){
 //
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
@@ -30495,7 +30992,7 @@ exports.LexerTypeAction = LexerTypeAction;
 exports.LexerPushModeAction = LexerPushModeAction;
 exports.LexerPopModeAction = LexerPopModeAction;
 exports.LexerModeAction = LexerModeAction;
-},{}],37:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 //
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
@@ -30663,7 +31160,7 @@ LexerActionExecutor.prototype.equals = function(other) {
 
 exports.LexerActionExecutor = LexerActionExecutor;
 
-},{"../Utils":26,"./LexerAction":36}],38:[function(require,module,exports){
+},{"../Utils":31,"./LexerAction":41}],43:[function(require,module,exports){
 //
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
@@ -32392,7 +32889,7 @@ ParserATNSimulator.prototype.reportAmbiguity = function(dfa, D, startIndex, stop
 };
 
 exports.ParserATNSimulator = ParserATNSimulator;
-},{"./../IntervalSet":17,"./../ParserRuleContext":21,"./../PredictionContext":22,"./../RuleContext":24,"./../Token":25,"./../Utils":26,"./../dfa/DFAState":45,"./../error/Errors":50,"./ATN":27,"./ATNConfig":28,"./ATNConfigSet":29,"./ATNSimulator":32,"./ATNState":33,"./PredictionMode":39,"./SemanticContext":40,"./Transition":41}],39:[function(require,module,exports){
+},{"./../IntervalSet":22,"./../ParserRuleContext":26,"./../PredictionContext":27,"./../RuleContext":29,"./../Token":30,"./../Utils":31,"./../dfa/DFAState":50,"./../error/Errors":55,"./ATN":32,"./ATNConfig":33,"./ATNConfigSet":34,"./ATNSimulator":37,"./ATNState":38,"./PredictionMode":44,"./SemanticContext":45,"./Transition":46}],44:[function(require,module,exports){
 //
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
@@ -32953,7 +33450,7 @@ PredictionMode.getSingleViableAlt = function(altsets) {
 
 exports.PredictionMode = PredictionMode;
 
-},{"../Utils":26,"./../Utils":26,"./ATN":27,"./ATNConfig":28,"./ATNConfigSet":29,"./ATNState":33,"./SemanticContext":40}],40:[function(require,module,exports){
+},{"../Utils":31,"./../Utils":31,"./ATN":32,"./ATNConfig":33,"./ATNConfigSet":34,"./ATNState":38,"./SemanticContext":45}],45:[function(require,module,exports){
 //
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
@@ -33359,7 +33856,7 @@ exports.SemanticContext = SemanticContext;
 exports.PrecedencePredicate = PrecedencePredicate;
 exports.Predicate = Predicate;
 
-},{"./../Utils":26}],41:[function(require,module,exports){
+},{"./../Utils":31}],46:[function(require,module,exports){
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
  * can be found in the LICENSE.txt file in the project root.
@@ -33676,7 +34173,7 @@ exports.WildcardTransition = WildcardTransition;
 exports.PredicateTransition = PredicateTransition;
 exports.PrecedencePredicateTransition = PrecedencePredicateTransition;
 exports.AbstractPredicateTransition = AbstractPredicateTransition;
-},{"./../IntervalSet":17,"./../Token":25,"./SemanticContext":40}],42:[function(require,module,exports){
+},{"./../IntervalSet":22,"./../Token":30,"./SemanticContext":45}],47:[function(require,module,exports){
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
  * can be found in the LICENSE.txt file in the project root.
@@ -33688,7 +34185,7 @@ exports.LexerATNSimulator = require('./LexerATNSimulator').LexerATNSimulator;
 exports.ParserATNSimulator = require('./ParserATNSimulator').ParserATNSimulator;
 exports.PredictionMode = require('./PredictionMode').PredictionMode;
 
-},{"./ATN":27,"./ATNDeserializer":31,"./LexerATNSimulator":35,"./ParserATNSimulator":38,"./PredictionMode":39}],43:[function(require,module,exports){
+},{"./ATN":32,"./ATNDeserializer":36,"./LexerATNSimulator":40,"./ParserATNSimulator":43,"./PredictionMode":44}],48:[function(require,module,exports){
 //
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
@@ -33843,7 +34340,7 @@ DFA.prototype.toLexerString = function() {
 
 exports.DFA = DFA;
 
-},{"../Utils":26,"../atn/ATNState":33,"./../atn/ATNConfigSet":29,"./DFASerializer":44,"./DFAState":45}],44:[function(require,module,exports){
+},{"../Utils":31,"../atn/ATNState":38,"./../atn/ATNConfigSet":34,"./DFASerializer":49,"./DFAState":50}],49:[function(require,module,exports){
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
  * can be found in the LICENSE.txt file in the project root.
@@ -33924,7 +34421,7 @@ exports.DFASerializer = DFASerializer;
 exports.LexerDFASerializer = LexerDFASerializer;
 
 
-},{}],45:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 //
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
@@ -34078,7 +34575,7 @@ DFAState.prototype.hashCode = function() {
 exports.DFAState = DFAState;
 exports.PredPrediction = PredPrediction;
 
-},{"./../Utils":26,"./../atn/ATNConfigSet":29}],46:[function(require,module,exports){
+},{"./../Utils":31,"./../atn/ATNConfigSet":34}],51:[function(require,module,exports){
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
  * can be found in the LICENSE.txt file in the project root.
@@ -34089,7 +34586,7 @@ exports.DFASerializer = require('./DFASerializer').DFASerializer;
 exports.LexerDFASerializer = require('./DFASerializer').LexerDFASerializer;
 exports.PredPrediction = require('./DFAState').PredPrediction;
 
-},{"./DFA":43,"./DFASerializer":44,"./DFAState":45}],47:[function(require,module,exports){
+},{"./DFA":48,"./DFASerializer":49,"./DFAState":50}],52:[function(require,module,exports){
 //
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
@@ -34201,7 +34698,7 @@ DiagnosticErrorListener.prototype.getConflictingAlts = function(reportedAlts, co
 };
 
 exports.DiagnosticErrorListener = DiagnosticErrorListener;
-},{"./../IntervalSet":17,"./../Utils":26,"./ErrorListener":48}],48:[function(require,module,exports){
+},{"./../IntervalSet":22,"./../Utils":31,"./ErrorListener":53}],53:[function(require,module,exports){
 //
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
@@ -34290,7 +34787,7 @@ exports.ConsoleErrorListener = ConsoleErrorListener;
 exports.ProxyErrorListener = ProxyErrorListener;
 
 
-},{}],49:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 //
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
@@ -35048,7 +35545,7 @@ BailErrorStrategy.prototype.sync = function(recognizer) {
 exports.BailErrorStrategy = BailErrorStrategy;
 exports.DefaultErrorStrategy = DefaultErrorStrategy;
 
-},{"./../IntervalSet":17,"./../Token":25,"./../atn/ATNState":33,"./Errors":50}],50:[function(require,module,exports){
+},{"./../IntervalSet":22,"./../Token":30,"./../atn/ATNState":38,"./Errors":55}],55:[function(require,module,exports){
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
  * can be found in the LICENSE.txt file in the project root.
@@ -35219,7 +35716,7 @@ exports.InputMismatchException = InputMismatchException;
 exports.FailedPredicateException = FailedPredicateException;
 exports.ParseCancellationException = ParseCancellationException;
 
-},{"./../atn/Transition":41}],51:[function(require,module,exports){
+},{"./../atn/Transition":46}],56:[function(require,module,exports){
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
  * can be found in the LICENSE.txt file in the project root.
@@ -35234,7 +35731,7 @@ exports.DiagnosticErrorListener = require('./DiagnosticErrorListener').Diagnosti
 exports.BailErrorStrategy = require('./ErrorStrategy').BailErrorStrategy;
 exports.ErrorListener = require('./ErrorListener').ErrorListener;
 
-},{"./DiagnosticErrorListener":47,"./ErrorListener":48,"./ErrorStrategy":49,"./Errors":50}],52:[function(require,module,exports){
+},{"./DiagnosticErrorListener":52,"./ErrorListener":53,"./ErrorStrategy":54,"./Errors":55}],57:[function(require,module,exports){
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
  * can be found in the LICENSE.txt file in the project root.
@@ -35259,7 +35756,7 @@ exports.ParserRuleContext = require('./ParserRuleContext').ParserRuleContext;
 exports.Interval = require('./IntervalSet').Interval;
 exports.Utils = require('./Utils');
 
-},{"./CharStreams":12,"./CommonTokenStream":14,"./FileStream":15,"./InputStream":16,"./IntervalSet":17,"./Lexer":19,"./Parser":20,"./ParserRuleContext":21,"./PredictionContext":22,"./Token":25,"./Utils":26,"./atn/index":42,"./dfa/index":46,"./error/index":51,"./polyfills/codepointat":53,"./polyfills/fromcodepoint":54,"./tree/index":57}],53:[function(require,module,exports){
+},{"./CharStreams":17,"./CommonTokenStream":19,"./FileStream":20,"./InputStream":21,"./IntervalSet":22,"./Lexer":24,"./Parser":25,"./ParserRuleContext":26,"./PredictionContext":27,"./Token":30,"./Utils":31,"./atn/index":47,"./dfa/index":51,"./error/index":56,"./polyfills/codepointat":58,"./polyfills/fromcodepoint":59,"./tree/index":62}],58:[function(require,module,exports){
 /*! https://mths.be/codepointat v0.2.0 by @mathias */
 if (!String.prototype.codePointAt) {
 	(function() {
@@ -35315,7 +35812,7 @@ if (!String.prototype.codePointAt) {
 	}());
 }
 
-},{}],54:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 /*! https://mths.be/fromcodepoint v0.2.1 by @mathias */
 if (!String.fromCodePoint) {
 	(function() {
@@ -35379,7 +35876,7 @@ if (!String.fromCodePoint) {
 	}());
 }
 
-},{}],55:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
  * can be found in the LICENSE.txt file in the project root.
@@ -35607,7 +36104,7 @@ exports.ParseTreeVisitor = ParseTreeVisitor;
 exports.ParseTreeWalker = ParseTreeWalker;
 exports.INVALID_INTERVAL = INVALID_INTERVAL;
 
-},{"../Utils.js":26,"./../IntervalSet":17,"./../Token":25}],56:[function(require,module,exports){
+},{"../Utils.js":31,"./../IntervalSet":22,"./../Token":30}],61:[function(require,module,exports){
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
  * can be found in the LICENSE.txt file in the project root.
@@ -35748,7 +36245,7 @@ Trees.descendants = function(t) {
 
 
 exports.Trees = Trees;
-},{"./../ParserRuleContext":21,"./../RuleContext":24,"./../Token":25,"./../Utils":26,"./../atn/ATN":27,"./Tree":55}],57:[function(require,module,exports){
+},{"./../ParserRuleContext":26,"./../RuleContext":29,"./../Token":30,"./../Utils":31,"./../atn/ATN":32,"./Tree":60}],62:[function(require,module,exports){
 /* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
  * can be found in the LICENSE.txt file in the project root.
@@ -35761,6 +36258,6 @@ exports.ParseTreeListener = Tree.ParseTreeListener;
 exports.ParseTreeVisitor = Tree.ParseTreeVisitor;
 exports.ParseTreeWalker = Tree.ParseTreeWalker;
 
-},{"./Tree":55,"./Trees":56}],58:[function(require,module,exports){
+},{"./Tree":60,"./Trees":61}],63:[function(require,module,exports){
 
-},{}]},{},[2]);
+},{}]},{},[3]);

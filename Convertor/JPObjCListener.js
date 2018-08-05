@@ -17,10 +17,9 @@ var JPCommonContext = c.JPCommonContext,
     JPForInContext = c.JPForInContext,
     JPForInContentContext = c.JPForInContentContext,
     JPBridgeContext = c.JPBridgeContext,
-    JPForInVariableSetContext = c.JPForInVariableSetContext,
-    JPPropertyCallingContext = c.JPPropertyCallingContext,
-    JPPropertyCallerContext = c.JPPropertyCallerContext;
+    JPForInVariableSetContext = c.JPForInVariableSetContext
 
+var treeView = require('./HHTreeViewer')
 
 var excludeClassNames = [
     'BOOL',
@@ -51,8 +50,8 @@ var JPObjCListener = function(cb) {
 JPObjCListener.prototype = Object.create(ObjCListener.prototype);
 
 JPObjCListener.prototype.buildScript = function() {
-
     this.cb(this.rootContext.parse(), this.rootContext.className);
+    // treeView.view(this.rootContext);
 }
 
 JPObjCListener.prototype.addStrContext = function(stop) {
@@ -295,13 +294,8 @@ JPObjCListener.prototype.exitDeclaration = function(ctx) {
 
 // Enter a parse tree produced by ObjectiveCParser#expressions.
 JPObjCListener.prototype.enterExpression = function(ctx) {
-    // if (ctx.getText() == 'arr') {
-    //     console.log(ctx.getText())
-    // }
     this.contextBinder.bind(ctx, this.currContext);
     if (ctx.assignmentOperator() && ctx.assignmentOperator().getText() == '=') {
-        // var leftStr = ctx.start.source[1].strdata.substring(ctx.children[0].start.start, ctx.children[0].stop.stop + 1)
-        // if (leftStr.indexOf('.') > -1 || leftStr.indexOf('_') == 0) {
             var assignContext = new JPAssignContext();
 
             var assignLeftContext = new JPAssignLeftContext();
@@ -313,7 +307,6 @@ JPObjCListener.prototype.enterExpression = function(ctx) {
 
             this.currContext = assignLeftContext;
             this.currContext.currIdx = ctx.start.start;
-        // }
     }
 };
 
@@ -321,8 +314,6 @@ JPObjCListener.prototype.enterExpression = function(ctx) {
 JPObjCListener.prototype.exitExpression = function(ctx) {
     var context = this.contextBinder.unbind(ctx);
     if (ctx.assignmentOperator() && ctx.assignmentOperator().getText() == '=') {
-        // var leftStr = ctx.start.source[1].strdata.substring(ctx.children[0].start.start, ctx.children[0].stop.stop + 1)
-        // if (leftStr.indexOf('.') > -1 || leftStr.indexOf('_') == 0) {
             this.addStrContext(ctx.stop.stop + 1)
 
             var preContext = this.currContext;
@@ -333,7 +324,6 @@ JPObjCListener.prototype.exitExpression = function(ctx) {
                     break;
                 }
             } while (preContext = preContext.pre)
-        // }
     }
     else if (context instanceof JPForInVariableSetContext) {
         this.addStrContext(ctx.stop.stop + 1);
@@ -352,7 +342,7 @@ JPObjCListener.prototype.enterAssignmentOperator = function(ctx) {
                 this.addStrContext(ctx.start.start)
 
                 var assignRightContext = new JPAssignRightContext();
-                assignContext = preContext.parent;
+                var assignContext = preContext.parent;
                 assignContext.right = assignRightContext;
                 assignRightContext.parent = assignContext;
 

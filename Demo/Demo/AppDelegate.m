@@ -22,13 +22,10 @@
     // Override point for customization after application launch.
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    [self.window makeKeyAndVisible];
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:[ViewController new]];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:[TestViewController new]];
     navController.navigationBar.hidden = YES;
     self.window.rootViewController = navController;
     [self.window makeKeyAndVisible];
-    
-    [[HotComplileEngine sharedInstance] hotReloadProject];
     
     UIButton *button = [UIButton new];
     [button setTitleColor:[UIColor blueColor] forState:UIControlStateHighlighted];

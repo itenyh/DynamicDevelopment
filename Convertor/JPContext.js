@@ -3,344 +3,344 @@ var delayParsedContexts = [];	//{locationMark:"###1###", context:context}
 var isFinishedParsed = false;
 
 /////////////////Base
-var JPContext = function() {
-	this.next = null;
-	this.pre = null;
-	this.currIdx = 0;
-}
-
-JPContext.prototype.parse = function() {
-	return ''
-}
-
-JPContext.prototype.setNext = function(ctx) {
-	ctx.pre = this;
-	if (this.next) {
-		this.next.next = ctx;
-	} else {
-		this.next = ctx;
+class JPContext {
+	constructor() {
+		this.next = null;
+        this.pre = null;
+        this.currIdx = 0;
 	}
-}
 
+    parse () {
+        return ''
+    }
+
+    setNext (ctx) {
+        ctx.pre = this;
+        if (this.next) {
+            this.next.next = ctx;
+        } else {
+            this.next = ctx;
+        }
+    }
+}
 
 /////////////////JPCommonContext
-var JPCommonContext = function(str) {
-	//找到property属性
-    if (/(\.[a-zA-z_]{1}[a-zA-z_1-9]*)/g.test(str)) {
-    	var isStartWith_ = str.indexOf('_') == 0;
-    	if (isStartWith_) {
-    		str = str.substring(1);
-		}
-        str = str.replace(/_/g,'__');
-    	if (isStartWith_) {
-    		str = '_' + str;
-		}
+class JPCommonContext extends JPContext {
+	constructor(str) {
+		super()
+        this.str = str;
+	}
+    parse () {
+        return this.str ? this.str : '';
     }
-    this.str = str;
 }
-
-JPCommonContext.prototype = Object.create(JPContext.prototype);
-JPCommonContext.prototype.parse = function() {
-	return this.str ? this.str : '';
-}
-
 
 /////////////////JPBridgeContext
-var JPBridgeContext = function() {
-
-}
-JPBridgeContext.prototype = Object.create(JPContext.prototype);
-JPBridgeContext.prototype.parse = function() {
-	var ctx = this;
-	var script = '';
-	while (ctx = ctx.next) {
-		script += ctx.parse();
+class JPBridgeContext extends JPContext {
+	constructor () {
+		super()
 	}
-	return script;
+    parse () {
+        var ctx = this;
+        var script = '';
+        while (ctx = ctx.next) {
+            script += ctx.parse();
+        }
+        return script;
+    }
 }
-
-
 
 /////////////////JPClassContext
 
-var JPClassContext = function(className) {
-	this.className = className;
-	this.instanceMethods = [];
-	this.classMethods = [];
-	this.ignore = 0;
+class JPClassContext extends JPContext {
+	constructor () {
+		super()
+        this.className = '';
+        this.instanceMethods = [];
+        this.classMethods = [];
+        this.ignore = 0;
+	}
+
+	parse () {
+        var script = this.ignore ? '' : "defineClass('" + this.className + "', {";
+        for (var i = 0; i < this.instanceMethods.length; i ++) {
+            var separator = this.ignore && this.instanceMethods.length <= 1 ? '': ',';
+            script += this.instanceMethods[i].parse() + separator;
+            localMethods.push(this.instanceMethods[i].parsedMethodName);
+        }
+        script += this.ignore ? '' : '}';
+        if (this.classMethods.length) {
+            script += this.ignore ? '' : ',{';
+            for (var i = 0; i < this.classMethods.length; i ++) {
+                var separator = this.ignore && this.classMethods.length <= 1 ? '': ','
+                script += this.classMethods[i].parse() + separator;
+                localMethods.push(this.classMethods[i].parsedMethodName);
+            }
+            script += this.ignore ? '' : '}'
+        }
+        script += this.ignore ? '' : ');';
+
+        isFinishedParsed = true;
+        for (var i in delayParsedContexts) {
+            var locationMark = delayParsedContexts[i]['locationMark'];
+            var context = delayParsedContexts[i]['context'];
+            script = script.replace(locationMark, context.parse());
+        }
+
+        return script;
+	}
 }
-JPClassContext.prototype = Object.create(JPContext.prototype);
-JPClassContext.prototype.parse = function(){
-
-
-	var script = this.ignore ? '' : "defineClass('" + this.className + "', {";
-	for (var i = 0; i < this.instanceMethods.length; i ++) {
-		var separator = this.ignore && this.instanceMethods.length <= 1 ? '': ',';
-		script += this.instanceMethods[i].parse() + separator;
-        localMethods.push(this.instanceMethods[i].parsedMethodName);
-	}
-	script += this.ignore ? '' : '}';
-	if (this.classMethods.length) {
-		script += this.ignore ? '' : ',{';
-		for (var i = 0; i < this.classMethods.length; i ++) {
-			var separator = this.ignore && this.classMethods.length <= 1 ? '': ','
-			script += this.classMethods[i].parse() + separator;
-            localMethods.push(this.classMethods[i].parsedMethodName);
-		}
-		script += this.ignore ? '' : '}'
-	}
-	script += this.ignore ? '' : ');';
-
-	isFinishedParsed = true;
-	for (var i in delayParsedContexts) {
-		var locationMark = delayParsedContexts[i]['locationMark'];
-		var context = delayParsedContexts[i]['context'];
-        script = script.replace(locationMark, context.parse());
-	}
-
-	return script;
- }
-
 
 /////////////////JPMethodContext
 
-var JPMethodContext = function() {
-	this.names = [];
-	this.params = [];
-	this.parsedMethodName = ''
-	this.ignore = 0;
-}
-JPMethodContext.prototype = Object.create(JPContext.prototype);
-JPMethodContext.prototype.parse = function(){
-	var ctx = this;
-	var script = ''
-	if (!this.ignore) {
-		var firstName = this.names[0]
-		if (firstName[0] == '_') {
-			// 处理下划线开头函数名
-			firstName = "_" + firstName;
-			this.names[0] = firstName;
-		}
-        this.parsedMethodName = this.names.join('_');
-		script = this.parsedMethodName + ": function(" + this.params.join(',') + ") {"
+class JPMethodContext extends  JPContext {
+	constructor () {
+		super()
+        this.names = [];
+        this.params = [];
+        this.parsedMethodName = ''
+        this.ignore = 0;
 	}
 
-	while (ctx = ctx.next) {
-		script += ctx.parse();
-	} 
-	script += this.ignore ? '' : '}'
-	return script;
-}
+    parse (){
+        var ctx = this;
+        var script = ''
+        if (!this.ignore) {
+            var firstName = this.names[0]
+            if (firstName[0] == '_') {
+                // 处理下划线开头函数名
+                firstName = "_" + firstName;
+                this.names[0] = firstName;
+            }
+            this.parsedMethodName = this.names.join('_');
+            script = this.parsedMethodName + ": function(" + this.params.join(',') + ") {"
+        }
 
+        while (ctx = ctx.next) {
+            script += ctx.parse();
+        }
+        script += this.ignore ? '' : '}'
+        return script;
+    }
+}
 
 /////////////////JPMsgContext
 
-var JPMsgContext = function() {
-	this.receiver = null;
-	this.selector = [];
-	this.parsedSelector = null;
-	this.preMsg = null;
+class JPMsgContext extends JPContext {
+	constructor() {
+		super()
+        this.receiver = null;
+        this.selector = [];
+        this.parsedSelector = null;
+        this.preMsg = null;
 
-	this.argumentIndex = 0;
-}
+        this.argumentIndex = 0;
+	}
 
-JPMsgContext.prototype = Object.create(JPContext.prototype);
-
-JPMsgContext.prototype.parse = function() {
-	var code = '';
-	if (typeof this.receiver == "string") {
-        if (this.receiver.indexOf('_') == 0) {
-            var receivers = this.receiver.split('.');
-            code += 'self' + '|__dot__|' + "getProp('" + receivers.shift().substr(1).trim() + "')";
+    parse () {
+        var code = this.receiver.parse();
+        if (code.indexOf('_') == 0) {
+            var receivers = code.split('.');
+            code = 'self' + '|__dot__|' + "getProp('" + receivers.shift().substr(1).trim() + "')";
             if (receivers.length > 0) {
                 code += '.' + receivers.join('.');
             }
         }
-        else {
-            code += this.receiver;
+
+        var funcName = [];
+        var params = [];
+        for (var i = 0; i < this.selector.length; i ++) {
+            var name = this.selector[i].name.replace(/_/g, '__');
+            funcName.push(name);
+            if (typeof this.selector[i].param == "string") {
+                params.push(this.selector[i].param);
+            } else if (this.selector[i].param) {
+                params.push(this.selector[i].param.parse());
+            }
         }
-	} else {
-		code += this.receiver.parse();
-	}
 
-	var funcName = [];
-	var params = [];
-	for (var i = 0; i < this.selector.length; i ++) {
-		var name = this.selector[i].name.replace(/_/g, '__');
-		funcName.push(name);
-		if (typeof this.selector[i].param == "string") {
-			params.push(this.selector[i].param);
-		} else if (this.selector[i].param) {
-			params.push(this.selector[i].param.parse());
-		}
-	}
-
-	this.parsedSelector = funcName.join('_');
-    code += '|__dot__|' + this.parsedSelector + '(' + params.join(',') + ')';
-	return code;
+        this.parsedSelector = funcName.join('_');
+        code += '|__dot__|' + this.parsedSelector + '(' + params.join(',') + ')';
+        return code;
+    }
 }
 
 /////////////////JPParamContext
 
-var JPParamContext = function() {
-	this.parent = null;
+class JPParamContext extends JPBridgeContext {
+	constructor () {
+		super();
+        this.parent = null;
+	}
 }
-
-JPParamContext.prototype = Object.create(JPBridgeContext.prototype);
-
 
 /////////////////JPBlockContext
 
-var JPBlockContext = function() {
-	this.types = [];
-	this.names = [];
-	this.msg = null;
-	this.content = null;
-}
-
-JPBlockContext.prototype = Object.create(JPContext.prototype);
-JPBlockContext.prototype.parse = function(){
-
-    var isLocalMethod = false;
-
-	//如果作为参数的block，要等所有的解析完成后，再解析
-	if (this.msg) {
-		if (!isFinishedParsed) {
-            var locationMark = '####' + delayParsedContexts.length + '####';
-            delayParsedContexts.push({locationMark: locationMark, context: this});
-            return locationMark;
-        }
-        else {
-            var blockSelector = this.msg.parsedSelector;
-            for (var i in localMethods) {
-                var selector = localMethods[i];
-                if (selector === blockSelector) {
-                    isLocalMethod = true;
-                    break;
-                }
-            }
-		}
+class JPBlockContext extends JPContext {
+	constructor () {
+		super()
+        this.types = [];
+        this.names = [];
+        this.msg = null;
+        this.content = null;
 	}
 
-    if (isLocalMethod) {
-        var script = 'function(' + this.names.join(',') + ') {';
-        return script + this.content.parse() + "}";
-    }
-    else {
-        var paramTypes = this.types.length ? "'void, " + this.types.join(',') + "', " : "'void' , ";
-        var script = 'block(' + paramTypes + 'function(' + this.names.join(',') + ') {';
-        return script + this.content.parse() + "})";
-    }
+    parse () {
 
+        var isLocalMethod = false;
+
+        //如果作为参数的block，要等所有的解析完成后，再解析
+        if (this.msg) {
+            if (!isFinishedParsed) {
+                var locationMark = '####' + delayParsedContexts.length + '####';
+                delayParsedContexts.push({locationMark: locationMark, context: this});
+                return locationMark;
+            }
+            else {
+                var blockSelector = this.msg.parsedSelector;
+                for (var i in localMethods) {
+                    var selector = localMethods[i];
+                    if (selector === blockSelector) {
+                        isLocalMethod = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (isLocalMethod) {
+            var script = 'function(' + this.names.join(',') + ') {';
+            return script + this.content.parse() + "}";
+        }
+        else {
+            var paramTypes = this.types.length ? "'void, " + this.types.join(',') + "', " : "'void' , ";
+            var script = 'block(' + paramTypes + 'function(' + this.names.join(',') + ') {';
+            return script + this.content.parse() + "})";
+        }
+
+    }
 }
 
-
-var JPBlockContentContext = function() {
-	this.parent = null;
+class JPBlockContentContext extends JPBridgeContext {
+	constructor () {
+		super()
+        this.parent = null;
+	}
 }
-
-JPBlockContentContext.prototype = Object.create(JPBridgeContext.prototype);
-
 
 /////////////////JPAssignContext
 
-var JPAssignContext = function() {
-	this.left = null;
-	this.right = null;
-}
-
-JPAssignContext.prototype = Object.create(JPContext.prototype);
-JPAssignContext.prototype.parse = function(){
-    var leftStr = this.left.parse();
-    var leftArr = leftStr.split(/\|__dot__\||\./);
-    var lastProperty = leftArr[leftArr.length - 1];
-    var firstProperty = leftArr[0];
-
-    if (leftArr.length == 1) {
-    	if (firstProperty[0] == '_') {
-            return 'self' + '|__dot__|' + 'setProp_forKey(' + this.right.parse() + ", '" + lastProperty.substr(1).trim() + "')";
-        }
-    	else {
-    		return firstProperty + ' = ' + this.right.parse();
-		}
+class JPAssignContext extends JPContext {
+	constructor() {
+		super()
+        this.left = null;
+        this.right = null;
 	}
-	else {
-        if (firstProperty[0] == '_') {
-            firstProperty = 'self' + '|__dot__|' + "getProp('" + firstProperty.substr(1).trim() +"')";
-        }
-        if (/jp_element\(.+\)\s*$/gm.test(lastProperty)) {
-            lastProperty = lastProperty.replace(/jp_element\((.+)\)\s*$/gm, 'setJp_element($1,' + this.right.parse() + ')');
+	parse () {
+        var leftStr = this.left.parse();
+        var leftArr = leftStr.split(/\|__dot__\||\./);
+        var lastProperty = leftArr[leftArr.length - 1];
+        var firstProperty = leftArr[0];
+
+        if (leftArr.length == 1) {
+            if (firstProperty[0] == '_') {
+                return 'self' + '|__dot__|' + 'setProp_forKey(' + this.right.parse() + ", '" + lastProperty.substr(1).trim() + "')";
+            }
+            else {
+                return firstProperty + ' = ' + this.right.parse();
+            }
         }
         else {
-            lastProperty = 'set' + lastProperty[0].toUpperCase() + lastProperty.substr(1) + '(' + this.right.parse() + ')';
-		}
-        leftArr = leftArr.slice(1, leftArr.length - 1);
-        return firstProperty + (leftArr.length > 0 ? '.' : '') + leftArr.join('.') + '|__dot__|' + lastProperty;
+            if (firstProperty[0] == '_') {
+                firstProperty = 'self' + '|__dot__|' + "getProp('" + firstProperty.substr(1).trim() +"')";
+            }
+            if (/jp_element\(.+\)\s*$/gm.test(lastProperty)) {
+                lastProperty = lastProperty.replace(/jp_element\((.+)\)\s*$/gm, 'setJp_element($1,' + this.right.parse() + ')');
+            }
+            else {
+                lastProperty = 'set' + lastProperty[0].toUpperCase() + lastProperty.substr(1) + '(' + this.right.parse() + ')';
+            }
+            leftArr = leftArr.slice(1, leftArr.length - 1);
+            return firstProperty + (leftArr.length > 0 ? '.' : '') + leftArr.join('.') + '|__dot__|' + lastProperty;
+        }
+    }
+}
+
+class JPAssignLeftContext extends JPBridgeContext {
+	constructor () {
+		super()
+        this.parent = null;
 	}
 }
 
-
-
-var JPAssignLeftContext = function() {
-	this.parent = null;
+class JPAssignRightContext extends JPBridgeContext {
+	constructor () {
+		super()
+        this.parent = null;
+	}
 }
-JPAssignLeftContext.prototype = Object.create(JPBridgeContext.prototype);
-
-
-var JPAssignRightContext = function() {
-	this.parent = null;
-}
-JPAssignRightContext.prototype = Object.create(JPBridgeContext.prototype);
-
-
-
 
 /////////////////JPDeclarationContext
 
-var JPDeclarationContext = function() {
-	this.parent = null;
-}
-JPDeclarationContext.prototype = Object.create(JPContext.prototype);
-JPDeclarationContext.prototype.parse = function(){
-	return 'var ';
+class JPDeclarationContext extends JPContext {
+	constructor () {
+		super()
+        this.parent = null;
+	}
+
+    parse (){
+        return 'var ';
+    }
 }
 
 /////////////////JPPostfixContext
 
-var JPPostfixContext = function() {
-	this.content = null;
-}
-JPPostfixContext.prototype = Object.create(JPContext.prototype);
-JPPostfixContext.prototype.parse = function() {
-    return '|__dot__|jp_element(' + this.content.parse() + ')';
+class JPPostfixContext extends JPContext {
+	constructor () {
+		super()
+        this.content = null;
+	}
+
+    parse () {
+        return '|__dot__|jp_element(' + this.content.parse() + ')';
+    }
 }
 
-var JPPostfixContentContext = function() {
-    this.parent = null;
+class JPPostfixContentContext extends JPBridgeContext {
+	constructor () {
+		super();
+        this.parent = null;
+	}
 }
-JPPostfixContentContext.prototype = Object.create(JPBridgeContext.prototype);
 
 /////////////////JPForInContext
 
-var JPForInContext = function() {
-    this.content = null;
-    this.variableDeclarator = null;
-    this.variableSet = null;
-}
-JPForInContext.prototype = Object.create(JPContext.prototype);
-JPForInContext.prototype.parse = function() {
-	return 'jp_enumerate(' + this.variableSet.parse() + ', function(' + this.variableDeclarator + ')' + this.content.parse() + ');';
+class JPForInContext extends JPContext {
+	constructor () {
+		super()
+        this.content = null;
+        this.variableDeclarator = null;
+        this.variableSet = null;
+	}
+    parse () {
+        return 'jp_enumerate(' + this.variableSet.parse() + ', function(' + this.variableDeclarator + ')' + this.content.parse() + ');';
+    }
 }
 
-var JPForInContentContext = function() {
-    this.parent = null;
+class JPForInContentContext extends JPBridgeContext {
+    constructor () {
+        super();
+        this.parent = null;
+    }
 }
-JPForInContentContext.prototype = Object.create(JPBridgeContext.prototype);
 
-var JPForInVariableSetContext = function() {
-    this.parent = null;
+class JPForInVariableSetContext extends JPBridgeContext {
+    constructor () {
+        super();
+        this.parent = null;
+    }
 }
-JPForInVariableSetContext.prototype = Object.create(JPBridgeContext.prototype);
+
 /////////////////exports
 
 exports.JPCommonContext = JPCommonContext;

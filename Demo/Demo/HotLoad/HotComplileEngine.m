@@ -190,3 +190,23 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
 }
 
 @end
+
+@interface HotComplileEngine (UIApplication)
+
+@end
+
+@implementation HotComplileEngine (UIApplication)
+
++ (void)load {
+    [[HotComplileEngine sharedInstance] hotReloadProject];
+}
+
+@end
+
+@interface HotComplileEngine (UIWindow)
+
+@end
+
+@implementation HotComplileEngine (UIWindow)
+
+@end

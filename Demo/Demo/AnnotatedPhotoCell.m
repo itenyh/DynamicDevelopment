@@ -30,7 +30,7 @@
     [self.image mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(self.contentView);
     }];
-    [self.image sd_setImageWithURL:[NSURL URLWithString:@"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1533125211232&di=e48cf12310987884fb706e6c3b4812ad&imgtype=0&src=http%3A%2F%2Fc15.eoemarket.net%2Fapp0%2F816%2F816897%2Fscreen%2F4755890.jpg"]];
+    [self.image sd_setImageWithURL:[NSURL URLWithString:@"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534053321&di=9a14c9575d76b0e523a02ec9f98f8db9&imgtype=jpg&er=1&src=http%3A%2F%2Fimg.pconline.com.cn%2Fimages%2Fupload%2Fupc%2Ftx%2Fwallpaper%2F1605%2F31%2Fc2%2F22216357_1464695319646_320x480.jpg"]];
 }
 
 - (UIImageView *)image {

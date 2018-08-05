@@ -32,35 +32,13 @@
         NSLog(@"%@", key);
     }
 
-//    NSMutableDictionary *newDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"1", @"2", nil];
-//    for (id key in set) {
-//        [newDict setObject:[NSNumber numberWithInt:1] forKey:[JSValue new]];
-//    }
+    CGRect rect = [self test:CGRectMake(1, 1, 1, 1)];
+//    NSLog(@"resct: %@", rect);
     
-//    NSArray *array = [[NSArray alloc] initWithObjects:@"对象abc",@"rongfzh", @"totogo2010",nil];
-//    NSSet *set3 = [NSSet setWithArray:array];
-//    NSLog(@"%@", set3);
-    
-//    for (int i = 0;i < set3.count;i++) {
-//        NSLog(@"%@", set3[i]);
-//    }
-    
-//    [set3 enumerateObjectsUsingBlock:^(id  _Nonnull obj, BOOL * _Nonnull stop) {
-//
-//    }];
-    
-//    [array enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-//
-//    }];
-//
-//    [newDict enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-//
-//    }];
-    
-//    for (NSString *str in newDict) {
-//        NSLog(@"str %@", str);
-//    }
-//    
+}
+
+- (CGRect)test:(CGRect)rect {
+    return rect;
 }
 
 - (UILabel *)slabel {

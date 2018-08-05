@@ -69,11 +69,11 @@
 }
 
 - (CGFloat)cellPadding {
-    return 2;
+    return 12;
 }
 
 - (int)numberOfColumns {
-    return 3;
+    return 2;
 }
 
 - (CGFloat)contentWidth {
