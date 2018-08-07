@@ -16,7 +16,7 @@ var fs = require('fs');
 // var data = "if (a) { }";
 // var data = "@implementation Temp \n - (void)test { [NSArray arrayWithObjects:@\"1\"]; } @end";
 // var data = fs.readFileSync('/Users/mkeqi/Desktop/Working____/Demo/Demo/ViewController.m', 'utf8');
-var data = "[self a:@\"_l.jpeg\"];";
+// var data = "@{@\"sdfsdf\":@{@\"a\": @\"b\"}};";
 // var data = "[self animateWithDuration:1 animations:^id(NSString *tt){\n" +
 //     "        \n" +
 //     "    }];";

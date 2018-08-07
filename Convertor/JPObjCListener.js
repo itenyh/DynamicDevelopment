@@ -17,7 +17,12 @@ var JPCommonContext = c.JPCommonContext,
     JPForInContext = c.JPForInContext,
     JPForInContentContext = c.JPForInContentContext,
     JPBridgeContext = c.JPBridgeContext,
-    JPForInVariableSetContext = c.JPForInVariableSetContext
+    JPForInVariableSetContext = c.JPForInVariableSetContext,
+    JPArrayContext = c.JPArrayContext,
+    JPArrayContentContext = c.JPArrayContentContext,
+    JPDictionaryContext = c.JPDictionaryContext,
+    JPDictionaryContentContext = c.JPDictionaryContentContext,
+    JPDictionaryObjContext = c.JPDictionaryObjContext
 
 var treeView = require('./HHTreeViewer')
 
@@ -415,9 +420,29 @@ JPObjCListener.prototype.exitForInStatement = function(ctx) {
 
 // Enter a parse tree produced by ObjectiveCParser#castExpression.
 JPObjCListener.prototype.enterCastExpression = function(ctx) {
+    if (this.currContext instanceof JPDictionaryContentContext) {
+        var dicContentContext = this.currContext;
+        var dicObjContext = new JPDictionaryObjContext();
+        dicObjContext.parent = dicContentContext;
+        dicContentContext.objs.push(dicObjContext);
+        this.contextBinder.bind(ctx, dicObjContext);
+        this.currContext = dicObjContext;
+        this.currContext.currIdx = ctx.start.start;
+    }
     if (ctx.typeName()) {
         this.addStrContext(ctx.start.start);
         this.currContext.currIdx = ctx.typeName().stop.stop + 2;
+    }
+};
+
+// Enter a parse tree produced by ObjectiveCParser#castExpression.
+JPObjCListener.prototype.exitCastExpression = function(ctx) {
+    var context = this.contextBinder.unbind(ctx);
+    if (context instanceof JPDictionaryObjContext) {
+        this.addStrContext(ctx.stop.stop + 1);
+        var dicContentContext = context.parent;
+        this.currContext = dicContentContext;
+        this.currContext.currIdx = ctx.stop.stop + 1;
     }
 };
 
@@ -454,6 +479,68 @@ JPObjCListener.prototype.exitPostfix = function(ctx) {
     }
 };
 
+// Enter a parse tree produced by ObjectiveCParser#arrayExpression.
+JPObjCListener.prototype.enterArrayExpression = function(ctx) {
+    var strContext = this.addStrContext(ctx.start.start);
+    this.currContext = strContext;
+
+    var arrayContext = new JPArrayContext();
+    this.currContext.setNext(arrayContext);
+
+    var arrayContentContext = new JPArrayContentContext();
+    arrayContext.content = arrayContentContext;
+    arrayContentContext.parent = arrayContext;
+
+    this.currContext = arrayContentContext;
+    this.currContext.currIdx = ctx.children[1].symbol.stop + 1;
+};
+
+// Exit a parse tree produced by ObjectiveCParser#arrayExpression.
+JPObjCListener.prototype.exitArrayExpression = function(ctx) {
+    this.addStrContext(ctx.stop.start);
+
+    var preContext = this.currContext;
+    while (preContext) {
+        if (preContext instanceof JPArrayContentContext) {
+            break;
+        }
+        preContext = preContext.pre;
+    }
+    this.currContext = preContext.parent;
+    this.currContext.currIdx = ctx.stop.stop + 1;
+};
+
+// Enter a parse tree produced by ObjectiveCParser#dictionaryExpression.
+JPObjCListener.prototype.enterDictionaryExpression = function(ctx) {
+    var strContext = this.addStrContext(ctx.start.start);
+    this.currContext = strContext;
+
+    var dictContext = new JPDictionaryContext();
+    this.currContext.setNext(dictContext);
+
+    var dictContentContext = new JPDictionaryContentContext();
+    dictContext.content = dictContentContext;
+    dictContentContext.parent = dictContext;
+
+    this.currContext = dictContentContext;
+    this.currContext.currIdx = ctx.children[1].symbol.stop + 1;
+};
+
+// Exit a parse tree produced by ObjectiveCParser#dictionaryExpression.
+JPObjCListener.prototype.exitDictionaryExpression = function(ctx) {
+    this.addStrContext(ctx.stop.start);
+
+    var preContext = this.currContext;
+    while (preContext) {
+        if (preContext instanceof JPDictionaryContentContext) {
+            break;
+        }
+        preContext = preContext.pre;
+    }
+    this.currContext = preContext.parent;
+    this.currContext.currIdx = ctx.stop.stop + 1;
+};
+
 //Helper Methods
 function showIndexIndicator(source, index) {
     console.log(source.substring(0, index) + '|' + source.substring(index));
@@ -463,9 +550,7 @@ var JPContextBinder = function () {
     this.mapper = {},
     this.filter = {},
     this.bind = function (ctx, context) {
-        // console.log('bind ====>' + ctx.getText());
         if (!this.filter[context]) {
-            // console.log('bind ====>' + ctx.getText(), context);
             this.mapper[ctx] = context;
             this.filter[context] = 1;
         }

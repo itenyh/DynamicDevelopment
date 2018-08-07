@@ -2,12 +2,14 @@ var localMethods = [];
 var delayParsedContexts = [];	//{locationMark:"###1###", context:context}
 var isFinishedParsed = false;
 
+
 /////////////////Base
 class JPContext {
 	constructor() {
 		this.next = null;
         this.pre = null;
         this.currIdx = 0;
+        this.id = contextId++;
 	}
 
     parse () {
@@ -122,6 +124,7 @@ class JPMethodContext extends  JPContext {
         script += this.ignore ? '' : '}'
         return script;
     }
+
 }
 
 /////////////////JPMsgContext
@@ -341,6 +344,64 @@ class JPForInVariableSetContext extends JPBridgeContext {
     }
 }
 
+/////////////////JPArrayContext
+class JPArrayContext extends JPContext {
+    constructor () {
+        super()
+        this.content = null;
+    }
+    parse () {
+        return "NSArray.arrayWithObjects(" + this.content.parse() + ", null)";
+    }
+}
+
+class JPArrayContentContext extends JPBridgeContext {
+    constructor () {
+        super()
+        this.parent = null;
+    }
+}
+
+/////////////////JPDictionaryContext
+class JPDictionaryContext extends JPContext {
+    constructor () {
+        super()
+        this.content = null;
+    }
+    parse () {
+        return "NSDictionary.dictionaryWithObjectsAndKeys(" + this.content.parse() + " null)";
+    }
+}
+
+class JPDictionaryContentContext extends JPContext {
+    constructor () {
+        super()
+        this.parent = null;
+        this.objs = [];
+    }
+    parse () {
+        var result = '';
+        for (var index in this.objs) {
+            var obj = this.objs[index];
+            result += (obj.parse() + ', ');
+        }
+        return result;
+    }
+}
+
+class JPDictionaryObjContext extends JPBridgeContext {
+    constructor () {
+        super()
+        this.parent = null;
+    }
+}
+
+var contextId = 0;
+JPContext.prototype.toString = function() {
+    return 'JPContext_' + this.id;
+}
+
+
 /////////////////exports
 
 exports.JPCommonContext = JPCommonContext;
@@ -359,4 +420,9 @@ exports.JPPostfixContentContext = JPPostfixContentContext;
 exports.JPForInContext = JPForInContext;
 exports.JPForInContentContext = JPForInContentContext;
 exports.JPForInVariableSetContext = JPForInVariableSetContext;
+exports.JPArrayContext = JPArrayContext;
+exports.JPArrayContentContext = JPArrayContentContext;
+exports.JPDictionaryContext = JPDictionaryContext;
+exports.JPDictionaryContentContext = JPDictionaryContentContext;
+exports.JPDictionaryObjContext = JPDictionaryObjContext;
 exports.JPBridgeContext = JPBridgeContext;

@@ -65,7 +65,49 @@ class Square extends Polygon {
     }
 }
 
-var p = new Polygon()
-var s = new Square()
-s.fuck();
-console.log(p.constructor.name, s.constructor.name);
+class Fuck {
+    constructor() {
+
+    }
+    say () {
+        console.log('hello')
+    }
+}
+
+String.prototype.hashCode = function(){
+    var hash = 0;
+    for (var i = 0; i < this.length; i++) {
+        var character = this.charCodeAt(i);
+        hash = ((hash<<5)-hash)+character;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash;
+}
+
+// (function() {
+//     var id = 0;
+//
+//     /*global MyObject */
+//     MyObject = function() {
+//         this.objectId = '<#MyObject:' + (id++) + '>';
+//         this.toString= function() {
+//             return this.objectId;
+//         };
+//     };
+// })();
+//
+// var f = {};
+// var p = new Polygon()
+// var s = new Square()
+// var s1 = new Square()
+// var k = new Fuck()
+// console.log(MyObject)
+// f[JSON.stringify(s)] = k
+// console.log(JSON.stringify(s))
+// // f[p] = p
+// // for (var k in f) {
+// //     console.log(Object.parese)
+// // }
+// console.log(f[JSON.stringify(k)])
+// s.fuck();
+// console.log(p.constructor.name, s.constructor.name);
