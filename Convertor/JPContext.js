@@ -153,8 +153,7 @@ class JPMsgContext extends JPContext {
         var funcName = [];
         var params = [];
         for (var i = 0; i < this.selector.length; i ++) {
-            var name = this.selector[i].name.replace(/_/g, '__');
-            funcName.push(name);
+            funcName.push(this.selector[i].name);
             if (typeof this.selector[i].param == "string") {
                 params.push(this.selector[i].param);
             } else if (this.selector[i].param) {

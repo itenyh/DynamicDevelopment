@@ -13,7 +13,7 @@ var fs = require('fs');
 //         "return 1;\n" +
 //     "}\n" +
 //     "@end";
-// var data = "if (a) { }";
+var data = "_a.b(1);";
 // var data = "@implementation Temp \n - (void)test { [NSArray arrayWithObjects:@\"1\"]; } @end";
 // var data = fs.readFileSync('/Users/mkeqi/Desktop/Working____/Demo/Demo/ViewController.m', 'utf8');
 // var data = "@{@\"sdfsdf\":@{@\"a\": @\"b\"}};";

@@ -12,7 +12,7 @@ JPScriptProcessor.prototype = {
         this.stringPair = {};
         var self = this;
         this.script = this.script.replace(regex, function (result) {
-            var replacement = '###' + index.toString() + '#####';
+            var replacement = 'replaceString_###' + index.toString() + 'replaceString_#####';
             self.stringPair[replacement] = result;
             index++;
             return replacement;
@@ -26,9 +26,9 @@ JPScriptProcessor.prototype = {
         return this;
     },
     stripSymbolAt: function() {
-    	this.script = this.script.replace(/%@/g, "%###@#####");
+    	this.script = this.script.replace(/%@/g, "stripSymbolAt_%###@#####");
         this.script = this.script.replace(/\@(\[)|\@(\")|\@(\{)|\@(\()|\@([0-9]+)/g, "$1$2$3$4$5"); //["{(0-9
-        this.script = this.script.replace(/%###@#####/g, "%@");
+        this.script = this.script.replace(/stripSymbolAt_%###@#####/g, "%@");
         return this;
     },
     beautify: function() {
@@ -83,8 +83,24 @@ JPScriptProcessor.prototype = {
         this.script = this.script.replace(/(frame|bounds).(size|origin)/gm, "$1");
         return this;
     },
+    replace_with__: function() {
+        var regex = /(\.{1}[a-zA-z_]{1}[a-zA-z_1-9]*)/g;
+        var index = 0;
+        var _stringPair = {};
+        this.script = this.script.replace(regex, function (result) {
+            var replacement = 'replace_with__###' + index.toString() + 'replace_with__#####';
+            _stringPair[replacement] = result;
+            index++;
+            return replacement;
+        });
+        for (var replacement in _stringPair) {
+            _stringPair[replacement] = _stringPair[replacement].replace("_", "__");
+            this.script = this.script.replace(replacement, _stringPair[replacement]);
+        }
+        return this;
+    },
     finalScript: function() {
-        this.stripSymbolAt().replaceString().rectFormat().processPropertyGetter().uglyDynamicPropertyGetter().restoreDot().requireClasses().replaceNil().replaceSuper().restoreString().beautify();
+        this.stripSymbolAt().replaceString().rectFormat().processPropertyGetter().uglyDynamicPropertyGetter().restoreDot().replace_with__().requireClasses().replaceNil().replaceSuper().restoreString().beautify();
         return this.script;
     }
 }
