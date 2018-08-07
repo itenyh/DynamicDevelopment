@@ -3,19 +3,18 @@ require('./JPConvertor')
 
 var fs = require('fs');
 
-// var data = "@implementation Temp \n " +
-//     "- (void)test {\n" +
-//         "for (NSObject *obj in drr) {\n" +
-//         "for (NSString *ooo in [NSArray array]) {" +
-//         " int a = ooo;  " +
-//     "}" +
-//         "}\n" +
-//         "return 1;\n" +
-//     "}\n" +
-//     "@end";
-var data = "_a.b(1);";
+var data = "@implementation Temp \n " +
+    "- (void)lineView {\n" +
+    "    if (!_lineView) {\n" +
+    "       _tbView = [UITB new]; \n" +
+    "       [_tbView registerClass:iCMCaseAcceptedCell.class forCellReuseIdentifier:NSStringFromClass(iCMCaseAcceptedCell.class)];\n" +
+    "    }\n" +
+    "    return _lineView;\n" +
+    "}\n" +
+    "@end";
+// var data = "[_tbView registerClass:iCMCaseAcceptedCell.class forCellReuseIdentifier:NSStringFromClass(iCMCaseAcceptedCell.class)];";
 // var data = "@implementation Temp \n - (void)test { [NSArray arrayWithObjects:@\"1\"]; } @end";
-// var data = fs.readFileSync('/Users/mkeqi/Desktop/Working____/Demo/Demo/ViewController.m', 'utf8');
+// var data = fs.readFileSync('/Users/iten/Desktop/iOS_BigData/cqBigData/cqBigData/Debug/ViewController.m', 'utf8');
 // var data = "@{@\"sdfsdf\":@{@\"a\": @\"b\"}};";
 // var data = "[self animateWithDuration:1 animations:^id(NSString *tt){\n" +
 //     "        \n" +

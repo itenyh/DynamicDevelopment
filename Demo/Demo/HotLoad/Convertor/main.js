@@ -1,37 +1,36 @@
-require('AnnotatedPhotoCell,UIColor,PinterestLayout,UICollectionView,NSArray');
-defineClass('ViewController', {
+require('UIColor,UITableViewCell,UITableView,NSArray');
+defineClass('TestViewController', {
     viewDidLoad: function() {
-        self.view().addSubview(self.collectionView());
-        self.collectionView().mas__makeConstraints(block('void, MASConstraintMaker*', function(make) {
-            make.edges().equalTo()(self.view()).valueOffset()(MMASBoxValue(UIEdgeInsetsMake(0, 0, 0, 0)));
+        self.super().viewDidLoad();
+
+        self.view().setBackgroundColor(UIColor.purpleColor());
+        self.view().addSubview(self.tbView());
+        self.tbView().mas__makeConstraints(block('void, MASConstraintMaker*', function(make) {
+            make.edges().equalTo()(self.view());
         }));
     },
-    collectionView_heightForPhotoAtIndexPath: function(collectionView, indexPath) {
-        return self.photoHeight().jp_element(indexPath.row()).floatValue();
+    tableView_numberOfRowsInSection: function(tableView, section) {
+        return self.datas().count();
     },
-    collectionView_numberOfItemsInSection: function(collectionView, section) {
-        return self.photoHeight().count();
-    },
-    collectionView_cellForItemAtIndexPath: function(collectionView, indexPath) {
-        var cell = collectionView.dequeueReusableCellWithReuseIdentifier_forIndexPath(NSStringFromClass(AnnotatedPhotoCell.class()), indexPath);
-        cell.setBackgroundColor(UIColor.purpleColor());
+    tableView_cellForRowAtIndexPath: function(tableView, indexPath) {
+        var cell = UITableViewCell.new();
+        cell.setBackgroundColor(UIColor.blueColor())
+        cell.textLabel().setText(self.datas().jp_element(indexPath.row()));
         return cell;
     },
-    collectionView: function() {
-        if (!self.getProp('collectionView')) {
-            var layout = PinterestLayout.new();
-            layout.setDelegate(self);
-            self.setProp_forKey(UICollectionView.alloc().initWithFrame_collectionViewLayout(CGRectZero, layout), 'collectionView');
-            self.getProp('collectionView').setDataSource(self);
-            self.getProp('collectionView').setBackgroundColor(UIColor.whiteColor());
-            self.getProp('collectionView').registerClass_forCellWithReuseIdentifier(AnnotatedPhotoCell.class(), NSStringFromClass(AnnotatedPhotoCell.class()));
+    tbView: function() {
+        if (!self.getProp('tbView')) {
+            self.setProp_forKey(UITableView.new(), 'tbView');
+            self.getProp('tbView').setDataSource(self);
+            self.getProp('tbView').setDelegate(self);
+            self.getProp('tbView').setSeparatorStyle(UITableViewCellSeparatorStyleNone);
         }
-        return self.getProp('collectionView');
+        return self.getProp('tbView');
     },
-    photoHeight: function() {
-        if (!self.getProp('photoHeight')) {
-            self.setProp_forKey(NSArray.arrayWithObjects(210, 90, 91, 94, 111, 67, 20, 199, 89, null), 'photoHeight');
+    datas: function() {
+        if (!self.getProp('datas')) {
+            self.setProp_forKey(NSArray.arrayWithObjects("陈", "呆", "诗", "汉", "汉12", null), 'datas');
         }
-        return self.getProp('photoHeight');
+        return self.getProp('datas');
     },
 });

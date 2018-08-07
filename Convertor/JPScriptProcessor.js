@@ -39,9 +39,8 @@ JPScriptProcessor.prototype = {
         this.script = this.script.replace(/(\.[a-zA-z_]{1}[a-zA-z_1-9]*)/g, "$1()");
         return this;
     },
-    uglyDynamicPropertyGetter: function() {
-        this.script = this.script.replace(/\((!{0,1})_{1}([a-zA-z_1-9]*)\)/g, "($1self.getProp('$2'))");
-        this.script = this.script.replace(/return\s+_{1}([a-zA-z_1-9]*)/g, "return self.getProp('$1')");
+    dynamicPropertyGetter: function() {
+        this.script = this.script.replace(/([\s!])_([a-zA-z_]{1}[a-zA-z_1-9]*)/g, "$1self.getProp('$2')");
         return this;
     },
     replaceNil: function() {
@@ -50,6 +49,10 @@ JPScriptProcessor.prototype = {
     },
     restoreDot: function() {
         this.script = this.script.replace(/\|__dot__\|/g, '.');
+        return this;
+    },
+    restoreUnderline: function() {
+        this.script = this.script.replace(/\|__underline__\|/g, '_');
         return this;
     },
     replaceSuper: function() {
@@ -100,7 +103,7 @@ JPScriptProcessor.prototype = {
         return this;
     },
     finalScript: function() {
-        this.stripSymbolAt().replaceString().rectFormat().processPropertyGetter().uglyDynamicPropertyGetter().restoreDot().replace_with__().requireClasses().replaceNil().replaceSuper().restoreString().beautify();
+        this.stripSymbolAt().replaceString().rectFormat().processPropertyGetter().restoreDot().replace_with__().restoreUnderline().dynamicPropertyGetter().requireClasses().replaceNil().replaceSuper().restoreString().beautify();
         return this.script;
     }
 }

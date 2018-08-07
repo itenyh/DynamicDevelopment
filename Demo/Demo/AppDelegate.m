@@ -51,7 +51,7 @@
 /*
  2017.12 - now
  Working at China Mobile Communications Corporation of ChongQing
- position: Mobile App Engineer (iOS)
+ position: Senior iOS Developer
  duty: 1. Develop new modules for existing app
  2. Find and Repair existing bugs and refractor old code
  3. Code review for the other two iOS developers
@@ -62,8 +62,9 @@
  2. Hedgehog
  A personal project which is still in developing state, but it has played a role in my daily coding. The direct reason for starting the project is that my company gave me an old machine, so that compiling always take a long time. Facilitated by the runtime ability of Objective-C, Hedgehog can help to load new modules while the program is runing which make developing much more effective.
  
+ 2016.6 - 2017.6
  Working at Qimke Technology Co Ltd
- position: Mobile App Engineer (iOS); Venture partner;
+ position: Senior iOS Developer; Venture partner;
  duty: 1. Totally in charge of app development on iphone
  2. Contribute all aspects of ideas and make them come true
  project:
@@ -72,6 +73,27 @@
  2. To deal with the large project and complex logic, MVVM was sticked. Compared with RxSwift to realize Responsive programming.
  3. Too much markers on map causes much pressure to GPU which leads to unsmooth view movement. To solve the problem, I use CoreGraphic to draw the markers on the background thread.
  
+2014.6 - 2016.5
+ Working at Chongqing Economic Times
+ position: Junior iOS Developer; Web Develop Engineer;
+ duty: 1. In charge of app development on iphone.
+       2. In charge of web development, mainly for wechat development.
+ project:
+       1. Car Market of ChongQing on iOS platform.
+       2. Wechat Marketing System.
  
+ 2013.2 - 2014.3
+ Working at Beikr Technology Co Ltd
+ position: Junior iOS Developer
+ duty: 1. In charge of app development on iphone.
+ project:
+       1. Pregnant Mobilization
+       2. Cloud Manager
+ 
+ Skills:
+ 1. Good at iOS developing with Objective-C or Swift.
+ 2. Farmiliar with JavaScript、Python.
+ 3. Farmiliar with Machine Learning Algorithm. Top 7% in a Kaggle Competition conducted by FaceBook.
+ 4. Like Playing Guitar.
  
  */

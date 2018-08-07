@@ -9,10 +9,10 @@
 #import "TestViewController.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 
-@interface TestViewController ()
+@interface TestViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) UITableView *tbView;
-@property (nonatomic, strong) UILabel *slabel;
+@property (nonatomic, strong) NSArray *datas;
     
 @end
 
@@ -20,38 +20,44 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-//    self.view.backgroundColor = [UIColor brownColor];
-//    [self.view addSubview:self.slabel];
-//    [self.slabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.center.equalTo(self.view);
-//    }];
     
-    NSArray *d = [NSArray arrayWithObjects:[UIView new], @"2", nil];
+    self.view.backgroundColor = [UIColor purpleColor];
+    [self.view addSubview:self.tbView];
+    [self.tbView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(self.view);
+    }];
+}
+
+
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.datas.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [UITableViewCell new];
+    cell.backgroundColor = [UIColor blueColor];
     
-    NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys:@1, @2, @3, @4, @5, @6, @7, @8, nil];
-    for (id key in d) {
-        NSLog(@"%@", key);
+    cell.textLabel.text = self.datas[indexPath.row];
+    return cell;
+}
+
+- (UITableView *)tbView {
+    if (!_tbView) {
+        _tbView = [UITableView new];
+        _tbView.dataSource = self;
+        _tbView.delegate = self;
+        _tbView.separatorStyle = UITableViewCellSeparatorStyleNone;
     }
-    
-//    NSArray *arr = [NSArray arrayWithObjects:<#(nonnull id), ...#>, nil];
-
-//    CGRect rect = [self test:CGRectMake(1, 1, 1, 1)];
-//    NSLog(@"resct: %@", rect);
-    
+    return _tbView;
 }
 
-- (CGRect)test:(CGRect)rect {
-    return rect;
-}
-
-- (UILabel *)slabel {
-    if (!_slabel) {
-        _slabel = [UILabel new];
-        _slabel.text = @"杨汉";
-//        _slabel.backgroundColor = [UIColor blackColor];
-//        _slabel.textColor = [UIColor blueColor];
+- (NSArray *)datas {
+    if (!_datas) {
+        _datas = @[@"陈", @"呆", @"诗", @"汉", @"汉12"];
     }
-    return _slabel;
+    return _datas;
 }
+
 
 @end

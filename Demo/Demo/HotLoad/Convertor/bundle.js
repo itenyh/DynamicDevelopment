@@ -18,8 +18,9 @@ var JPCommonContext = c.JPCommonContext,
     JPForInContext = c.JPForInContext,
     JPForInContentContext = c.JPForInContentContext,
     JPBridgeContext = c.JPBridgeContext,
-    JPForInVariableSetContext = c.JPForInVariableSetContext
-
+    JPForInVariableSetContext = c.JPForInVariableSetContext,
+    JPArrayContext = c.JPArrayContext,
+    JPArrayContentContext = c.JPArrayContentContext
 
 
 function viewTree(tree) {
@@ -102,6 +103,9 @@ function getAllChildren(context) {
     else if (context instanceof JPPostfixContext) {
         childrenTree.push(createStructure(context.content));
     }
+    else if (context instanceof JPArrayContext) {
+        childrenTree.push(createStructure(context.content));
+    }
     else {
         childrenTree.push(createStructure(context.next));
     }
@@ -114,12 +118,14 @@ var localMethods = [];
 var delayParsedContexts = [];	//{locationMark:"###1###", context:context}
 var isFinishedParsed = false;
 
+
 /////////////////Base
 class JPContext {
 	constructor() {
 		this.next = null;
         this.pre = null;
         this.currIdx = 0;
+        this.id = contextId++;
 	}
 
     parse () {
@@ -140,16 +146,6 @@ class JPContext {
 class JPCommonContext extends JPContext {
 	constructor(str) {
 		super()
-        // if (/(\.[a-zA-z_]{1}[a-zA-z_1-9]*)/g.test(str)) {
-        //     var isStartWith_ = str.indexOf('_') == 0;
-        //     if (isStartWith_) {
-        //         str = str.substring(1);
-        //     }
-        //     str = str.replace(/_/g,'__');
-        //     if (isStartWith_) {
-        //         str = '_' + str;
-        //     }
-        // }
         this.str = str;
 	}
     parse () {
@@ -244,6 +240,7 @@ class JPMethodContext extends  JPContext {
         script += this.ignore ? '' : '}'
         return script;
     }
+
 }
 
 /////////////////JPMsgContext
@@ -261,19 +258,10 @@ class JPMsgContext extends JPContext {
 
     parse () {
         var code = this.receiver.parse();
-        if (code.indexOf('_') == 0) {
-            var receivers = code.split('.');
-            code = 'self' + '|__dot__|' + "getProp('" + receivers.shift().substr(1).trim() + "')";
-            if (receivers.length > 0) {
-                code += '.' + receivers.join('.');
-            }
-        }
-
         var funcName = [];
         var params = [];
         for (var i = 0; i < this.selector.length; i ++) {
-            var name = this.selector[i].name.replace(/_/g, '__');
-            funcName.push(name);
+            funcName.push(this.selector[i].name);
             if (typeof this.selector[i].param == "string") {
                 params.push(this.selector[i].param);
             } else if (this.selector[i].param) {
@@ -281,7 +269,7 @@ class JPMsgContext extends JPContext {
             }
         }
 
-        this.parsedSelector = funcName.join('_');
+        this.parsedSelector = funcName.join('|__underline__|');
         code += '|__dot__|' + this.parsedSelector + '(' + params.join(',') + ')';
         return code;
     }
@@ -366,18 +354,15 @@ class JPAssignContext extends JPContext {
 
         if (leftArr.length == 1) {
             if (firstProperty[0] == '_') {
-                return 'self' + '|__dot__|' + 'setProp_forKey(' + this.right.parse() + ", '" + lastProperty.substr(1).trim() + "')";
+                return 'self' + '|__dot__|' + 'setProp|__underline__|forKey(' + this.right.parse() + ", '" + lastProperty.substr(1).trim() + "')";
             }
             else {
                 return firstProperty + ' = ' + this.right.parse();
             }
         }
         else {
-            if (firstProperty[0] == '_') {
-                firstProperty = 'self' + '|__dot__|' + "getProp('" + firstProperty.substr(1).trim() +"')";
-            }
-            if (/jp_element\(.+\)\s*$/gm.test(lastProperty)) {
-                lastProperty = lastProperty.replace(/jp_element\((.+)\)\s*$/gm, 'setJp_element($1,' + this.right.parse() + ')');
+            if (/jp|__underline__|element\(.+\)\s*$/gm.test(lastProperty)) {
+                lastProperty = lastProperty.replace(/jp|__underline__|element\((.+)\)\s*$/gm, 'setJp|__underline__|element($1,' + this.right.parse() + ')');
             }
             else {
                 lastProperty = 'set' + lastProperty[0].toUpperCase() + lastProperty.substr(1) + '(' + this.right.parse() + ')';
@@ -424,7 +409,7 @@ class JPPostfixContext extends JPContext {
 	}
 
     parse () {
-        return '|__dot__|jp_element(' + this.content.parse() + ')';
+        return '|__dot__|jp|__underline__|element(' + this.content.parse() + ')';
     }
 }
 
@@ -445,7 +430,7 @@ class JPForInContext extends JPContext {
         this.variableSet = null;
 	}
     parse () {
-        return 'jp_enumerate(' + this.variableSet.parse() + ', function(' + this.variableDeclarator + ')' + this.content.parse() + ');';
+        return 'jp|__underline__|enumerate(' + this.variableSet.parse() + ', function(' + this.variableDeclarator + ')' + this.content.parse() + ');';
     }
 }
 
@@ -462,6 +447,64 @@ class JPForInVariableSetContext extends JPBridgeContext {
         this.parent = null;
     }
 }
+
+/////////////////JPArrayContext
+class JPArrayContext extends JPContext {
+    constructor () {
+        super()
+        this.content = null;
+    }
+    parse () {
+        return "NSArray|__dot__|arrayWithObjects(" + this.content.parse() + ", null)";
+    }
+}
+
+class JPArrayContentContext extends JPBridgeContext {
+    constructor () {
+        super()
+        this.parent = null;
+    }
+}
+
+/////////////////JPDictionaryContext
+class JPDictionaryContext extends JPContext {
+    constructor () {
+        super()
+        this.content = null;
+    }
+    parse () {
+        return "NSDictionary|__dot__|dictionaryWithObjectsAndKeys(" + this.content.parse() + " null)";
+    }
+}
+
+class JPDictionaryContentContext extends JPContext {
+    constructor () {
+        super()
+        this.parent = null;
+        this.objs = [];
+    }
+    parse () {
+        var result = '';
+        for (var index in this.objs) {
+            var obj = this.objs[index];
+            result += (obj.parse() + ', ');
+        }
+        return result;
+    }
+}
+
+class JPDictionaryObjContext extends JPBridgeContext {
+    constructor () {
+        super()
+        this.parent = null;
+    }
+}
+
+var contextId = 0;
+JPContext.prototype.toString = function() {
+    return 'JPContext_' + this.id;
+}
+
 
 /////////////////exports
 
@@ -481,6 +524,11 @@ exports.JPPostfixContentContext = JPPostfixContentContext;
 exports.JPForInContext = JPForInContext;
 exports.JPForInContentContext = JPForInContentContext;
 exports.JPForInVariableSetContext = JPForInVariableSetContext;
+exports.JPArrayContext = JPArrayContext;
+exports.JPArrayContentContext = JPArrayContentContext;
+exports.JPDictionaryContext = JPDictionaryContext;
+exports.JPDictionaryContentContext = JPDictionaryContentContext;
+exports.JPDictionaryObjContext = JPDictionaryObjContext;
 exports.JPBridgeContext = JPBridgeContext;
 },{}],3:[function(require,module,exports){
 (function (global){
@@ -589,7 +637,12 @@ var JPCommonContext = c.JPCommonContext,
     JPForInContext = c.JPForInContext,
     JPForInContentContext = c.JPForInContentContext,
     JPBridgeContext = c.JPBridgeContext,
-    JPForInVariableSetContext = c.JPForInVariableSetContext
+    JPForInVariableSetContext = c.JPForInVariableSetContext,
+    JPArrayContext = c.JPArrayContext,
+    JPArrayContentContext = c.JPArrayContentContext,
+    JPDictionaryContext = c.JPDictionaryContext,
+    JPDictionaryContentContext = c.JPDictionaryContentContext,
+    JPDictionaryObjContext = c.JPDictionaryObjContext
 
 var treeView = require('./HHTreeViewer')
 
@@ -868,9 +921,6 @@ JPObjCListener.prototype.exitDeclaration = function(ctx) {
 JPObjCListener.prototype.enterExpression = function(ctx) {
     this.contextBinder.bind(ctx, this.currContext);
     if (ctx.assignmentOperator() && ctx.assignmentOperator().getText() == '=') {
-
-        // var leftStr = this.ocScript.substring(ctx.start.start, ctx.assignmentOperator().start.start);
-        // if (leftStr.indexOf('.') > -1 || leftStr.indexOf('_') == 0) {
             var assignContext = new JPAssignContext();
 
             var assignLeftContext = new JPAssignLeftContext();
@@ -882,7 +932,6 @@ JPObjCListener.prototype.enterExpression = function(ctx) {
 
             this.currContext = assignLeftContext;
             this.currContext.currIdx = ctx.start.start;
-        // }
     }
 };
 
@@ -890,9 +939,6 @@ JPObjCListener.prototype.enterExpression = function(ctx) {
 JPObjCListener.prototype.exitExpression = function(ctx) {
     var context = this.contextBinder.unbind(ctx);
     if (ctx.assignmentOperator() && ctx.assignmentOperator().getText() == '=') {
-
-        // var leftStr = this.ocScript.substring(ctx.start.start, ctx.assignmentOperator().start.start);
-        // if (leftStr.indexOf('.') > -1 || leftStr.indexOf('_') == 0) {
             this.addStrContext(ctx.stop.stop + 1)
 
             var preContext = this.currContext;
@@ -903,7 +949,6 @@ JPObjCListener.prototype.exitExpression = function(ctx) {
                     break;
                 }
             } while (preContext = preContext.pre)
-        // }
     }
     else if (context instanceof JPForInVariableSetContext) {
         this.addStrContext(ctx.stop.stop + 1);
@@ -995,9 +1040,29 @@ JPObjCListener.prototype.exitForInStatement = function(ctx) {
 
 // Enter a parse tree produced by ObjectiveCParser#castExpression.
 JPObjCListener.prototype.enterCastExpression = function(ctx) {
+    if (this.currContext instanceof JPDictionaryContentContext) {
+        var dicContentContext = this.currContext;
+        var dicObjContext = new JPDictionaryObjContext();
+        dicObjContext.parent = dicContentContext;
+        dicContentContext.objs.push(dicObjContext);
+        this.contextBinder.bind(ctx, dicObjContext);
+        this.currContext = dicObjContext;
+        this.currContext.currIdx = ctx.start.start;
+    }
     if (ctx.typeName()) {
         this.addStrContext(ctx.start.start);
         this.currContext.currIdx = ctx.typeName().stop.stop + 2;
+    }
+};
+
+// Enter a parse tree produced by ObjectiveCParser#castExpression.
+JPObjCListener.prototype.exitCastExpression = function(ctx) {
+    var context = this.contextBinder.unbind(ctx);
+    if (context instanceof JPDictionaryObjContext) {
+        this.addStrContext(ctx.stop.stop + 1);
+        var dicContentContext = context.parent;
+        this.currContext = dicContentContext;
+        this.currContext.currIdx = ctx.stop.stop + 1;
     }
 };
 
@@ -1034,6 +1099,68 @@ JPObjCListener.prototype.exitPostfix = function(ctx) {
     }
 };
 
+// Enter a parse tree produced by ObjectiveCParser#arrayExpression.
+JPObjCListener.prototype.enterArrayExpression = function(ctx) {
+    var strContext = this.addStrContext(ctx.start.start);
+    this.currContext = strContext;
+
+    var arrayContext = new JPArrayContext();
+    this.currContext.setNext(arrayContext);
+
+    var arrayContentContext = new JPArrayContentContext();
+    arrayContext.content = arrayContentContext;
+    arrayContentContext.parent = arrayContext;
+
+    this.currContext = arrayContentContext;
+    this.currContext.currIdx = ctx.children[1].symbol.stop + 1;
+};
+
+// Exit a parse tree produced by ObjectiveCParser#arrayExpression.
+JPObjCListener.prototype.exitArrayExpression = function(ctx) {
+    this.addStrContext(ctx.stop.start);
+
+    var preContext = this.currContext;
+    while (preContext) {
+        if (preContext instanceof JPArrayContentContext) {
+            break;
+        }
+        preContext = preContext.pre;
+    }
+    this.currContext = preContext.parent;
+    this.currContext.currIdx = ctx.stop.stop + 1;
+};
+
+// Enter a parse tree produced by ObjectiveCParser#dictionaryExpression.
+JPObjCListener.prototype.enterDictionaryExpression = function(ctx) {
+    var strContext = this.addStrContext(ctx.start.start);
+    this.currContext = strContext;
+
+    var dictContext = new JPDictionaryContext();
+    this.currContext.setNext(dictContext);
+
+    var dictContentContext = new JPDictionaryContentContext();
+    dictContext.content = dictContentContext;
+    dictContentContext.parent = dictContext;
+
+    this.currContext = dictContentContext;
+    this.currContext.currIdx = ctx.children[1].symbol.stop + 1;
+};
+
+// Exit a parse tree produced by ObjectiveCParser#dictionaryExpression.
+JPObjCListener.prototype.exitDictionaryExpression = function(ctx) {
+    this.addStrContext(ctx.stop.start);
+
+    var preContext = this.currContext;
+    while (preContext) {
+        if (preContext instanceof JPDictionaryContentContext) {
+            break;
+        }
+        preContext = preContext.pre;
+    }
+    this.currContext = preContext.parent;
+    this.currContext.currIdx = ctx.stop.stop + 1;
+};
+
 //Helper Methods
 function showIndexIndicator(source, index) {
     console.log(source.substring(0, index) + '|' + source.substring(index));
@@ -1043,9 +1170,7 @@ var JPContextBinder = function () {
     this.mapper = {},
     this.filter = {},
     this.bind = function (ctx, context) {
-        // console.log('bind ====>' + ctx.getText());
         if (!this.filter[context]) {
-            // console.log('bind ====>' + ctx.getText(), context);
             this.mapper[ctx] = context;
             this.filter[context] = 1;
         }
@@ -1172,7 +1297,7 @@ JPScriptProcessor.prototype = {
         this.stringPair = {};
         var self = this;
         this.script = this.script.replace(regex, function (result) {
-            var replacement = '###' + index.toString() + '#####';
+            var replacement = 'replaceString_###' + index.toString() + 'replaceString_#####';
             self.stringPair[replacement] = result;
             index++;
             return replacement;
@@ -1186,9 +1311,9 @@ JPScriptProcessor.prototype = {
         return this;
     },
     stripSymbolAt: function() {
-    	this.script = this.script.replace(/%@/g, "%###@#####");
+    	this.script = this.script.replace(/%@/g, "stripSymbolAt_%###@#####");
         this.script = this.script.replace(/\@(\[)|\@(\")|\@(\{)|\@(\()|\@([0-9]+)/g, "$1$2$3$4$5"); //["{(0-9
-        this.script = this.script.replace(/%###@#####/g, "%@");
+        this.script = this.script.replace(/stripSymbolAt_%###@#####/g, "%@");
         return this;
     },
     beautify: function() {
@@ -1199,9 +1324,8 @@ JPScriptProcessor.prototype = {
         this.script = this.script.replace(/(\.[a-zA-z_]{1}[a-zA-z_1-9]*)/g, "$1()");
         return this;
     },
-    uglyDynamicPropertyGetter: function() {
-        this.script = this.script.replace(/\((!{0,1})_{1}([a-zA-z_1-9]*)\)/g, "($1self.getProp('$2'))");
-        this.script = this.script.replace(/return\s+_{1}([a-zA-z_1-9]*)/g, "return self.getProp('$1')");
+    dynamicPropertyGetter: function() {
+        this.script = this.script.replace(/([\s!])_([a-zA-z_]{1}[a-zA-z_1-9]*)/g, "$1self.getProp('$2')");
         return this;
     },
     replaceNil: function() {
@@ -1210,6 +1334,10 @@ JPScriptProcessor.prototype = {
     },
     restoreDot: function() {
         this.script = this.script.replace(/\|__dot__\|/g, '.');
+        return this;
+    },
+    restoreUnderline: function() {
+        this.script = this.script.replace(/\|__underline__\|/g, '_');
         return this;
     },
     replaceSuper: function() {
@@ -1243,8 +1371,24 @@ JPScriptProcessor.prototype = {
         this.script = this.script.replace(/(frame|bounds).(size|origin)/gm, "$1");
         return this;
     },
+    replace_with__: function() {
+        var regex = /(\.{1}[a-zA-z_]{1}[a-zA-z_1-9]*)/g;
+        var index = 0;
+        var _stringPair = {};
+        this.script = this.script.replace(regex, function (result) {
+            var replacement = 'replace_with__###' + index.toString() + 'replace_with__#####';
+            _stringPair[replacement] = result;
+            index++;
+            return replacement;
+        });
+        for (var replacement in _stringPair) {
+            _stringPair[replacement] = _stringPair[replacement].replace("_", "__");
+            this.script = this.script.replace(replacement, _stringPair[replacement]);
+        }
+        return this;
+    },
     finalScript: function() {
-        this.stripSymbolAt().replaceString().rectFormat().processPropertyGetter().uglyDynamicPropertyGetter().restoreDot().requireClasses().replaceNil().replaceSuper().restoreString().beautify();
+        this.stripSymbolAt().replaceString().rectFormat().processPropertyGetter().restoreDot().replace_with__().restoreUnderline().dynamicPropertyGetter().requireClasses().replaceNil().replaceSuper().restoreString().beautify();
         return this.script;
     }
 }

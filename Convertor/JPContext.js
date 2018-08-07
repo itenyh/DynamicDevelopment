@@ -142,14 +142,6 @@ class JPMsgContext extends JPContext {
 
     parse () {
         var code = this.receiver.parse();
-        if (code.indexOf('_') == 0) {
-            var receivers = code.split('.');
-            code = 'self' + '|__dot__|' + "getProp('" + receivers.shift().substr(1).trim() + "')";
-            if (receivers.length > 0) {
-                code += '.' + receivers.join('.');
-            }
-        }
-
         var funcName = [];
         var params = [];
         for (var i = 0; i < this.selector.length; i ++) {
@@ -161,7 +153,7 @@ class JPMsgContext extends JPContext {
             }
         }
 
-        this.parsedSelector = funcName.join('_');
+        this.parsedSelector = funcName.join('|__underline__|');
         code += '|__dot__|' + this.parsedSelector + '(' + params.join(',') + ')';
         return code;
     }
@@ -246,18 +238,15 @@ class JPAssignContext extends JPContext {
 
         if (leftArr.length == 1) {
             if (firstProperty[0] == '_') {
-                return 'self' + '|__dot__|' + 'setProp_forKey(' + this.right.parse() + ", '" + lastProperty.substr(1).trim() + "')";
+                return 'self' + '|__dot__|' + 'setProp|__underline__|forKey(' + this.right.parse() + ", '" + lastProperty.substr(1).trim() + "')";
             }
             else {
                 return firstProperty + ' = ' + this.right.parse();
             }
         }
         else {
-            if (firstProperty[0] == '_') {
-                firstProperty = 'self' + '|__dot__|' + "getProp('" + firstProperty.substr(1).trim() +"')";
-            }
-            if (/jp_element\(.+\)\s*$/gm.test(lastProperty)) {
-                lastProperty = lastProperty.replace(/jp_element\((.+)\)\s*$/gm, 'setJp_element($1,' + this.right.parse() + ')');
+            if (/jp|__underline__|element\(.+\)\s*$/gm.test(lastProperty)) {
+                lastProperty = lastProperty.replace(/jp|__underline__|element\((.+)\)\s*$/gm, 'setJp|__underline__|element($1,' + this.right.parse() + ')');
             }
             else {
                 lastProperty = 'set' + lastProperty[0].toUpperCase() + lastProperty.substr(1) + '(' + this.right.parse() + ')';
@@ -304,7 +293,7 @@ class JPPostfixContext extends JPContext {
 	}
 
     parse () {
-        return '|__dot__|jp_element(' + this.content.parse() + ')';
+        return '|__dot__|jp|__underline__|element(' + this.content.parse() + ')';
     }
 }
 
@@ -325,7 +314,7 @@ class JPForInContext extends JPContext {
         this.variableSet = null;
 	}
     parse () {
-        return 'jp_enumerate(' + this.variableSet.parse() + ', function(' + this.variableDeclarator + ')' + this.content.parse() + ');';
+        return 'jp|__underline__|enumerate(' + this.variableSet.parse() + ', function(' + this.variableDeclarator + ')' + this.content.parse() + ');';
     }
 }
 
@@ -350,7 +339,7 @@ class JPArrayContext extends JPContext {
         this.content = null;
     }
     parse () {
-        return "NSArray.arrayWithObjects(" + this.content.parse() + ", null)";
+        return "NSArray|__dot__|arrayWithObjects(" + this.content.parse() + ", null)";
     }
 }
 
@@ -368,7 +357,7 @@ class JPDictionaryContext extends JPContext {
         this.content = null;
     }
     parse () {
-        return "NSDictionary.dictionaryWithObjectsAndKeys(" + this.content.parse() + " null)";
+        return "NSDictionary|__dot__|dictionaryWithObjectsAndKeys(" + this.content.parse() + " null)";
     }
 }
 
