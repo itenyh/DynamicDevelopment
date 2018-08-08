@@ -22,7 +22,8 @@ var JPCommonContext = c.JPCommonContext,
     JPArrayContentContext = c.JPArrayContentContext,
     JPDictionaryContext = c.JPDictionaryContext,
     JPDictionaryContentContext = c.JPDictionaryContentContext,
-    JPDictionaryObjContext = c.JPDictionaryObjContext
+    JPDictionaryObjContext = c.JPDictionaryObjContext,
+    JPProtocolContext = c.JPProtocolContext
 
 var treeView = require('./HHTreeViewer')
 
@@ -539,6 +540,15 @@ JPObjCListener.prototype.exitDictionaryExpression = function(ctx) {
     }
     this.currContext = preContext.parent;
     this.currContext.currIdx = ctx.stop.stop + 1;
+};
+
+// Enter a parse tree produced by ObjectiveCParser#categoryInterface.
+JPObjCListener.prototype.enterCategoryInterface = function(ctx) {
+    this.rootContext.protocols = ctx.protocolList.getText();
+};
+
+// Exit a parse tree produced by ObjectiveCParser#categoryInterface.
+JPObjCListener.prototype.exitCategoryInterface = function(ctx) {
 };
 
 //Helper Methods

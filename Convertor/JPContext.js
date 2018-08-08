@@ -60,10 +60,12 @@ class JPClassContext extends JPContext {
         this.className = '';
         this.instanceMethods = [];
         this.classMethods = [];
+        this.protocols = null;
         this.ignore = 0;
 	}
 
 	parse () {
+	    console.log(this.protocols);
         var script = this.ignore ? '' : "defineClass('" + this.className + "', {";
         for (var i = 0; i < this.instanceMethods.length; i ++) {
             var separator = this.ignore && this.instanceMethods.length <= 1 ? '': ',';
@@ -389,6 +391,12 @@ JPContext.prototype.toString = function() {
     return 'JPContext_' + this.id;
 }
 
+/////////////////JPProtocolContext
+class JPProtocolContext extends JPCommonContext {
+    constructor (str) {
+        super(str)
+    }
+}
 
 /////////////////exports
 
@@ -413,4 +421,5 @@ exports.JPArrayContentContext = JPArrayContentContext;
 exports.JPDictionaryContext = JPDictionaryContext;
 exports.JPDictionaryContentContext = JPDictionaryContentContext;
 exports.JPDictionaryObjContext = JPDictionaryObjContext;
+exports.JPProtocolContext = JPProtocolContext;
 exports.JPBridgeContext = JPBridgeContext;
