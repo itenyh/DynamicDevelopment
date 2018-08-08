@@ -49,6 +49,12 @@
 @end
 
 /*
+ Han Yang Email：itenyh@gmail.com  Tel：+86-13368113900
+
+ 2010.9 - 2011.3 Exchange Student at Åbo Akademi
+ 2007.8 - 2010.6 Study at SouthWestern University of Finance and Economics，Major in Financial Intelligence And Information Management GPA: 85/100 Top 15%
+
+ 
  2017.12 - now
  Working at China Mobile Communications Corporation of ChongQing
  position: Senior iOS Developer
@@ -60,18 +66,18 @@
  The architecture of the existing modules are MVC, which leads to massive controller, logical code couples with view module, network requests are placed in model parts, etc. I try to write new code in MVVM pattern, decouple model, view, logical, network from each other and ReactiveCocoa helps me much.
  
  2. Hedgehog
- A personal project which is still in developing state, but it has played a role in my daily coding. The direct reason for starting the project is that my company gave me an old machine, so that compiling always take a long time. Facilitated by the runtime ability of Objective-C, Hedgehog can help to load new modules while the program is runing which make developing much more effective.
+ A personal project which is still in developing state, but it has played a role in my daily coding. The direct reason for starting the project is that my company gave me an old machine, so that compiling always take a long time. Facilitated by the runtime ability of Objective-C, Hedgehog can help to load new modules while the program is running ant it makes developing much more effective.
  
  2016.6 - 2017.6
  Working at Qimke Technology Co Ltd
- position: Senior iOS Developer; Venture partner;
+ position: Senior iOS Developer; Venture Partner
  duty: 1. Totally in charge of app development on iphone
  2. Contribute all aspects of ideas and make them come true
  project:
  QiHua, recording your photos, path, mood during your traveling and the most import, you can collaberate with your partners.
  1. Adopting Swift as programming language.
- 2. To deal with the large project and complex logic, MVVM was sticked. Compared with RxSwift to realize Responsive programming.
- 3. Too much markers on map causes much pressure to GPU which leads to unsmooth view movement. To solve the problem, I use CoreGraphic to draw the markers on the background thread.
+ 2. To deal with the large project and complex logic, MVVM was sticked. Applying responsive programming, combined with RxSwift.
+ 3. Too much markers on map causes much pressure to GPU which leads to unsmooth view movement. To solve the problem, I use CoreGraphic to draw the markers on the background thread which balanced the pressure between GPU and CPU.
  
 2014.6 - 2016.5
  Working at Chongqing Economic Times
