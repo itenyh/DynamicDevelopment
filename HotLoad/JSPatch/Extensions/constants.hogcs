@@ -7,3 +7,7 @@ global.UITableViewCellStyleValue2 = 2;
 global.UITableViewCellStyleSubtitle = 3;
 
 global.CGRectZero = {x:0, y:0, width:0, height:0}
+
+global.UITableViewCellSeparatorStyleNone = 0,
+global.UITableViewCellSeparatorStyleSingleLine = 1,
+global.UITableViewCellSeparatorStyleSingleLineEtched = 2
