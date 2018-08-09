@@ -45,5 +45,9 @@
 
 //对【JPEngine】的修改，在formatOCToJS中，对NSNumber也包装为JPBox传递
 
+//对【Convertor】的修改，支持集合存取语法糖{} []解析
+
 //对【JSPatch】的修改，__方法中增加对NSArray、NSDictionary的jp_element与setJp_element的支持，在全局增加jp_enumerate
+
+//对【Convertor】的修改，支持集合初始胡语法糖解析 @{} @[]
 
