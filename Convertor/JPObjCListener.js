@@ -176,10 +176,11 @@ JPObjCListener.prototype.enterBlockParameters = function(ctx) {
     if (this.currContext instanceof JPBlockContentContext) {
         var paramsCtxs = ctx.typeVariableDeclaratorOrName();
         for (var i = 0; i < paramsCtxs.length; i ++) {
-            var paramsCtx = paramsCtxs[i];
+            var paramsCtx = paramsCtxs[i].typeVariableDeclarator();
             var paramsString = paramsCtx.getText();
             var name = paramsCtx.stop.text;
-            var type = paramsCtx.getText().substring(0, paramsString.length - name.length);
+            console.log(paramsCtx.declarationSpecifiers().typeSpecifier())
+            var type = paramsCtx.declarationSpecifiers().typeSpecifier()[0].getText();
             this.currContext.parent.types.push(type);
             this.currContext.parent.names.push(name);
         }

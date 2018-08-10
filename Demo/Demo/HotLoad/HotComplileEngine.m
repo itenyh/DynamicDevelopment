@@ -13,7 +13,7 @@
 #import "JPCleaner.h"
 #import "FileTransferServiceBrowser.h"
 
-#import "AppDelegate.h"
+#import "PresentedViewController.h"
 
 typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSValue *error);
 
@@ -23,10 +23,8 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
 @property (nonatomic, strong) JSValue *translator;
 @property (nonatomic, strong) NSMutableArray *extensions;
 
-@property (nonatomic, strong) NSMutableArray *watchDogs;
-@property (nonatomic, copy) NSString *rootPath;
-@property (nonatomic, copy) NSString *filePath;
-@property (nonatomic, strong) NSDate *fileLastModifyDate;
+@property (nonatomic, copy) NSString *jsSavePath;
+@property (nonatomic, weak) UINavigationController *navController;
 
 @property (nonatomic, strong) FileTransferServiceBrowser *browser;
 
@@ -97,54 +95,95 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
 }
 
 // Load JsScript translated from Objective-C
-+ (void)loadMainJs {
-    NSString *rootPath ;
-#if TARGET_IPHONE_SIMULATOR
-    rootPath = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"ProjectPath"];
-#else
-    rootPath = [[NSBundle mainBundle] bundlePath];
-#endif
-    NSString *mainJsPath = [NSString stringWithFormat:@"%@/%@", rootPath, @"HotLoad/Convertor/main.js"];
+- (void)loadMainJs {
+    NSString *mainJsPath = [NSString stringWithFormat:@"%@/%@", self.jsSavePath, @"main.js"];
     [JPCleaner cleanAll];
     [JPEngine evaluateScriptWithPath:mainJsPath];
-    
-    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    UINavigationController * navController = (UINavigationController *)appDelegate.window.rootViewController;
-    Class class = navController.topViewController.class;
-    UIViewController *newVc = [[class alloc] init];
-    [navController popViewControllerAnimated:NO];
-    [navController pushViewController:newVc animated:NO];
-    
+    [self finishEvaluate];
+}
+
+- (void)refresh:(NSString *)jsInput className:(NSString *)className {
+    [JPCleaner cleanClass:className];
+    [JPEngine evaluateScript:jsInput];
+    [self finishEvaluate];
 }
 
 // Save JsScript translated from Objective-C
 - (void)saveJsScript:(NSString *)script {
-    NSString *rootPath ;
-#if TARGET_IPHONE_SIMULATOR
-    rootPath = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"ProjectPath"];
-#else
-    rootPath = [[NSBundle mainBundle] bundlePath];
-#endif
-    NSString *mainJsPath = [NSString stringWithFormat:@"%@/%@", rootPath, @"HotLoad/Convertor/main.js"];
-    NSError *error;
-    [script writeToFile:mainJsPath atomically:YES encoding:NSUTF8StringEncoding error:&error];
-    if (error) {
-        NSLog(@"error when write script: %@", error);
+    if (self.jsSavePath) {
+        NSString *mainJsPath = [NSString stringWithFormat:@"%@/%@", self.jsSavePath, @"main.js"];
+        NSError *error;
+        [script writeToFile:mainJsPath atomically:YES encoding:NSUTF8StringEncoding error:&error];
+        if (error) {
+            NSLog(@"error when write script: %@", error);
+        }
     }
 }
 
-- (void)refresh:(NSString *)jsInput className:(NSString *)className {
+- (void)finishEvaluate {
+    id appDelegate = [UIApplication sharedApplication].delegate;
+    UIWindow *window = [appDelegate valueForKey:@"window"];
+    UIViewController *rootViewController = window.rootViewController;
+    if (!window || !rootViewController) {
+        NSLog(@"No UIWindow or RootViewController Component");
+        return;
+    }
     
-    [JPCleaner cleanClass:className];
-    [JPEngine evaluateScript:jsInput];
+    UIViewController *containerViewController = [self findContainerController:rootViewController];
+    if (!containerViewController) {
+        Class class = rootViewController.class;
+        UIViewController *viewController = [[class alloc] init];
+        [rootViewController presentViewController:viewController animated:NO completion:nil];
+    }
+    else if ([containerViewController isKindOfClass:UINavigationController.class]) {
+        UINavigationController *navController = ((UINavigationController *) containerViewController);
+        Class class = navController.topViewController.class;
+        UIViewController *newVc = [[class alloc] init];
+        [navController popViewControllerAnimated:NO];
+        [navController pushViewController:newVc animated:NO];
+    }
+    else if ([containerViewController isKindOfClass:UITabBarController.class]) {
+        NSLog(@"the top viewcontroller is kind of UITabBarController, presented the selected controller on it");
+        UIViewController *selectedViewController = ((UITabBarController *)containerViewController).selectedViewController;
+        Class class = selectedViewController.class;
+        UIViewController *viewController = [[class alloc] init];
+        [containerViewController presentViewController:viewController animated:NO completion:nil];
+    }
+    else {
+        UIViewController *presentedViewController = containerViewController.presentedViewController;
+        [containerViewController dismissViewControllerAnimated:NO completion:nil];
+        Class class = presentedViewController.class;
+        UIViewController *viewController = [[class alloc] init];
+        [containerViewController presentViewController:viewController animated:NO completion:nil];
+    }
+}
+
+- (UIViewController *)findContainerController:(UIViewController *)viewController {
     
-    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    UINavigationController * navController = (UINavigationController *)appDelegate.window.rootViewController;
-    Class class = navController.topViewController.class;
-    UIViewController *newVc = [[class alloc] init];
-    [navController popViewControllerAnimated:NO];
-    [navController pushViewController:newVc animated:NO];
+    UIViewController *currentContainer;
     
+    while (true) {
+        UIViewController *next;
+        if ([viewController isKindOfClass:UINavigationController.class]) {
+            next = ((UINavigationController *)viewController).topViewController;
+        }
+        else if ([viewController isKindOfClass:UITabBarController.class]) {
+            next = ((UITabBarController *)viewController).selectedViewController;
+        }
+        else {
+            next = viewController.presentedViewController;
+        }
+        
+        if (next) {
+            currentContainer = viewController;
+            viewController = next;
+        }
+        else {
+            break;
+        }
+    }
+
+    return currentContainer;
 }
 
 - (void)translateObj2Js:(NSString *)input callBack:(TranslateCallBack)callBack {
@@ -198,7 +237,9 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
 @implementation HotComplileEngine (UIApplication)
 
 + (void)load {
-    [[HotComplileEngine sharedInstance] hotReloadProject];
+    HotComplileEngine *engine = [HotComplileEngine sharedInstance];
+    engine.jsSavePath = @"/Users/iten/Desktop/iOS_BigData/cqBigData/cqBigData/Debug/HotLoad";
+    [engine hotReloadProject];
 }
 
 @end

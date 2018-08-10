@@ -12,9 +12,11 @@ var fs = require('fs');
 //     "    return _lineView;\n" +
 //     "}\n" +
 //     "@end";
-// var data = "[_tbView registerClass:iCMCaseAcceptedCell.class forCellReuseIdentifier:NSStringFromClass(iCMCaseAcceptedCell.class)];";
+var data = "[self.datas enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {\n" +
+    "            [dataSet addObject:@[self.categories[idx], obj]];\n" +
+    "        }];";
 // var data = "@implementation Temp \n - (void)test { [NSArray arrayWithObjects:@\"1\"]; } @end";
-var data = fs.readFileSync('/Users/iten/Desktop/Working____/Demo/Demo/ViewController.m', 'utf8');
+// var data = fs.readFileSync('/Users/iten/Desktop/Working____/Demo/Demo/ViewController.m', 'utf8');
 // var data = "@{@\"sdfsdf\":@{@\"a\": @\"b\"}};";
 // var data = "[self animateWithDuration:1 animations:^id(NSString *tt){\n" +
 //     "        \n" +

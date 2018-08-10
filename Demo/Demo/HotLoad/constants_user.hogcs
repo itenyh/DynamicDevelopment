@@ -1,0 +1,10 @@
+global.EXChartViewTypeBar = 0
+global.EXChartViewTypeArea = 1
+global.EXChartViewTypeLine = 2
+global.EXChartViewTypePie = 3
+
+global.AAChartTypeColumn = "column";
+global.AAChartTypeBar = "bar";
+global.AAChartTypeArea = "area";
+global.AAChartTypeLine = "line";
+global.AAChartTypePie = "pie";

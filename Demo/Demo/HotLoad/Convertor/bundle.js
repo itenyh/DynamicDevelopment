@@ -1358,7 +1358,7 @@ JPScriptProcessor.prototype = {
         var regex = /([\w|\d]*?)\./gm;
         var matches = getMatches(this.script, regex, 1);
         matches = matches.filter(function (match, index, self) {
-            return match[0] <= 'Z' && match[0] >= 'A';
+            return (match[0] <= 'Z' && match[0] >= 'A') || match[0] == 'i';
         })
         matches = matches.filter(function (match, index, self) {
             return index == self.indexOf(match);
