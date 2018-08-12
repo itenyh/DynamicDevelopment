@@ -1,6 +1,7 @@
 var localMethods = [];
 var delayParsedContexts = [];	//{locationMark:"###1###", context:context}
 var isFinishedParsed = false;
+var methodNameToType = [];
 
 
 /////////////////Base
@@ -60,29 +61,35 @@ class JPClassContext extends JPContext {
         this.className = '';
         this.instanceMethods = [];
         this.classMethods = [];
-        this.protocols = null;
-        this.ignore = 0;
 	}
 
 	parse () {
-	    console.log(this.protocols);
-        var script = this.ignore ? '' : "defineClass('" + this.className + "', {";
-        for (var i = 0; i < this.instanceMethods.length; i ++) {
-            var separator = this.ignore && this.instanceMethods.length <= 1 ? '': ',';
-            script += this.instanceMethods[i].parse() + separator;
-            localMethods.push(this.instanceMethods[i].parsedMethodName);
+        var script =  "defineClass('" + this.className + "', null, ";
+        var instanceMethodScript = this.instanceMethods.length == 0 ? null : '{';
+        if (this.instanceMethods.length > 0) {
+            for (var i = 0; i < this.instanceMethods.length; i++) {
+                var separator = this.instanceMethods.length <= 1 ? '' : ',';
+                instanceMethodScript += this.instanceMethods[i].parse() + separator;
+                localMethods.push(this.instanceMethods[i].parsedMethodName);
+            }
+            instanceMethodScript += '}';
         }
-        script += this.ignore ? '' : '}';
+        script += instanceMethodScript + ", ";
+
+        var classMethodScript = this.classMethods.length == 0 ? null : '{';
         if (this.classMethods.length) {
-            script += this.ignore ? '' : ',{';
             for (var i = 0; i < this.classMethods.length; i ++) {
-                var separator = this.ignore && this.classMethods.length <= 1 ? '': ','
-                script += this.classMethods[i].parse() + separator;
+                var separator = this.classMethods.length <= 1 ? '': ','
+                classMethodScript += this.classMethods[i].parse() + separator;
                 localMethods.push(this.classMethods[i].parsedMethodName);
             }
-            script += this.ignore ? '' : '}'
+            classMethodScript += '}'
         }
-        script += this.ignore ? '' : ');';
+        script += classMethodScript;
+        script += ');';
+
+        var methodNameToTypeScript = methodNameToType.length == 0 ? null : methodNameToTypeScript.toString();
+        console.log(methodNameToType.toString());
 
         isFinishedParsed = true;
         for (var i in delayParsedContexts) {
@@ -102,7 +109,8 @@ class JPMethodContext extends  JPContext {
 		super()
         this.names = [];
         this.params = [];
-        this.parsedMethodName = ''
+        this.types = [];
+        this.parsedMethodName = '';
         this.ignore = 0;
 	}
 
@@ -124,6 +132,7 @@ class JPMethodContext extends  JPContext {
             script += ctx.parse();
         }
         script += this.ignore ? '' : '}'
+        methodNameToType[this.parsedMethodName] = this.types.join(',');
         return script;
     }
 
@@ -209,6 +218,9 @@ class JPBlockContext extends JPContext {
             return script + this.content.parse() + "}";
         }
         else {
+            for (var typeIndex in this.types) {
+                this.types[typeIndex] = this.types[typeIndex].replace(/(_Nonnull)/gm, '');
+            }
             var paramTypes = this.types.length ? "'void, " + this.types.join(',') + "', " : "'void' , ";
             var script = 'block(' + paramTypes + 'function(' + this.names.join(',') + ') {';
             return script + this.content.parse() + "})";

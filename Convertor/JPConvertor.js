@@ -7,13 +7,10 @@ var JPScriptProcessor = require('./JPScriptProcessor').JPScriptProcessor
 
 var convertor = function(script, cb) {
 
-    var ignoreClass = 0, ignoreMethod = 0;
     script = script.replace(/(^\s*)/g,'');
     if (script.indexOf('@implementation') == -1) {
-        ignoreClass = 1;
         if (script[0] != '-' && script[0] != '+') {
             script = '@implementation tmp \n -(void)tmp{' + script + '\n}\n@end'
-            ignoreMethod = 1;
         } else {
             script = '@implementation tmp \n' + script + '\n@end'
         }
@@ -40,8 +37,6 @@ var convertor = function(script, cb) {
         var processor = new JPScriptProcessor(result)
         if (cb) cb(processor.finalScript(), className, translateErrors.length > 0 ? translateErrors : null);
     });
-    listener.ignoreClass = ignoreClass;
-    listener.ignoreMethod = ignoreMethod;
 
     try {
         antlr4.tree.ParseTreeWalker.DEFAULT.walk(listener, tree);

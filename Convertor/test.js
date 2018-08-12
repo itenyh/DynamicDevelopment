@@ -111,3 +111,22 @@ String.prototype.hashCode = function(){
 // console.log(f[JSON.stringify(k)])
 // s.fuck();
 // console.log(p.constructor.name, s.constructor.name);
+
+// var _formatDefineMethods = function() {
+//
+//         (function(){
+//           console.log(123);
+//           var tt = function () {
+//               console.log(456);
+//           }
+//         })()
+//
+// }
+//
+// _formatDefineMethods();
+
+var fff = function (a, b, c) {
+
+}
+
+console.log(fff.length);

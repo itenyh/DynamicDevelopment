@@ -44,8 +44,6 @@ var JPObjCListener = function(cb) {
     this.rootContext = new JPClassContext();
     this.currContext = this.rootContext;
     this.ocScript = '';
-    this.ignoreClass = 0;
-    this.ignoreMethod = 0;
     this.cb = cb;
     this.messageCtxStack = [];
     this.contextBinder = new JPContextBinder();
@@ -72,7 +70,6 @@ exports.JPObjCListener = JPObjCListener;
 JPObjCListener.prototype.enterClassImplementation = function(ctx) {
     this.ocScript = ctx.start.source[1].strdata;
     this.currContext.className = ctx.genericTypeSpecifier().getText();
-    this.currContext.ignore = this.ignoreClass;
 };
 
 // Exit a parse tree produced by ObjectiveCParser#classImplementation.
@@ -83,7 +80,6 @@ JPObjCListener.prototype.exitClassImplementation = function(ctx) {
 // Enter a parse tree produced by ObjectiveCParser#classMethodDefinition.
 JPObjCListener.prototype.enterClassMethodDefinition = function(ctx) {
     var methodContext = new JPMethodContext();
-    methodContext.ignore = this.ignoreMethod;
     this.rootContext.classMethods.push(methodContext);
     this.currContext = methodContext;
 };
@@ -94,7 +90,6 @@ JPObjCListener.prototype.exitClassMethodDefinition = function(ctx) {};
 // Enter a parse tree produced by ObjectiveCParser#instanceMethodDefinition.
 JPObjCListener.prototype.enterInstanceMethodDefinition = function(ctx) {
     var methodContext = new JPMethodContext();
-    methodContext.ignore = this.ignoreMethod;
     this.rootContext.instanceMethods.push(methodContext);
     this.currContext = methodContext;
 };
@@ -105,7 +100,9 @@ JPObjCListener.prototype.exitInstanceMethodDefinition = function(ctx) {};
 // Enter a parse tree produced by ObjectiveCParser#methodDefinition.
 JPObjCListener.prototype.enterMethodDefinition = function(ctx) {
     var names = [],
-        params = [];
+        params = [],
+        types = [];
+    types.push(ctx.methodType().typeName().getText());
     var methodSelectorContext = ctx.methodSelector();
     for (var i in methodSelectorContext.children) {
         var keywordDeclaratorContext = methodSelectorContext.children[i];
@@ -113,11 +110,14 @@ JPObjCListener.prototype.enterMethodDefinition = function(ctx) {
         if (keywordDeclaratorContext.stop.start != keywordDeclaratorContext.start.start) {
             params.push(keywordDeclaratorContext.stop.text)
         }
+        // console.log(keywordDeclaratorContext.methodType())
+        types.push(keywordDeclaratorContext.methodType()[0].typeName().getText());
     }
 
     //currContext is JPMethodContext
     this.currContext.names = names;
     this.currContext.params = params;
+    this.currContext.types = types;
     this.currContext.currIdx = ctx.compoundStatement().start.start + 1;
 };
 
@@ -179,8 +179,7 @@ JPObjCListener.prototype.enterBlockParameters = function(ctx) {
             var paramsCtx = paramsCtxs[i].typeVariableDeclarator();
             var paramsString = paramsCtx.getText();
             var name = paramsCtx.stop.text;
-            console.log(paramsCtx.declarationSpecifiers().typeSpecifier())
-            var type = paramsCtx.declarationSpecifiers().typeSpecifier()[0].getText();
+            var type = paramsString.substring(0, paramsString.length - name.length);
             this.currContext.parent.types.push(type);
             this.currContext.parent.names.push(name);
         }
