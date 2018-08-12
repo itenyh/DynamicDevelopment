@@ -64,13 +64,13 @@
 #pragma ()
 
 - (void)aa:(int)m {
-    NSLog(@"aa:%d", m + 13);
+    NSLog(@"aa:%d", m + 3);
 }
-
-#pragma ()
-- (void)bb:(BOOL *)m {
-    NSLog(@"dd:%@", m);
-}
+//
+//#pragma ()
+//- (void)bb:(BOOL *)m {
+//    NSLog(@"dd:%@", m);
+//}
 
 
 @end

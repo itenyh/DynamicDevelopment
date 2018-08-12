@@ -685,7 +685,7 @@ static void JPForwardInvocation(__unsafe_unretained id assignSlf, SEL selector, 
             [argList addObject:[JPBoxing boxWeakObj:slf]];
         }
     }
-    
+
     for (NSUInteger i = isBlock ? 1 : 2; i < numberOfArguments; i++) {
         const char *argumentType = [methodSignature getArgumentTypeAtIndex:i];
         switch(argumentType[0] == 'r' ? argumentType[1] : argumentType[0]) {
@@ -694,7 +694,9 @@ static void JPForwardInvocation(__unsafe_unretained id assignSlf, SEL selector, 
             case _typeChar: {   \
                 _type arg;  \
                 [invocation getArgument:&arg atIndex:i];    \
-                [argList addObject:@(arg)]; \
+                JPBoxing *box = [JPBoxing boxObj:@(arg)];    \
+                box.typeString = [NSString stringWithFormat:@"%c", _typeChar]; \
+                [argList addObject:box]; \
                 break;  \
             }
             JP_FWD_ARG_CASE('c', char)
@@ -1774,6 +1776,9 @@ static id formatOCToJS(id obj)
     }
     if ([obj isKindOfClass:NSClassFromString(@"NSBlock")] || [obj isKindOfClass:[JSValue class]]) {
         return obj;
+    }
+    if ([obj isKindOfClass:[JPBoxing class]] && ((JPBoxing *)obj).typeString) {
+        return [obj unbox];
     }
     return _wrapObj(obj);
 }

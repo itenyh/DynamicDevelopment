@@ -84,14 +84,15 @@ var global = this
       if (slf.__isSuper && slf.__clsName) {
           slf.__clsName = _OC_superClsName(slf.__obj.__realClsName ? slf.__obj.__realClsName: slf.__clsName);
       }
-      var clsName = slf.__clsName
-      if (clsName && _ocCls[clsName]) {
-        var methodType = slf.__obj ? 'instMethods': 'clsMethods'
-        if (_ocCls[clsName][methodType][methodName]) {
-          slf.__isSuper = 0;
-          return _ocCls[clsName][methodType][methodName].bind(slf)
-        }
-      }
+  
+//      var clsName = slf.__clsName
+//      if (clsName && _ocCls[clsName]) {
+//        var methodType = slf.__obj ? 'instMethods': 'clsMethods'
+//        if (_ocCls[clsName][methodType][methodName]) {
+//          slf.__isSuper = 0;
+//          return _ocCls[clsName][methodType][methodName].bind(slf)
+//        }
+//      }
 
   if (methodName == 'jp_element') {
     if (slf.__clsName == '__NSArrayI' || slf.__clsName == '__NSArrayM') {

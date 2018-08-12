@@ -10,7 +10,7 @@
 #import "ViewController.h"
 #import <objc/runtime.h>
 
-@interface TestViewController () <UITableViewDelegate, UITableViewDataSource>
+@interface TestViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UITableView *tbView;
@@ -25,6 +25,22 @@
     [self.tbView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(self.view);
     }];
+
+//    JP_FWD_ARG_CASE('c', char)
+//    JP_FWD_ARG_CASE('C', unsigned char)
+//    JP_FWD_ARG_CASE('s', short)
+//    JP_FWD_ARG_CASE('S', unsigned short)
+//    JP_FWD_ARG_CASE('i', int)
+//    JP_FWD_ARG_CASE('I', unsigned int)
+//    JP_FWD_ARG_CASE('l', long)
+//    JP_FWD_ARG_CASE('L', unsigned long)
+//    JP_FWD_ARG_CASE('q', long long)
+//    JP_FWD_ARG_CASE('Q', unsigned long long)
+//    JP_FWD_ARG_CASE('f', float)
+//    JP_FWD_ARG_CASE('d', double)
+    
+//    JP_FWD_ARG_CASE('B', BOOL)
+    
 //    self.view.backgroundColor = [UIColor grayColor];
 //
 //    [self.view addSubview:self.nameLabel];
@@ -39,9 +55,12 @@
     
 //    [self aa:1];
     
-    ViewController *vc = [ViewController new];
-    int a = 4;
-    [vc bb:a];
+//    NSString *a = [NSString stringWithFormat:@"%c", 'c'];
+//    NSLog(@"%@", a);
+////
+//    ViewController *vc = [ViewController new];
+//    int a = 4;
+//    [vc aa:a];
     
 //    [self tt:^(NSString *param) {
 //        NSLog(@"%@", param);

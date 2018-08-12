@@ -1,4 +1,4 @@
-require('ViewController,indexPath,UITableViewCell,UITableView');
+require('indexPath,UITableViewCell,UITableView');
 defineClass('TestViewController', {
     viewDidLoad: function() {
         self.super().viewDidLoad();
@@ -9,9 +9,9 @@ defineClass('TestViewController', {
 
 
 
-        var vc = ViewController.new();
-        var a = 4;
-        vc.bb(a);
+
+
+
 
 
     },

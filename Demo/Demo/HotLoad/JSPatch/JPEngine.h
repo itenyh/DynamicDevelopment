@@ -102,6 +102,8 @@
 @property (nonatomic) Class cls;
 @property (nonatomic, weak) id weakObj;
 @property (nonatomic, assign) id assignObj;
+@property (nonatomic, copy) NSString *typeString;
+
 - (id)unbox;
 - (void *)unboxPointer;
 - (Class)unboxClass;
