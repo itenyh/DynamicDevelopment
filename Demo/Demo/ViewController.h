@@ -10,6 +10,7 @@
 
 @interface ViewController : UIViewController
 
+- (void)aa:(int)m;
 
 @end
 

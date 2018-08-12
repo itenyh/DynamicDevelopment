@@ -7,57 +7,97 @@
 //
 
 #import "TestViewController.h"
-#import <JavaScriptCore/JavaScriptCore.h>
+#import "ViewController.h"
+#import <objc/runtime.h>
 
-@interface TestViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface TestViewController () <UITableViewDelegate, UITableViewDataSource>
 
+@property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UITableView *tbView;
-@property (nonatomic, strong) NSArray *datas;
-    
+
 @end
 
 @implementation TestViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    self.view.backgroundColor = [UIColor purpleColor];
     [self.view addSubview:self.tbView];
     [self.tbView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(self.view);
     }];
+//    self.view.backgroundColor = [UIColor grayColor];
+//
+//    [self.view addSubview:self.nameLabel];
+//    [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.center.equalTo(self.view);
+//    }];
+
+//    NSArray *a = @[@"a", @"b"];
+//    [a enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+//        NSLog(@"%@", a[idx]);
+//    }];
+    
+//    [self aa:1];
+    
+    ViewController *vc = [ViewController new];
+    int a = 4;
+    [vc bb:a];
+    
+//    [self tt:^(NSString *param) {
+//        NSLog(@"%@", param);
+//    }];
+    
 }
 
+//- (void)aa:(int)m {
+////    NSNumber *numObj = [NSNumber numberWithInt:1];
+////    NSArray *a = @[@"a", @"b"];
+////    NSLog(@"====> %@", a[numObj]);
+//    NSLog(@"aa:%d", m);
+//}
 
+//- (void)tt:(void (^)(NSString *))blk {
+//    blk(@"cao!");
+//}
+
+//- (UILabel *)nameLabel {
+//    if (!_nameLabel) {
+//        _nameLabel = [UILabel new];
+//        _nameLabel.text = @"My Name is YangHan";
+//    }
+//    return _nameLabel;
+//}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 2;
+}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.datas.count;
+//    NSLog(@"%d", 5 + section);
+    return 5 + section;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [UITableViewCell new];
-    cell.backgroundColor = [UIColor blueColor];
-    
-    cell.textLabel.text = self.datas[indexPath.row];
-    return cell;
+    if (indexPath.section == 0) {
+        UITableViewCell *cell = [UITableViewCell new];
+        cell.textLabel.text = @"123";
+        return cell;
+    }
+    else if (indexPath.section == 1) {
+        UITableViewCell *cell = [UITableViewCell new];
+        cell.textLabel.text = @"789";
+        return cell;
+    }
+    return nil;
 }
 
-- (UITableView *)tbView {
+-(UITableView *)tbView {
     if (!_tbView) {
         _tbView = [UITableView new];
         _tbView.dataSource = self;
         _tbView.delegate = self;
-        _tbView.separatorStyle = UITableViewCellSeparatorStyleNone;
     }
     return _tbView;
 }
-
-- (NSArray *)datas {
-    if (!_datas) {
-        _datas = @[@"陈", @"呆", @"诗", @"汉", @"汉12"];
-    }
-    return _datas;
-}
-
 
 @end

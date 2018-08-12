@@ -13,8 +13,6 @@
 #import "JPCleaner.h"
 #import "FileTransferServiceBrowser.h"
 
-#import "PresentedViewController.h"
-
 typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSValue *error);
 
 @interface HotComplileEngine () <FileTransferServiceBrowserDelegate>
@@ -238,7 +236,7 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
 
 + (void)load {
     HotComplileEngine *engine = [HotComplileEngine sharedInstance];
-    engine.jsSavePath = @"/Users/iten/Desktop/iOS_BigData/cqBigData/cqBigData/Debug/HotLoad";
+    engine.jsSavePath = @"/Users/mkeqi/Desktop/Working____/Demo/Demo/HotLoad/";
     [engine hotReloadProject];
 }
 

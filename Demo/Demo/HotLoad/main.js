@@ -1,33 +1,44 @@
-require('NSArray,EXChartView');
-defineClass('PlaygroundViewController', {
-    updateViewConstraints: function() {
-
-        self.chartView().mas__makeConstraints(block('void, MASConstraintMaker*', function(make) {
-            make.left().right().equalTo()(self.view());
-            make.height().equalTo()(290);
-            make.center().equalTo()(self.view());
-        }));
-        self.super().updateViewConstraints();
-    },
+require('ViewController,indexPath,UITableViewCell,UITableView');
+defineClass('TestViewController', {
     viewDidLoad: function() {
         self.super().viewDidLoad();
+        self.view().addSubview(self.tbView());
+        self.tbView().mas__makeConstraints(block('void, MASConstraintMaker*', function(make) {
+            make.edges().equalTo()(self.view());
+        }));
+
+
+
+        var vc = ViewController.new();
+        var a = 4;
+        vc.bb(a);
+
+
     },
-    addSubViews: function() {
-        self.chartView().setChartType(EXChartViewTypePie);
-        self.chartView().setDatas(NSArray.arrayWithObjects(24, 21, 24, null));
-        self.chartView().setCategories(NSArray.arrayWithObjects("4", "5", "6", null));
-        self.chartView().setCategoryNames(NSArray.arrayWithObjects("去年", "今年", "明年", null));
-        self.chartView().setColors(NSArray.arrayWithObjects("#a1100f1", "#00b0ff", "#33cc99", null));
-        self.chartView().reload();
-        self.view().addSubview(self.chartView());
+    numberOfSectionsInTableView: function(tableView) {
+        return 2;
     },
-    willDealloc: function() {
-        return NO;
+    tableView_numberOfRowsInSection: function(tableView, section) {
+        return 5 + section;
     },
-    chartView: function() {
-        if (!self.getProp('chartView')) {
-            self.setProp_forKey(EXChartView.new(), 'chartView');
+    tableView_cellForRowAtIndexPath: function(tableView, indexPath) {
+        if (indexPath.section() == 0) {
+            var cell = UITableViewCell.new();
+            cell.textLabel().setText("123");
+            return cell;
+        } else if (indexPath.section() == 1) {
+            var cell = UITableViewCell.new();
+            cell.textLabel().setText("789");
+            return cell;
         }
-        return self.getProp('chartView');
+        return null;
+    },
+    tbView: function() {
+        if (!self.getProp('tbView')) {
+            self.setProp_forKey(UITableView.new(), 'tbView');
+            self.getProp('tbView').setDataSource(self);
+            self.getProp('tbView').setDelegate(self);
+        }
+        return self.getProp('tbView');
     },
 });
