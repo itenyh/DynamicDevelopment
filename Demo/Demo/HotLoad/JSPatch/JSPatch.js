@@ -163,12 +163,12 @@ var global = this
     return lastRequire
   }
 
-  var _formatDefineMethods = function(methods, newMethods, realClsName) {
+  var _formatDefineMethods = function(methods, newMethods, realClsName, methodDeclarationInfo) {
     for (var methodName in methods) {
       if (!(methods[methodName] instanceof Function)) return;
       (function(){
         var originMethod = methods[methodName]
-        newMethods[methodName] = [originMethod.length, function() {
+        newMethods[methodName] = [originMethod.length, methodDeclarationInfo[methodName], function() {
           try {
             var args = _formatOCToJS(Array.prototype.slice.call(arguments))
             var lastSelf = global.self
@@ -235,14 +235,9 @@ var global = this
     };
   }
 
-  global.defineClass = function(declaration, properties, instMethods, clsMethods) {
+  global.defineClass = function(declaration, properties, instMethods, clsMethods, methodDeclarationInfo) {
     var newInstMethods = {}, newClsMethods = {}
-    if (!(properties instanceof Array)) {
-      clsMethods = instMethods
-      instMethods = properties
-      properties = null
-    }
-
+  
     if (properties) {
       properties.forEach(function(name){
         if (!instMethods[name]) {
@@ -257,8 +252,8 @@ var global = this
 
     var realClsName = declaration.split(':')[0].trim()
 
-    _formatDefineMethods(instMethods, newInstMethods, realClsName)
-    _formatDefineMethods(clsMethods, newClsMethods, realClsName)
+    _formatDefineMethods(instMethods, newInstMethods, realClsName, methodDeclarationInfo)
+    _formatDefineMethods(clsMethods, newClsMethods, realClsName, methodDeclarationInfo)
 
     var ret = _OC_defineClass(declaration, newInstMethods, newClsMethods)
     var className = ret['cls']

@@ -4,7 +4,7 @@ require('./JPConvertor')
 var fs = require('fs');
 
 var data = "@implementation Temp \n " +
-    "- (void)lineView:(NSString *)a b:(int)a1 {\n" +
+    "- (void)lineView:(NSString *)a {\n" +
     "    if (!_lineView) {\n" +
     "       _tbView = [UITB new]; \n" +
     "       [_tbView registerClass:iCMCaseAcceptedCell.class forCellReuseIdentifier:NSStringFromClass(iCMCaseAcceptedCell.class)];\n" +

@@ -85,11 +85,20 @@ class JPClassContext extends JPContext {
             }
             classMethodScript += '}'
         }
-        script += classMethodScript;
-        script += ');';
+        script += classMethodScript + ", ";
 
-        var methodNameToTypeScript = methodNameToType.length == 0 ? null : methodNameToTypeScript.toString();
-        console.log(methodNameToType.toString());
+        var methodNameToTypeScript = null;
+        for (var name in methodNameToType) {
+            if (!methodNameToTypeScript) methodNameToTypeScript = '[';
+            methodNameToTypeScript += (name) + ":" + "'" +  methodNameToType[name] + "'";
+            methodNameToTypeScript += ', ';
+        }
+        if (methodNameToTypeScript) {
+            methodNameToTypeScript = methodNameToTypeScript.substring(0, methodNameToTypeScript.length - 2);
+            methodNameToTypeScript += ']';
+        };
+        script += methodNameToTypeScript
+        script += ');';
 
         isFinishedParsed = true;
         for (var i in delayParsedContexts) {
