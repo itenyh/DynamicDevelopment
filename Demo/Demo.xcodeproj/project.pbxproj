@@ -158,7 +158,6 @@
 			children = (
 				D5FAC0F5211DC9E30050596D /* constants_user.hogcs */,
 				D5FAC0F6211DC9E30050596D /* Transportation */,
-				D5FAC0FE211DC9E30050596D /* AsyncSocket */,
 				D5FAC0FF211DC9E30050596D /* Convertor */,
 				D5FAC101211DC9E30050596D /* JSPatch */,
 				D5FAC11F211DC9E30050596D /* ThridParty */,
@@ -188,13 +187,6 @@
 				D5FAC0FC211DC9E30050596D /* SourceCode.m */,
 			);
 			path = TransferDatas;
-			sourceTree = "<group>";
-		};
-		D5FAC0FE211DC9E30050596D /* AsyncSocket */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = AsyncSocket;
 			sourceTree = "<group>";
 		};
 		D5FAC0FF211DC9E30050596D /* Convertor */ = {

@@ -89,13 +89,13 @@ class JPClassContext extends JPContext {
 
         var methodNameToTypeScript = null;
         for (var name in methodNameToType) {
-            if (!methodNameToTypeScript) methodNameToTypeScript = '[';
+            if (!methodNameToTypeScript) methodNameToTypeScript = '{';
             methodNameToTypeScript += (name) + ":" + "'" +  methodNameToType[name] + "'";
             methodNameToTypeScript += ', ';
         }
         if (methodNameToTypeScript) {
             methodNameToTypeScript = methodNameToTypeScript.substring(0, methodNameToTypeScript.length - 2);
-            methodNameToTypeScript += ']';
+            methodNameToTypeScript += '}';
         };
         script += methodNameToTypeScript
         script += ');';

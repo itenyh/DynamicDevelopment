@@ -9,6 +9,8 @@
 #import <objc/runtime.h>
 #import <objc/message.h>
 
+#import "JPMethodSignature.h"
+
 #if TARGET_OS_IPHONE
 #import <UIKit/UIApplication.h>
 #endif
@@ -304,7 +306,6 @@ static void (^_exceptionBlock)(NSString *log) = ^void(NSString *log) {
     };
     
     context.exceptionHandler = ^(JSContext *con, JSValue *exception) {
-        NSLog(@"%@", exception);
         _exceptionBlock([NSString stringWithFormat:@"js exception: %@", exception]);
     };
     
@@ -602,7 +603,7 @@ static NSDictionary *defineClass(NSString *classDeclaration, JSValue *instanceMe
                 selectorName = [selectorName stringByAppendingString:@":"];
             }
             
-            JSValue *jsMethod = jsMethodArr[1];
+            JSValue *jsMethod = jsMethodArr[2];
             if (class_respondsToSelector(currCls, NSSelectorFromString(selectorName))) {
                 overrideMethod(currCls, selectorName, jsMethod, !isInstance, NULL);
             } else {
@@ -619,11 +620,32 @@ static NSDictionary *defineClass(NSString *classDeclaration, JSValue *instanceMe
                 }
                 if (!overrided) {
                     if (![[jsMethodName substringToIndex:1] isEqualToString:@"_"]) {
-                        NSMutableString *typeDescStr = [@"@@:" mutableCopy];
-                        for (int i = 0; i < numberOfArg; i ++) {
-                            [typeDescStr appendString:@"@"];
+                        NSMutableString *encodeStr = [[NSMutableString alloc] init];
+                        NSString *types = jsMethodArr[1].toString;
+                        NSArray *typeArr = [types componentsSeparatedByString:@","];
+                        for (NSInteger i = 0; i < typeArr.count; i++) {
+                            NSString *typeStr = trim([typeArr objectAtIndex:i]);
+                            NSString *encode = [JPMethodSignature typeEncodeWithTypeName:typeStr];
+                            if (!encode) {
+                                if ([typeStr hasPrefix:@"{"] && [typeStr hasSuffix:@"}"]) {
+                                    encode = typeStr;
+                                } else {
+                                    NSString *argClassName = trim([typeStr stringByReplacingOccurrencesOfString:@"*" withString:@""]);
+                                    if (NSClassFromString(argClassName) != NULL) {
+                                        encode = @"@";
+                                    } else {
+                                        NSLog(@"unreconized type %@, encode as @", typeStr);
+                                        encode = @"@";
+                                    }
+                                }
+                            }
+                            [encodeStr appendString:encode];
+                            if (i == 0) {
+                                [encodeStr appendString:@"@:"];
+                            }
                         }
-                        overrideMethod(currCls, selectorName, jsMethod, !isInstance, [typeDescStr cStringUsingEncoding:NSUTF8StringEncoding]);
+                        
+                        overrideMethod(currCls, selectorName, jsMethod, !isInstance, [encodeStr cStringUsingEncoding:NSUTF8StringEncoding]);
                     }
                 }
             }

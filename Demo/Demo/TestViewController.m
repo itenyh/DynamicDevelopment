@@ -10,10 +10,11 @@
 #import "ViewController.h"
 #import <objc/runtime.h>
 
-@interface TestViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface TestViewController ()
 
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UITableView *tbView;
+@property (nonatomic, assign) NSInteger b;
 
 @end
 
@@ -26,6 +27,8 @@
         make.edges.equalTo(self.view);
     }];
 
+    self.b = 2;
+    NSLog(@"%ld", (long)self.b);
 //    JP_FWD_ARG_CASE('c', char)
 //    JP_FWD_ARG_CASE('C', unsigned char)
 //    JP_FWD_ARG_CASE('s', short)
@@ -92,14 +95,13 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-//    NSLog(@"%d", 5 + section);
     return 5 + section;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
         UITableViewCell *cell = [UITableViewCell new];
-        cell.textLabel.text = @"123";
+        cell.textLabel.text = @"1234";
         return cell;
     }
     else if (indexPath.section == 1) {

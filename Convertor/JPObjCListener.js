@@ -110,8 +110,9 @@ JPObjCListener.prototype.enterMethodDefinition = function(ctx) {
         if (keywordDeclaratorContext.stop.start != keywordDeclaratorContext.start.start) {
             params.push(keywordDeclaratorContext.stop.text)
         }
-        // console.log(keywordDeclaratorContext.methodType())
-        types.push(keywordDeclaratorContext.methodType()[0].typeName().getText());
+        // console.log(keywordDeclaratorContext.methodType)
+        if (keywordDeclaratorContext.methodType)
+            types.push(keywordDeclaratorContext.methodType()[0].typeName().getText());
     }
 
     //currContext is JPMethodContext

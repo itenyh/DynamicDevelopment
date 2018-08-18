@@ -61,11 +61,11 @@
     return _photoHeight;
 }
 
-#pragma ()
-
-- (void)aa:(int)m {
-    NSLog(@"aa:%d", m + 3);
-}
+//#pragma ()
+//
+//- (void)aa:(int)m {
+//    NSLog(@"aa:%d", m + 3);
+//}
 //
 //#pragma ()
 //- (void)bb:(BOOL *)m {

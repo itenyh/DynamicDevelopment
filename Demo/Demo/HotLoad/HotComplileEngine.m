@@ -236,7 +236,7 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
 
 + (void)load {
     HotComplileEngine *engine = [HotComplileEngine sharedInstance];
-    engine.jsSavePath = @"/Users/mkeqi/Desktop/Working____/Demo/Demo/HotLoad/";
+    engine.jsSavePath = @"/Users/mac/Desktop/Working____/Demo/Demo/HotLoad/";
     [engine hotReloadProject];
 }
 
