@@ -385,7 +385,8 @@ class JPAssignContext extends JPContext {
         }
         else {
             if (/jp|__underline__|element\(.+\)\s*$/gm.test(lastProperty)) {
-                lastProperty = lastProperty.replace(/jp|__underline__|element\((.+)\)\s*$/gm, 'setJp|__underline__|element($1,' + this.right.parse() + ')');
+                console.log(lastProperty);
+                lastProperty = lastProperty.replace(/jp\|__underline__\|element\((.+)\)\s*$/gm, 'setJp|__underline__|element($1,' + this.right.parse() + ')');
             }
             else {
                 lastProperty = 'set' + lastProperty[0].toUpperCase() + lastProperty.substr(1) + '(' + this.right.parse() + ')';

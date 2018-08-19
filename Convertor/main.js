@@ -3,20 +3,17 @@ require('./JPConvertor')
 
 var fs = require('fs');
 
-// var data = "@implementation Temp \n " +
-//     "- (void)lineView:(NSString *)a {\n" +
-//     "    if (!_lineView) {\n" +
-//     "       _tbView = [UITB new]; \n" +
-//     "       [_tbView registerClass:iCMCaseAcceptedCell.class forCellReuseIdentifier:NSStringFromClass(iCMCaseAcceptedCell.class)];\n" +
-//     "    }\n" +
-//     "    return _lineView;\n" +
-//     "}\n" +
-//     "@end";
+var data = "@implementation Temp \n " +
+    "- (void)lineView:(NSString *)a {\n" +
+    "yOffset[column] = [NSNumber numberWithFloat:[yOffset[column] floatValue] + height];\n" +
+    "column = column < (self.numberOfColumns - 1) ? (column + 1) : 0;\n" +
+    "}\n" +
+    "@end";
 // console.log(data)
 // var data = "[self.datas enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {\n" +
 //     "        }];";
 // var data = "@implementation Temp \n - (void)test { [NSArray arrayWithObjects:@\"1\"]; } @end";
-var data = fs.readFileSync('/Users/mac/Desktop/Working____/Demo/Demo/TestViewController.m', 'utf8');
+// var data = fs.readFileSync('/Users/mac/Desktop/Working____/Demo/Demo/TestViewController.m', 'utf8');
 // var data = "@{@\"sdfsdf\":@{@\"a\": @\"b\"}};";
 // var data = "[self animateWithDuration:1 animations:^id(NSString *tt){\n" +
 //     "        \n" +
