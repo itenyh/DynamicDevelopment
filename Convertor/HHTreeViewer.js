@@ -18,7 +18,10 @@ var JPCommonContext = c.JPCommonContext,
     JPBridgeContext = c.JPBridgeContext,
     JPForInVariableSetContext = c.JPForInVariableSetContext,
     JPArrayContext = c.JPArrayContext,
-    JPArrayContentContext = c.JPArrayContentContext
+    JPArrayContentContext = c.JPArrayContentContext,
+    JPOperatorsContext = c.JPOperatorsContext,
+    JPOperatorsLeftContext = c.JPOperatorsLeftContext,
+    JPOperatorsRightContext = c.JPOperatorsRightContext
 
 
 function viewTree(tree) {
@@ -104,9 +107,14 @@ function getAllChildren(context) {
     else if (context instanceof JPArrayContext) {
         childrenTree.push(createStructure(context.content));
     }
+    else if (context instanceof JPOperatorsContext) {
+        childrenTree.push(createStructure(context.left));
+        childrenTree.push(createStructure(context.right));
+    }
     else {
         childrenTree.push(createStructure(context.next));
     }
+
     return childrenTree;
 }
 

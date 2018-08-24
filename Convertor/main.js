@@ -5,8 +5,8 @@ var fs = require('fs');
 
 var data = "@implementation Temp \n " +
     "- (void)lineView:(NSString *)a {\n" +
-    "yOffset[column] = [NSNumber numberWithFloat:[yOffset[column] floatValue] + height];\n" +
-    "column = column < (self.numberOfColumns - 1) ? (column + 1) : 0;\n" +
+    "if(a == 1 == YES) {\n" +
+    "}\n" +
     "}\n" +
     "@end";
 // console.log(data)

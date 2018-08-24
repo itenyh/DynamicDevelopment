@@ -1,3 +1,4 @@
+var global = {};
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 var flatten = require('flattree').flatten;
 var c = require('./JPContext')
@@ -528,10 +529,14 @@ JPContext.prototype.toString = function() {
     return 'JPContext_' + this.id;
 }
 
-/////////////////JPProtocolContext
-class JPProtocolContext extends JPCommonContext {
-    constructor (str) {
-        super(str)
+/////////////////JPSelectorContext
+class JPSelectorContext extends JPContext {
+    constructor () {
+        super()
+        this.selectorName = "";
+    }
+    parse () {
+        return "\"" + this.selectorName + "\"";
     }
 }
 
@@ -558,7 +563,7 @@ exports.JPArrayContentContext = JPArrayContentContext;
 exports.JPDictionaryContext = JPDictionaryContext;
 exports.JPDictionaryContentContext = JPDictionaryContentContext;
 exports.JPDictionaryObjContext = JPDictionaryObjContext;
-exports.JPProtocolContext = JPProtocolContext;
+exports.JPSelectorContext = JPSelectorContext;
 exports.JPBridgeContext = JPBridgeContext;
 
 },{}],3:[function(require,module,exports){
@@ -669,7 +674,7 @@ var JPCommonContext = c.JPCommonContext,
     JPDictionaryContext = c.JPDictionaryContext,
     JPDictionaryContentContext = c.JPDictionaryContentContext,
     JPDictionaryObjContext = c.JPDictionaryObjContext,
-    JPProtocolContext = c.JPProtocolContext
+    JPSelectorContext = c.JPSelectorContext
 
 var treeView = require('./HHTreeViewer')
 
@@ -1198,6 +1203,23 @@ JPObjCListener.prototype.enterCategoryInterface = function(ctx) {
 JPObjCListener.prototype.exitCategoryInterface = function(ctx) {
 };
 
+// Enter a parse tree produced by ObjectiveCParser#selectorExpression.
+JPObjCListener.prototype.enterSelectorExpression = function(ctx) {
+    var strContext = this.addStrContext(ctx.start.start);
+    this.currContext = strContext;
+
+    var context  = new JPSelectorContext();
+    context.selectorName = ctx.selectorName().getText();
+
+    this.currContext.setNext(context);
+    this.currContext = context;
+    this.currContext.currIdx = ctx.stop.stop + 1;
+};
+
+// Exit a parse tree produced by ObjectiveCParser#selectorExpression.
+JPObjCListener.prototype.exitSelectorExpression = function(ctx) {
+};
+
 //Helper Methods
 function showIndexIndicator(source, index) {
     console.log(source.substring(0, index) + '|' + source.substring(index));
@@ -1395,7 +1417,7 @@ JPScriptProcessor.prototype = {
         var regex = /([\w|\d]*?)\./gm;
         var matches = getMatches(this.script, regex, 1);
         matches = matches.filter(function (match, index, self) {
-            return match[0] <= 'Z' && match[0] >= 'A';
+            return (match[0] <= 'Z' && match[0] >= 'A') || match[0] == 'i';
         })
         matches = matches.filter(function (match, index, self) {
             return index == self.indexOf(match);

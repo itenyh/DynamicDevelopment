@@ -413,10 +413,43 @@ JPContext.prototype.toString = function() {
     return 'JPContext_' + this.id;
 }
 
-/////////////////JPProtocolContext
-class JPProtocolContext extends JPCommonContext {
-    constructor (str) {
-        super(str)
+/////////////////JPSelectorContext
+class JPSelectorContext extends JPContext {
+    constructor () {
+        super()
+        this.selectorName = "";
+    }
+    parse () {
+        return "\"" + this.selectorName + "\"";
+    }
+}
+
+/////////////////JPOperatorsContext
+class JPOperatorsContext extends JPContext {
+    constructor () {
+        super()
+        this.left = null;
+        this.right = null;
+        this.parent = null;
+        this.operator = null;
+    }
+    parse () {
+        var operatorStr = 'equal'
+        return 'jp|__underline__|equal(' + this.left.parse() +', ' + this.right.parse() + ')';
+    }
+}
+
+class JPOperatorsLeftContext extends JPBridgeContext {
+    constructor () {
+        super()
+        this.parent = null;
+    }
+}
+
+class JPOperatorsRightContext extends JPBridgeContext {
+    constructor () {
+        super()
+        this.parent = null;
     }
 }
 
@@ -443,5 +476,8 @@ exports.JPArrayContentContext = JPArrayContentContext;
 exports.JPDictionaryContext = JPDictionaryContext;
 exports.JPDictionaryContentContext = JPDictionaryContentContext;
 exports.JPDictionaryObjContext = JPDictionaryObjContext;
-exports.JPProtocolContext = JPProtocolContext;
+exports.JPSelectorContext = JPSelectorContext;
+exports.JPOperatorsContext = JPOperatorsContext;
+exports.JPOperatorsLeftContext = JPOperatorsLeftContext;
+exports.JPOperatorsRightContext = JPOperatorsRightContext;
 exports.JPBridgeContext = JPBridgeContext;
