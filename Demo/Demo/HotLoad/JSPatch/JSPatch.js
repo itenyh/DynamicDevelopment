@@ -355,6 +355,14 @@ var global = this
     }
   }
   
+  global.jp_equal = function(arg1, arg2) {
+    return _OC_equal(arg1, arg2);
+  }
+  
+  global.jp_notequal = function(arg1, arg2) {
+  return !jp_equal(arg1, arg2);
+  }
+  
   global.YES = 1
   global.NO = 0
   global.nsnull = _OC_null

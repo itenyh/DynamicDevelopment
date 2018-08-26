@@ -51,3 +51,9 @@
 
 //对【Convertor】的修改，支持集合初始胡语法糖解析 @{} @[]
 
+//对【Convertor】、【JSPatch】、JPNSFunction 的修改 支持!= ==
+
+//对【Convertor】的修改 增加TreeView，可以查看树状解析结构
+
+//对【Convertor】的修改, 支持解析selector
+

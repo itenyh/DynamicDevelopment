@@ -16,6 +16,10 @@
     
     [context evaluateScript:@"defineCFunction(\"NSStringFromClass\", \"NSString *, Class\")"];
     
+    context[@"_OC_equal"] = ^(JSValue *arg1, JSValue *arg2) {
+        return [JPExtension formatJSToOC:arg1] == [JPExtension formatJSToOC:arg2];
+    };
+    
     context[@"NSLog"] = ^() {
         NSString *logContent = [[weakContext objectForKeyedSubscript:@"NSStringFormat"] callWithArguments:[JSContext currentArguments]].toString;
         NSLog(@"%@", logContent);

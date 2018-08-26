@@ -3,7 +3,6 @@ var delayParsedContexts = [];	//{locationMark:"###1###", context:context}
 var isFinishedParsed = false;
 var methodNameToType = [];
 
-
 /////////////////Base
 class JPContext {
 	constructor() {
@@ -99,6 +98,7 @@ class JPClassContext extends JPContext {
         };
         script += methodNameToTypeScript
         script += ');';
+        methodNameToType = [];
 
         isFinishedParsed = true;
         for (var i in delayParsedContexts) {
@@ -434,8 +434,14 @@ class JPOperatorsContext extends JPContext {
         this.operator = null;
     }
     parse () {
-        var operatorStr = 'equal'
-        return 'jp|__underline__|equal(' + this.left.parse() +', ' + this.right.parse() + ')';
+        var operatorStr;
+        if (this.operator == '==') {
+            operatorStr = 'equal';
+        }
+        else if (this.operator == '!=') {
+            operatorStr = 'notequal';
+        }
+        return 'jp|__underline__|' + operatorStr + '(' + this.left.parse() +', ' + this.right.parse() + ')';
     }
 }
 
