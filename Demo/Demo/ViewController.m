@@ -61,4 +61,8 @@
     return _photoHeight;
 }
 
+- (void)dealloc {
+    NSLog(@"viewcontroller dealloc");
+}
+
 @end

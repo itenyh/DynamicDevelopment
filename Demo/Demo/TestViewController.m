@@ -15,65 +15,94 @@
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UITableView *tbView;
 
+@property (nonatomic, strong) UIView *stateView;
+
+@property (nonatomic, assign) CGFloat firstX;
+@property (nonatomic, assign) CGFloat firstY;
+
 @end
 
 @implementation TestViewController
 
-#pragma ()
 - (void)viewDidLoad {
-//    [super viewDidLoad];
-//    [self.view addSubview:self.tbView];
-//    [self.tbView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.edges.equalTo(self.view);
-//    }];
 
-    int c = 1;
-    id a = @(1);
-    int *d;
-    [self get:d];
-    NSLog(@"%d", c);
-
-//    [self getObj:@"123"];
+    [self test];
+    
+    [self test];
     
 }
 
-- (void)get:(int *)a {
-    *a = 5;
+- (void)test {
+    static int a = 0;
+    {
+        a++;
+        static int a = 2;
+        NSLog(@"inner %d", a++);
+    }
+    NSLog(@"outer %d", a);
 }
 
-- (void)getObj:(NSString *)a {
+- (void)loadView {
+    [super loadView];
+    
+    [self.view addSubview:self.stateView];
+    
+    self.stateView.frame = CGRectMake(0, 0, 40, 40);
+    self.stateView.layer.cornerRadius = self.stateView.frame.size.width / 2;
+    self.stateView.layer.borderWidth = 2;
+    self.stateView.layer.borderColor = [UIColor whiteColor].CGColor;
+    
+    UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(move:)];
+    [panRecognizer setMinimumNumberOfTouches:1];
+    [panRecognizer setMaximumNumberOfTouches:1];
+    [self.stateView addGestureRecognizer:panRecognizer];
     
 }
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+- (void)move:(UIPanGestureRecognizer *)sender {
+    CGPoint translatedPoint = [sender translationInView:sender.view.superview];
+    translatedPoint = CGPointMake(sender.view.center.x + translatedPoint.x, sender.view.center.y + translatedPoint.y);
+    
+    [sender.view setCenter:translatedPoint];
+    [sender setTranslation:CGPointZero inView:sender.view];
+    
+    if (sender.state == UIGestureRecognizerStateEnded) {
+    
+        CGFloat velocityX = (0.05 * [sender velocityInView:self.view].x);
+        CGFloat velocityY = (0.05 * [sender velocityInView:self.view].y);
+        
+        CGFloat finalX = translatedPoint.x + velocityX;
+        CGFloat finalY = translatedPoint.y + velocityY;
+        
+        if ((finalX - sender.view.frame.size.width / 2) < 0) {
+            finalX = sender.view.frame.size.width / 2;
+        }
+        else if ((finalX + sender.view.frame.size.width / 2) > sender.view.superview.frame.size.width) {
+            finalX = sender.view.superview.frame.size.width - sender.view.frame.size.width / 2;
+        }
+        
+        if ((finalY - sender.view.frame.size.height / 2) < 0) {
+            finalY = sender.view.frame.size.height / 2;
+        }
+        else if ((finalY + sender.view.frame.size.height / 2) > sender.view.superview.frame.size.height) {
+            finalY = sender.view.superview.frame.size.height - sender.view.frame.size.height / 2;
+        }
+        
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationDuration:0.2];
+        [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+        [UIView setAnimationDelegate:self];
+        [[sender view] setCenter:CGPointMake(finalX, finalY)];
+        [UIView commitAnimations];
+    }
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 5 + section;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0) {
-        UITableViewCell *cell = [UITableViewCell new];
-        cell.textLabel.text = @"1234";
-        return cell;
+- (UIView *)stateView {
+    if (!_stateView) {
+        _stateView = [UIView new];
+        _stateView.backgroundColor = [UIColor redColor];
     }
-    else if (indexPath.section == 1) {
-        UITableViewCell *cell = [UITableViewCell new];
-        cell.textLabel.text = @"789apo";
-        return cell;
-    }
-    return nil;
-}
-
--(UITableView *)tbView {
-    if (!_tbView) {
-        _tbView = [UITableView new];
-        _tbView.dataSource = self;
-        _tbView.delegate = self;
-    }
-    return _tbView;
+    return _stateView;
 }
 
 @end

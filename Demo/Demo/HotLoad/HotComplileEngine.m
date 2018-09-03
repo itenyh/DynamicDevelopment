@@ -129,29 +129,29 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
     
     UIViewController *containerViewController = [self findContainerController:rootViewController];
     if (!containerViewController) {
-        Class vcClass = rootViewController.class;
-        UIViewController *viewController = [[vcClass alloc] init];
+        Class class = rootViewController.class;
+        UIViewController *viewController = [[class alloc] init];
         [rootViewController presentViewController:viewController animated:NO completion:nil];
     }
     else if ([containerViewController isKindOfClass:UINavigationController.class]) {
         UINavigationController *navController = ((UINavigationController *) containerViewController);
-        Class vcClass = navController.topViewController.class;
-        UIViewController *newVc = [[vcClass alloc] init];
+        Class class = navController.topViewController.class;
+        UIViewController *newVc = [[class alloc] init];
         [navController popViewControllerAnimated:NO];
         [navController pushViewController:newVc animated:NO];
     }
     else if ([containerViewController isKindOfClass:UITabBarController.class]) {
         NSLog(@"the top viewcontroller is kind of UITabBarController, presented the selected controller on it");
         UIViewController *selectedViewController = ((UITabBarController *)containerViewController).selectedViewController;
-        Class vcClass = selectedViewController.class;
-        UIViewController *viewController = [[vcClass alloc] init];
+        Class class = selectedViewController.class;
+        UIViewController *viewController = [[class alloc] init];
         [containerViewController presentViewController:viewController animated:NO completion:nil];
     }
     else {
         UIViewController *presentedViewController = containerViewController.presentedViewController;
         [containerViewController dismissViewControllerAnimated:NO completion:nil];
-        Class vcClass = presentedViewController.class;
-        UIViewController *viewController = [[vcClass alloc] init];
+        Class class = presentedViewController.class;
+        UIViewController *viewController = [[class alloc] init];
         [containerViewController presentViewController:viewController animated:NO completion:nil];
     }
 }
@@ -202,7 +202,7 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
     }
     return _extensions;
 }
-
+    
 - (JSContext *)translatorJSContext {
     if (!_translatorJSContext) {
         NSString *scriptPath = [[NSBundle mainBundle] pathForResource:@"bundle" ofType:@"js"];
@@ -236,8 +236,36 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
 
 + (void)load {
     HotComplileEngine *engine = [HotComplileEngine sharedInstance];
-    engine.jsSavePath = @"/Users/mkeqi/Desktop/Working____/Demo/Demo/HotLoad/";
+    engine.jsSavePath = @"/Users/iten/Desktop/iOS_BigData/cqBigData/cqBigData/Debug/HotLoad";
     [engine hotReloadProject];
+    
+    [HotComplileEngine performSelector:@selector(addTestButton) withObject:nil afterDelay:1];
+}
+
++ (void)addTestButton {
+    
+    id appDelegate = [UIApplication sharedApplication].delegate;
+    if (!appDelegate) { return; }
+    
+    UIWindow *window = [appDelegate valueForKey:@"window"];
+    if (!window) { return; }
+    
+    UIButton *button = [UIButton new];
+    [button setTitleColor:[UIColor blueColor] forState:UIControlStateHighlighted];
+    [window addSubview:button];
+    [button mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(window);
+        make.top.equalTo(window).offset(120);
+    }];
+    
+    [button setTitle:@"eval" forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(eval) forControlEvents:UIControlEventTouchUpInside];
+    button.backgroundColor = [UIColor redColor];
+    
+}
+
++ (void)eval {
+    [[HotComplileEngine sharedInstance] loadMainJs];
 }
 
 @end

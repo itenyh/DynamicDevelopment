@@ -42,8 +42,4 @@
     return YES;
 }
 
-- (void)eval {
-    [[HotComplileEngine sharedInstance] loadMainJs];
-}
-
 @end

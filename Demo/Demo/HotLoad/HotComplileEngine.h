@@ -12,6 +12,6 @@
 
 + (instancetype)sharedInstance;
 - (void)hotReloadProject;
-- (void)loadMainJs;
++ (void)loadMainJs;
 
 @end
