@@ -27,18 +27,6 @@
     self.window.rootViewController = navController;
     [self.window makeKeyAndVisible];
     
-    UIButton *button = [UIButton new];
-    [button setTitleColor:[UIColor blueColor] forState:UIControlStateHighlighted];
-    [self.window addSubview:button];
-    [button mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.window);
-        make.top.equalTo(self.window).offset(120);
-    }];
-    
-    [button setTitle:@"eval" forState:UIControlStateNormal];
-    [button addTarget:self action:@selector(eval) forControlEvents:UIControlEventTouchUpInside];
-    button.backgroundColor = [UIColor redColor];
-    
     return YES;
 }
 

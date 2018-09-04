@@ -10,6 +10,8 @@
 
 @protocol FileTransferServiceBrowserDelegate <NSObject>
 
+- (void)fileTransferServiceReady;
+- (void)fileTransferServiceUnReady;
 - (void)fileTransferServiceReceivedNewCode:(NSString *)code;
 
 @end

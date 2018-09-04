@@ -7,6 +7,8 @@ var JPScriptProcessor = require('./JPScriptProcessor').JPScriptProcessor
 
 var convertor = function(script, cb) {
 
+    var translateErrors = [];
+
     script = script.replace(/(^\s*)/g,'');
     if (script.indexOf('@implementation') == -1) {
         if (script[0] != '-' && script[0] != '+') {
@@ -17,11 +19,15 @@ var convertor = function(script, cb) {
     }
 
     var processor = require('./JPObjCProcessor').processor;
-    script = processor(script);
+    try {
+        script = processor(script);
+    }
+    catch(e) {
+        translateErrors.push({error:e, msg:'Script Preprocess Error'});
+    }
 
-    var translateErrors = [];
     var errorListener = new JPErrorListener(function(e) {
-        translateErrors.push(e);
+        translateErrors.push({error:e, msg:'Script Parse Listener Error'});
     });
     errorListener.lines = script.split("\n");
 

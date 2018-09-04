@@ -13,9 +13,12 @@
 #import "JPCleaner.h"
 #import "FileTransferServiceBrowser.h"
 
+#import "HRIndicatorView.h"
+#import "HRInfoViewController.h"
+
 typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSValue *error);
 
-@interface HotComplileEngine () <FileTransferServiceBrowserDelegate>
+@interface HotComplileEngine () <FileTransferServiceBrowserDelegate, HRIndicatorViewDelegate>
 
 @property (nonatomic, strong) JSContext *translatorJSContext;
 @property (nonatomic, strong) JSValue *translator;
@@ -25,10 +28,32 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
 @property (nonatomic, weak) UINavigationController *navController;
 
 @property (nonatomic, strong) FileTransferServiceBrowser *browser;
+@property (nonatomic, strong) HRIndicatorView *indicatorView;
+@property (nonatomic, strong) HRInfoViewController *infoController;
+@property (nonatomic, strong) UIWindow *window;
 
 @end
 
 @implementation HotComplileEngine
+
++ (void)load {
+    HotComplileEngine *engine = [HotComplileEngine sharedInstance];
+    engine.jsSavePath = @"/Users/iten/Desktop/iOS_BigData/cqBigData/cqBigData/Debug/HotLoad";
+    [engine hotReloadProject];
+    
+    [engine performSelector:@selector(setupUI) withObject:nil afterDelay:1];
+}
+
+- (void)setupUI {
+    id appDelegate = [UIApplication sharedApplication].delegate;
+    if (!appDelegate) { return; }
+    
+    self.window = [appDelegate valueForKey:@"window"];
+    if (!self.window) { return; }
+    
+    [self.window addSubview:self.indicatorView];
+}
+
 
 + (instancetype)sharedInstance {
     static HotComplileEngine *instance = nil;
@@ -45,11 +70,12 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
     [self addExtensions:@[@"JPBlock", @"JPCFunction", @"JPCGFunction", @"JPMasonry", @"JPNSFunction"]];
     
     [JPEngine handleException:^(NSString *msg) {
-        NSLog(@"JPEngine Exception: %@", msg);
+        self.indicatorView.state = HRIndicatorViewError;
+        [self.infoController appendInfo:[NSString stringWithFormat:@"JPEngine Exception: %@", msg]];
     }];
     
     NSString *bundlePath = [[NSBundle mainBundle] bundlePath];
-    NSString *file = [NSString stringWithFormat:@"%@/%@", bundlePath, @"constants_user.hogcs"];
+    NSString *file = [NSString stringWithFormat:@"%@/%@", bundlePath, @"user_constant.hr"];
     NSString *content = [NSString stringWithContentsOfFile:file encoding:NSUTF8StringEncoding error:nil];
     [[JPEngine context] evaluateScript:content];
 }
@@ -60,26 +86,66 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
     [self.browser startBrowsering];
 }
 
+#pragma - mark HRIndicatorViewDelegate
+
+- (void)HRIndicatorViewDelegateClicked:(id)view {
+    UIViewController *rootViewController = self.window.rootViewController;
+    if (!self.window || !rootViewController) {
+        NSLog(@"No UIWindow or RootViewController Component");
+        return;
+    }
+    if (self.infoController.isPresented) {
+        [self.infoController dismissViewControllerAnimated:YES completion:nil];
+        self.infoController.isPresented = NO;
+    }
+    else {
+        [rootViewController presentViewController:self.infoController animated:YES completion:nil];
+        self.infoController.isPresented = YES;
+    }
+}
+
+#pragma - mark FileTransferServiceBrowserDelegate
+
 - (void)fileTransferServiceReceivedNewCode:(NSString *)code {
-    NSLog(@"============= 【接收到源代码】 ============");
-    NSTimeInterval receiveSourceCodeTime = [NSDate timeIntervalSinceReferenceDate];
-    [self translateObj2Js:code callBack:^(NSString *jsScript, NSString *className, JSValue *error) {
-        NSTimeInterval translateSourceCodeTime = [NSDate timeIntervalSinceReferenceDate];
-        NSLog(@"============= 【翻译完毕：%f秒】 ============", translateSourceCodeTime - receiveSourceCodeTime);
-        NSArray *errors = error.toArray;
-        if (errors) {
+    
+    [self.infoController clear];
+    self.indicatorView.state = HRIndicatorViewWorking;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        [self.infoController appendInfo:@"============= 【接收到源代码】 ============"];
+        NSTimeInterval receiveSourceCodeTime = [NSDate timeIntervalSinceReferenceDate];
+        [self translateObj2Js:code callBack:^(NSString *jsScript, NSString *className, JSValue *error) {
+            NSTimeInterval translateSourceCodeTime = [NSDate timeIntervalSinceReferenceDate];
+            [self.infoController appendInfo:[NSString stringWithFormat:@"============= 【翻译完毕：%f秒】 ============", translateSourceCodeTime - receiveSourceCodeTime]];
             NSArray *errors = error.toArray;
-            for (NSDictionary *error in errors) {
-                NSLog(@"============= 【存在翻译错误】: %@ =============", error[@"msg"]);
+            if (errors) {
+                self.indicatorView.state = HRIndicatorViewError;
+                NSArray *errors = error.toArray;
+                for (NSDictionary *error in errors) {
+                    [self.infoController appendInfo:[NSString stringWithFormat:@"============= 【存在翻译错误】: %@ =============", error[@"msg"]]];
+                }
             }
-        }
-        else {
-            NSLog(@"============= 【开始更新】 ============");
-            [self saveJsScript:jsScript];
-            [self refresh:jsScript className:className];
-            NSLog(@"============= 【更新完毕: %f秒】 ============", [NSDate timeIntervalSinceReferenceDate] - translateSourceCodeTime);
-        }
-    }];
+            else {
+                self.indicatorView.state = HRIndicatorViewReady;
+                [self saveJsScript:jsScript];
+                [self.infoController appendInfo:@"============= 【开始更新】 ============"];
+                [self refresh:jsScript className:className];
+                 [self reloadCurrentView];
+                [self.infoController appendInfo:[NSString stringWithFormat:@"============= 【更新完毕: %f秒】 ============", [NSDate timeIntervalSinceReferenceDate] - translateSourceCodeTime]];
+            }
+        }];
+        
+    });
+
+}
+
+- (void)fileTransferServiceReady {
+    self.indicatorView.state = HRIndicatorViewReady;
+}
+
+- (void)fileTransferServiceUnReady {
+    self.indicatorView.state = HRIndicatorViewUnReady;
 }
 
 #pragma - mark Util Methods
@@ -97,13 +163,12 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
     NSString *mainJsPath = [NSString stringWithFormat:@"%@/%@", self.jsSavePath, @"main.js"];
     [JPCleaner cleanAll];
     [JPEngine evaluateScriptWithPath:mainJsPath];
-    [self finishEvaluate];
+    [self reloadCurrentView];
 }
 
 - (void)refresh:(NSString *)jsInput className:(NSString *)className {
     [JPCleaner cleanClass:className];
     [JPEngine evaluateScript:jsInput];
-    [self finishEvaluate];
 }
 
 // Save JsScript translated from Objective-C
@@ -118,11 +183,23 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
     }
 }
 
-- (void)finishEvaluate {
-    id appDelegate = [UIApplication sharedApplication].delegate;
-    UIWindow *window = [appDelegate valueForKey:@"window"];
-    UIViewController *rootViewController = window.rootViewController;
-    if (!window || !rootViewController) {
+- (void)reloadCurrentView {
+    
+    if (self.infoController.isPresented) {
+        [self.infoController dismissViewControllerAnimated:YES completion:^{
+            [self reloadVisibleViewController];
+        }];
+        self.infoController.isPresented = NO;
+    }
+    else {
+        [self reloadVisibleViewController];
+    }
+  
+}
+
+- (void)reloadVisibleViewController {
+    UIViewController *rootViewController = self.window.rootViewController;
+    if (!self.window || !rootViewController) {
         NSLog(@"No UIWindow or RootViewController Component");
         return;
     }
@@ -141,7 +218,6 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
         [navController pushViewController:newVc animated:NO];
     }
     else if ([containerViewController isKindOfClass:UITabBarController.class]) {
-        NSLog(@"the top viewcontroller is kind of UITabBarController, presented the selected controller on it");
         UIViewController *selectedViewController = ((UITabBarController *)containerViewController).selectedViewController;
         Class class = selectedViewController.class;
         UIViewController *viewController = [[class alloc] init];
@@ -185,12 +261,15 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
 }
 
 - (void)translateObj2Js:(NSString *)input callBack:(TranslateCallBack)callBack {
-    NSLog(@"============= 【开始翻译】 ============");
+    [self.infoController appendInfo:@"============= 【开始翻译】 ============"];
     NSTimeInterval beginTranslateSourceCodeTime = [NSDate timeIntervalSinceReferenceDate];
+    //全局宏替换
+    
+    //拓展宏替换
     for (Class extension in self.extensions) {
         input = [extension performSelector:@selector(preProcessSourceCode:) withObject:input];
     }
-    NSLog(@"============= 【拓展预处理完毕: %f】 ============", [NSDate timeIntervalSinceReferenceDate] - beginTranslateSourceCodeTime);
+    [self.infoController appendInfo:[NSString stringWithFormat:@"============= 【拓展预处理完毕: %f】 ============", [NSDate timeIntervalSinceReferenceDate] - beginTranslateSourceCodeTime]];
     [self.translator callWithArguments:@[input, callBack]];
 }
 
@@ -210,9 +289,10 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
         NSString *scriptString = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
         _translatorJSContext = [JSContext new];
         [_translatorJSContext setExceptionHandler:^(JSContext *context, JSValue *exception) {
-            NSString *stacktrace = [exception objectForKeyedSubscript:@"stack"].toString;
-            NSNumber *lineNumber = [exception objectForKeyedSubscript:@"line"].toNumber;
-            NSLog(@"_translatorJSContext Exception: %@ \n lineNumber: %@ \n exception: %@", stacktrace, lineNumber, exception);
+//            NSString *stacktrace = [exception objectForKeyedSubscript:@"stack"].toString;
+//            NSNumber *lineNumber = [exception objectForKeyedSubscript:@"line"].toNumber;
+//            NSLog(@"_translatorJSContext Exception: %@ \n lineNumber: %@ \n exception: %@", stacktrace, lineNumber, exception);
+            NSLog(@"error should not come here");
         }];
         [_translatorJSContext evaluateScript:scriptString];
     }
@@ -226,54 +306,19 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
     return _translator;
 }
 
-@end
-
-@interface HotComplileEngine (UIApplication)
-
-@end
-
-@implementation HotComplileEngine (UIApplication)
-
-+ (void)load {
-    HotComplileEngine *engine = [HotComplileEngine sharedInstance];
-    engine.jsSavePath = @"/Users/iten/Desktop/iOS_BigData/cqBigData/cqBigData/Debug/HotLoad";
-    [engine hotReloadProject];
-    
-    [HotComplileEngine performSelector:@selector(addTestButton) withObject:nil afterDelay:1];
+- (HRIndicatorView *)indicatorView {
+    if (!_indicatorView) {
+        _indicatorView = [HRIndicatorView new];
+        _indicatorView.delegate = self;
+    }
+    return _indicatorView;
 }
 
-+ (void)addTestButton {
-    
-    id appDelegate = [UIApplication sharedApplication].delegate;
-    if (!appDelegate) { return; }
-    
-    UIWindow *window = [appDelegate valueForKey:@"window"];
-    if (!window) { return; }
-    
-    UIButton *button = [UIButton new];
-    [button setTitleColor:[UIColor blueColor] forState:UIControlStateHighlighted];
-    [window addSubview:button];
-    [button mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(window);
-        make.top.equalTo(window).offset(120);
-    }];
-    
-    [button setTitle:@"eval" forState:UIControlStateNormal];
-    [button addTarget:self action:@selector(eval) forControlEvents:UIControlEventTouchUpInside];
-    button.backgroundColor = [UIColor redColor];
-    
+- (HRInfoViewController *)infoController {
+    if (!_infoController) {
+        _infoController = [HRInfoViewController new];
+    }
+    return _infoController;
 }
-
-+ (void)eval {
-    [[HotComplileEngine sharedInstance] loadMainJs];
-}
-
-@end
-
-@interface HotComplileEngine (UIWindow)
-
-@end
-
-@implementation HotComplileEngine (UIWindow)
 
 @end

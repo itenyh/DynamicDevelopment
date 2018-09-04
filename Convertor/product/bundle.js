@@ -1,4 +1,3 @@
-var global = {};
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 var flatten = require('flattree').flatten;
 var c = require('./JPContext')
@@ -623,6 +622,8 @@ var JPScriptProcessor = require('./JPScriptProcessor').JPScriptProcessor
 
 var convertor = function(script, cb) {
 
+    var translateErrors = [];
+
     script = script.replace(/(^\s*)/g,'');
     if (script.indexOf('@implementation') == -1) {
         if (script[0] != '-' && script[0] != '+') {
@@ -633,11 +634,15 @@ var convertor = function(script, cb) {
     }
 
     var processor = require('./JPObjCProcessor').processor;
-    script = processor(script);
+    try {
+        script = processor(script);
+    }
+    catch(e) {
+        translateErrors.push({error:e, msg:'Script Preprocess Error'});
+    }
 
-    var translateErrors = [];
     var errorListener = new JPErrorListener(function(e) {
-        translateErrors.push(e);
+        translateErrors.push({error:e, msg:'Script Parse Listener Error'});
     });
     errorListener.lines = script.split("\n");
 

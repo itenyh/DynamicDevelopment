@@ -16,7 +16,7 @@ var data = "@implementation Temp \n " +
 // var data = "[self.datas enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {\n" +
 //     "        }];";
 // var data = "@implementation Temp \n - (void)test { [NSArray arrayWithObjects:@\"1\"]; } @end";
-var data = fs.readFileSync('/Users/mkeqi/Desktop/Working____/Demo/Demo/HotLoad/HotComplileEngine.m', 'utf8');
+// var data = fs.readFileSync('/Users/mkeqi/Desktop/Working____/Demo/Demo/HotLoad/HotComplileEngine.m', 'utf8');
 // var data = "@{@\"sdfsdf\":@{@\"a\": @\"b\"}};";
 // var data = "[self animateWithDuration:1 animations:^id(NSString *tt){\n" +
 //     "        \n" +

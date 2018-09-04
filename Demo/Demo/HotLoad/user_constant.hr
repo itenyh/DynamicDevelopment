@@ -1,0 +1,23 @@
+global.EXChartViewTypeBar = 0
+global.EXChartViewTypeArea = 1
+global.EXChartViewTypeLine = 2
+global.EXChartViewTypePie = 3
+
+global.AAChartTypeColumn = "column";
+global.AAChartTypeBar = "bar";
+global.AAChartTypeArea = "area";
+global.AAChartTypeLine = "line";
+global.AAChartTypePie = "pie";
+
+global.EXImageButtonImageLeft = 0                          // image在左，label在左
+global.EXImageButtonImageTop = 1                           // image在上，label在上
+global.EXImageButtonImageRight = 2                         // image在右，label在右
+global.EXImageButtonImageBottom = 3                        // image在下，label在下
+
+global.EXRequestType_POST = 0
+global.EXCryptoTypeFixed = 1
+
+global.VERTICAL_PADDING = 7.5
+
+global.NewPagedFlowViewOrientationHorizontal = 0
+global.SCREEN_WIDTH = 320
