@@ -20,9 +20,11 @@
 
 - (void)setupView {
     
+    NSArray *array = [self _loadLocation];
+    
     self.state = HRIndicatorViewUnReady;
     
-    self.frame = CGRectMake(0, 200, 40, 40);
+    self.frame = CGRectMake(0, 200, 30, 30);
     self.layer.cornerRadius = self.frame.size.width / 2;
     self.layer.borderWidth = 2;
     self.layer.borderColor = [UIColor whiteColor].CGColor;
@@ -70,7 +72,21 @@
         [UIView setAnimationDelegate:self];
         [[sender view] setCenter:CGPointMake(finalX, finalY)];
         [UIView commitAnimations];
+        
+        [self _saveLocation:@[@(finalX), @(finalY)]];
     }
+}
+
+- (void)_saveLocation:(NSArray *)location {
+    NSString *bundlePath = [[NSBundle mainBundle] bundlePath];
+    NSString *file = [NSString stringWithFormat:@"%@/%@", bundlePath, @"IndicatorLoc.hr"];
+    [location writeToFile:file atomically:YES];
+}
+
+- (NSArray *)_loadLocation {
+    NSString *bundlePath = [[NSBundle mainBundle] bundlePath];
+    NSString *file = [NSString stringWithFormat:@"%@/%@", bundlePath, @"IndicatorLoc.hr"];
+    return [[NSArray alloc] initWithContentsOfFile:file];
 }
 
 - (void)touch:(UITapGestureRecognizer *)sender {

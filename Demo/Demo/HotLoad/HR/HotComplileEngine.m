@@ -74,10 +74,8 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
         [self.infoController appendInfo:[NSString stringWithFormat:@"JPEngine Exception: %@", msg]];
     }];
     
-    NSString *bundlePath = [[NSBundle mainBundle] bundlePath];
-    NSString *file = [NSString stringWithFormat:@"%@/%@", bundlePath, @"user_constant.hr"];
-    NSString *content = [NSString stringWithContentsOfFile:file encoding:NSUTF8StringEncoding error:nil];
-    [[JPEngine context] evaluateScript:content];
+    NSString *userConstant = [self loadBundleFile:@"user_constant.hr"];
+    [[JPEngine context] evaluateScript:userConstant];
 }
 
 - (void)hotReloadProject {
@@ -183,6 +181,28 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
     }
 }
 
+- (void)translateObj2Js:(NSString *)input callBack:(TranslateCallBack)callBack {
+    [self.infoController appendInfo:@"============= 【开始翻译】 ============"];
+    NSTimeInterval beginTranslateSourceCodeTime = [NSDate timeIntervalSinceReferenceDate];
+    //全局宏替换
+    
+    //拓展宏替换
+    for (Class extension in self.extensions) {
+        input = [extension performSelector:@selector(preProcessSourceCode:) withObject:input];
+    }
+    [self.infoController appendInfo:[NSString stringWithFormat:@"============= 【拓展预处理完毕: %f】 ============", [NSDate timeIntervalSinceReferenceDate] - beginTranslateSourceCodeTime]];
+    [self.translator callWithArguments:@[input, callBack]];
+}
+
+- (NSString *)loadBundleFile:(NSString *)filename {
+    NSString *bundlePath = [[NSBundle mainBundle] bundlePath];
+    NSString *file = [NSString stringWithFormat:@"%@/%@", bundlePath, filename];
+    NSString *content = [NSString stringWithContentsOfFile:file encoding:NSUTF8StringEncoding error:nil];
+    return content;
+}
+
+#pragma - mark View Refresh
+
 - (void)reloadCurrentView {
     
     if (self.infoController.isPresented) {
@@ -194,7 +214,7 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
     else {
         [self reloadVisibleViewController];
     }
-  
+    
 }
 
 - (void)reloadVisibleViewController {
@@ -256,21 +276,8 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
             break;
         }
     }
-
-    return currentContainer;
-}
-
-- (void)translateObj2Js:(NSString *)input callBack:(TranslateCallBack)callBack {
-    [self.infoController appendInfo:@"============= 【开始翻译】 ============"];
-    NSTimeInterval beginTranslateSourceCodeTime = [NSDate timeIntervalSinceReferenceDate];
-    //全局宏替换
     
-    //拓展宏替换
-    for (Class extension in self.extensions) {
-        input = [extension performSelector:@selector(preProcessSourceCode:) withObject:input];
-    }
-    [self.infoController appendInfo:[NSString stringWithFormat:@"============= 【拓展预处理完毕: %f】 ============", [NSDate timeIntervalSinceReferenceDate] - beginTranslateSourceCodeTime]];
-    [self.translator callWithArguments:@[input, callBack]];
+    return currentContainer;
 }
 
 #pragma - mark lazy load
@@ -284,9 +291,7 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
     
 - (JSContext *)translatorJSContext {
     if (!_translatorJSContext) {
-        NSString *scriptPath = [[NSBundle mainBundle] pathForResource:@"bundle" ofType:@"js"];
-        NSError *error;
-        NSString *scriptString = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
+        NSString *scriptString = [self loadBundleFile:@"convertor_bundle_hr.js"];
         _translatorJSContext = [JSContext new];
         [_translatorJSContext setExceptionHandler:^(JSContext *context, JSValue *exception) {
 //            NSString *stacktrace = [exception objectForKeyedSubscript:@"stack"].toString;
