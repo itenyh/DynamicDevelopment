@@ -516,9 +516,10 @@ class JPDictionaryContentContext extends JPContext {
     }
     parse () {
         var result = '';
-        for (var index in this.objs) {
-            var obj = this.objs[index];
-            result += (obj.parse() + ', ');
+        for (var index = 0;index < this.objs.length / 2;index++) {
+            var key = this.objs[index * 2];
+            var obj = this.objs[index * 2 + 1];
+            result += (obj.parse() + ', ' + key.parse() + ', ');
         }
         return result;
     }

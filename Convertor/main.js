@@ -5,11 +5,7 @@ var fs = require('fs');
 
 var data = "@implementation Temp \n " +
     "- (void)addExtensions:(NSArray *)extensionNames {\n" +
-    "    [JPEngine addExtensions:extensionNames];\n" +
-    "    for (NSString *extension in extensionNames) {\n" +
-    "        Class extensionClass = NSClassFromString(extension);\n" +
-    "        [self.extensions addObject:extensionClass];\n" +
-    "    }\n" +
+    "  id a = @{@\"sdf\": @3, @\"sdfdf\": [A b]};  \n" +
     "}\n" +
     "@end";
 // console.log(data)

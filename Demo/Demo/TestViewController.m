@@ -6,8 +6,6 @@
 //  Copyright © 2018年 Essence. All rights reserved.
 //
 
-#define kk "as\"df"
-
 #import "TestViewController.h"
 #import "ViewController.h"
 #import <objc/runtime.h>
@@ -25,6 +23,9 @@
 - (void)viewDidLoad {
 
     [super viewDidLoad];
+    
+//    NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys:@"sdfds",@"sad", nil];
+//    NSString *a = d[@"sad"];
     
 //    NSString *bundlePath = [[NSBundle mainBundle] bundlePath];
 //    NSString *file = [NSString stringWithFormat:@"%@/%@", bundlePath, @"user_macro.hr"];
@@ -50,7 +51,8 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"fasfasd"];
     NSDate *date = [NSDate date];
-    cell.textLabel.text = [NSString stringWithFormat:@"第 %ld 排: %@", indexPath.row, date];
+    NSArray *d = @[@"sfd", @"dasfasdf"];
+    cell.textLabel.text = [NSString stringWithFormat:@"第 %ld 排: %@", indexPath.row, d[1]];
     return cell;
 }
 
