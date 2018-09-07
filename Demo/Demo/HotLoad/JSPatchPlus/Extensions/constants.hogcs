@@ -1,0 +1,38 @@
+global.NSTextAlignmentLeft = 0;
+global.NSTextAlignmentCenter = 1;
+global.NSTextAlignmentRight = 2,
+
+global.UITableViewAutomaticDimension = -1;
+
+global.UITableViewCellStyleDefault = 0;
+global.UITableViewCellStyleValue1 = 1;
+global.UITableViewCellStyleValue2 = 2;
+global.UITableViewCellStyleSubtitle = 3;
+
+global.CGRectZero = {x:0, y:0, width:0, height:0}
+
+global.UITableViewCellSeparatorStyleNone = 0,
+global.UITableViewCellSeparatorStyleSingleLine = 1,
+global.UITableViewCellSeparatorStyleSingleLineEtched = 2
+
+global.UIControlStateNormal       = 0,
+global.UIControlStateHighlighted  = 1 << 0,                  // used when UIControl isHighlighted is set
+global.UIControlStateDisabled     = 1 << 1,
+global.UIControlStateSelected     = 1 << 2,                  // flag usable by app (see below)
+global.UIControlStateFocused = 1 << 3,                       // Applicable only when the screen supports focus
+global.UIControlStateApplication  = 0x00FF0000,              // additional flags available for application use
+global.UIControlStateReserved     = 0xFF000000
+
+global.UIImageResizingModeTile = 0
+global.UIImageResizingModeStretch = 1
+
+global.UILayoutPriorityRequired = 1000;                      // A required constraint.  Do not exceed this.
+global.UILayoutPriorityDefaultHigh = 750;                    // This is the priority
+global.UILayoutPriorityDefaultLow = 250;                     // This is the priority level
+global.UILayoutPriorityFittingSizeLevel = 50;
+
+global.UILayoutConstraintAxisHorizontal = 0,
+global.UILayoutConstraintAxisVertical = 1,
+
+global.NSForegroundColorAttributeName = "NSColor",
+global.NSFontAttributeName = "NSFont"
