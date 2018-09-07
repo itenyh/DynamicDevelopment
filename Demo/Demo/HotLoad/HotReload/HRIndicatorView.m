@@ -20,8 +20,6 @@
 
 - (void)setupView {
     
-    NSArray *array = [self _loadLocation];
-    
     self.state = HRIndicatorViewUnReady;
     
     self.frame = CGRectMake(0, 200, 30, 30);

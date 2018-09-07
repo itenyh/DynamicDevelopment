@@ -5,10 +5,7 @@ var fs = require('fs');
 
 var data = "@implementation Temp \n " +
     "- (void)addExtensions:(NSArray *)extensionNames {\n" +
-    "    [JPEngine addExtensions:extensionNames];\n" +
-    "    for (NSString *extension in extensionNames) {\n" +
-    "        Class extensionClass = NSClassFromString(extension);\n" +
-    "        [self.extensions addObject:extensionClass];\n" +
+    " a[1] = 1\n" +
     "    }\n" +
     "}\n" +
     "@end";

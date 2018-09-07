@@ -12,6 +12,7 @@
 #import "JPEngine.h"
 #import "JPCleaner.h"
 #import "FileTransferServiceBrowser.h"
+#import "HRMacroParser.h"
 
 #import "HRIndicatorView.h"
 #import "HRInfoViewController.h"
@@ -22,15 +23,16 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
 
 @property (nonatomic, strong) JSContext *translatorJSContext;
 @property (nonatomic, strong) JSValue *translator;
+@property (nonatomic, copy) NSString *jsSavePath;
 @property (nonatomic, strong) NSMutableArray *extensions;
 
-@property (nonatomic, copy) NSString *jsSavePath;
+@property (nonatomic, strong) UIWindow *window;
 @property (nonatomic, weak) UINavigationController *navController;
 
 @property (nonatomic, strong) FileTransferServiceBrowser *browser;
 @property (nonatomic, strong) HRIndicatorView *indicatorView;
 @property (nonatomic, strong) HRInfoViewController *infoController;
-@property (nonatomic, strong) UIWindow *window;
+@property (nonatomic, strong) HRMacroParser *macroParser;
 
 @end
 
@@ -38,7 +40,7 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
 
 + (void)load {
     HotComplileEngine *engine = [HotComplileEngine sharedInstance];
-    engine.jsSavePath = @"/Users/iten/Desktop/iOS_BigData/cqBigData/cqBigData/Debug/HotLoad";
+    engine.jsSavePath = @"/Users/iten/Desktop/Working____/Demo/Demo/HotLoad/";
     [engine hotReloadProject];
     
     [engine performSelector:@selector(setupUI) withObject:nil afterDelay:1];
@@ -67,7 +69,7 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
 
 - (void)setupEngine {
     [JPEngine startEngine];
-    [self addExtensions:@[@"JPBlock", @"JPCFunction", @"JPCGFunction", @"JPMasonry", @"JPNSFunction"]];
+    [self addExtensions:@[@"JPBlock", @"JPCFunction", @"JPCGFunction", @"JPMasonry", @"JPNSFunction", @"JPWeakStrong"]];
     
     [JPEngine handleException:^(NSString *msg) {
         self.indicatorView.state = HRIndicatorViewError;
@@ -121,7 +123,7 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
                 self.indicatorView.state = HRIndicatorViewError;
                 NSArray *errors = error.toArray;
                 for (NSDictionary *error in errors) {
-                    [self.infoController appendInfo:[NSString stringWithFormat:@"============= 【存在翻译错误】: %@ =============", error[@"msg"]]];
+                    [self.infoController appendInfo:[NSString stringWithFormat:@"============= 【存在翻译错误】: %@ ============= Detail: %@", error[@"msg"], error[@"error"]]];
                 }
             }
             else {
@@ -181,17 +183,36 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
     }
 }
 
-- (void)translateObj2Js:(NSString *)input callBack:(TranslateCallBack)callBack {
+- (void)translateObj2Js:(NSString *)objcCode callBack:(TranslateCallBack)callBack {
     [self.infoController appendInfo:@"============= 【开始翻译】 ============"];
     NSTimeInterval beginTranslateSourceCodeTime = [NSDate timeIntervalSinceReferenceDate];
-    //全局宏替换
     
-    //拓展宏替换
+    //全局宏加载
+    NSString *globalMacro = [self loadBundleFile:@"macro.hr"];
+    NSString *userMacro = [self loadBundleFile:@"user_macro.hr"];
+    objcCode = [@"//GlobalMacro\n" stringByAppendingFormat:@"%@\n//UserMacro\n%@\n%@", globalMacro, userMacro, objcCode];
+    
+    //拓展宏加载
     for (Class extension in self.extensions) {
-        input = [extension performSelector:@selector(preProcessSourceCode:) withObject:input];
+        objcCode = [extension performSelector:@selector(preProcessSourceCode:) withObject:objcCode];
     }
-    [self.infoController appendInfo:[NSString stringWithFormat:@"============= 【拓展预处理完毕: %f】 ============", [NSDate timeIntervalSinceReferenceDate] - beginTranslateSourceCodeTime]];
-    [self.translator callWithArguments:@[input, callBack]];
+    
+    //宏预处理
+    __block NSString *objcCodeInput;
+    [self.macroParser parseMacro:objcCode callBack:^(JSValue *error, NSString *code) {
+        if ([error.toObject isKindOfClass:NSNull.class]) {
+            objcCodeInput = code;
+        }
+        else {
+            //宏解析一旦发生错误就会立刻停止
+            [self.infoController appendInfo:[NSString stringWithFormat:@"============= 【宏解析错误】: %@ =============", error]];
+            self.indicatorView.state = HRIndicatorViewError;
+        }
+    }];
+    if (!objcCodeInput) { return; }
+    
+    [self.infoController appendInfo:[NSString stringWithFormat:@"============= 【预处理完毕: %f】 ============", [NSDate timeIntervalSinceReferenceDate] - beginTranslateSourceCodeTime]];
+    [self.translator callWithArguments:@[objcCodeInput, callBack]];
 }
 
 - (NSString *)loadBundleFile:(NSString *)filename {
@@ -282,6 +303,13 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
 
 #pragma - mark lazy load
 
+- (HRMacroParser *)macroParser {
+    if (!_macroParser) {
+        _macroParser = [HRMacroParser new];
+    }
+    return _macroParser;
+}
+
 - (NSMutableArray *)extensions {
     if (!_extensions) {
         _extensions = [NSMutableArray array];
@@ -291,7 +319,7 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
     
 - (JSContext *)translatorJSContext {
     if (!_translatorJSContext) {
-        NSString *scriptString = [self loadBundleFile:@"convertor_bundle_hr.js"];
+        NSString *scriptString = [self loadBundleFile:@"convertor_hr.js"];
         _translatorJSContext = [JSContext new];
         [_translatorJSContext setExceptionHandler:^(JSContext *context, JSValue *exception) {
 //            NSString *stacktrace = [exception objectForKeyedSubscript:@"stack"].toString;

@@ -10,16 +10,14 @@
 		73F2FE602108B353001C8180 /* TestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F2FE5F2108B353001C8180 /* TestViewController.m */; };
 		AE40BFB38E170D0FB9EB7205 /* libPods-Demo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6ECA50D021CECD28D041DFC1 /* libPods-Demo.a */; };
 		D5FAC13C211DC9E30050596D /* user_constant.hr in Resources */ = {isa = PBXBuildFile; fileRef = D5FAC0F5211DC9E30050596D /* user_constant.hr */; };
-		D5FAC13D211DC9E30050596D /* Packet.m in Sources */ = {isa = PBXBuildFile; fileRef = D5FAC0FA211DC9E30050596D /* Packet.m */; };
 		D5FAC13E211DC9E30050596D /* SourceCode.m in Sources */ = {isa = PBXBuildFile; fileRef = D5FAC0FC211DC9E30050596D /* SourceCode.m */; };
 		D5FAC13F211DC9E30050596D /* FileTransferServiceBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = D5FAC0FD211DC9E30050596D /* FileTransferServiceBrowser.m */; };
-		D5FAC140211DC9E30050596D /* convertor_bundle_hr.js in Resources */ = {isa = PBXBuildFile; fileRef = D5FAC100211DC9E30050596D /* convertor_bundle_hr.js */; };
 		D5FAC141211DC9E30050596D /* JPEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = D5FAC102211DC9E30050596D /* JPEngine.m */; };
 		D5FAC142211DC9E30050596D /* JPCleaner.m in Sources */ = {isa = PBXBuildFile; fileRef = D5FAC104211DC9E30050596D /* JPCleaner.m */; };
 		D5FAC143211DC9E30050596D /* JPStructPointer.m in Sources */ = {isa = PBXBuildFile; fileRef = D5FAC10A211DC9E30050596D /* JPStructPointer.m */; };
 		D5FAC144211DC9E30050596D /* JPMemory.m in Sources */ = {isa = PBXBuildFile; fileRef = D5FAC10B211DC9E30050596D /* JPMemory.m */; };
 		D5FAC145211DC9E30050596D /* JPCFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = D5FAC10C211DC9E30050596D /* JPCFunction.m */; };
-		D5FAC146211DC9E30050596D /* constants.hogcs in Resources */ = {isa = PBXBuildFile; fileRef = D5FAC10E211DC9E30050596D /* constants.hogcs */; };
+		D5FAC146211DC9E30050596D /* constants.hr in Resources */ = {isa = PBXBuildFile; fileRef = D5FAC10E211DC9E30050596D /* constants.hr */; };
 		D5FAC147211DC9E30050596D /* JPBlockWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = D5FAC111211DC9E30050596D /* JPBlockWrapper.m */; };
 		D5FAC148211DC9E30050596D /* JPBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = D5FAC112211DC9E30050596D /* JPBlock.m */; };
 		D5FAC149211DC9E30050596D /* JPNSFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = D5FAC116211DC9E30050596D /* JPNSFunction.m */; };
@@ -35,16 +33,22 @@
 		D5FAC153211DC9E30050596D /* libffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D5FAC136211DC9E30050596D /* libffi.a */; };
 		D5FAC154211DC9E30050596D /* main.js in Resources */ = {isa = PBXBuildFile; fileRef = D5FAC13A211DC9E30050596D /* main.js */; };
 		D5FAC155211DC9E30050596D /* HotComplileEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = D5FAC13B211DC9E30050596D /* HotComplileEngine.m */; };
+		FC300B742142034700C58D66 /* macro_parser_hr.js in Resources */ = {isa = PBXBuildFile; fileRef = FC300B732142034600C58D66 /* macro_parser_hr.js */; };
+		FC300B772142063100C58D66 /* HRMacroParser.m in Sources */ = {isa = PBXBuildFile; fileRef = FC300B762142063100C58D66 /* HRMacroParser.m */; };
+		FC300B9F21420F0F00C58D66 /* macro.hr in Resources */ = {isa = PBXBuildFile; fileRef = FC300B9E21420F0F00C58D66 /* macro.hr */; };
+		FC300BA2214220C600C58D66 /* ReferenceCycleView.m in Sources */ = {isa = PBXBuildFile; fileRef = FC300BA1214220C600C58D66 /* ReferenceCycleView.m */; };
 		FC67496720EB29CD0075F4C4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FC67496620EB29CD0075F4C4 /* AppDelegate.m */; };
 		FC67496A20EB29CD0075F4C4 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FC67496920EB29CD0075F4C4 /* ViewController.m */; };
 		FC67496D20EB29CD0075F4C4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FC67496B20EB29CD0075F4C4 /* Main.storyboard */; };
 		FC67496F20EB29D60075F4C4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FC67496E20EB29D60075F4C4 /* Assets.xcassets */; };
 		FC67497220EB29D60075F4C4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FC67497020EB29D60075F4C4 /* LaunchScreen.storyboard */; };
 		FC67497520EB29D60075F4C4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FC67497420EB29D60075F4C4 /* main.m */; };
+		FCAD448F2142266600B213BC /* JPWeakStrong.m in Sources */ = {isa = PBXBuildFile; fileRef = FCAD448E2142266600B213BC /* JPWeakStrong.m */; };
+		FCAD4493214254DF00B213BC /* JPCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = FCAD4492214254DF00B213BC /* JPCollection.m */; };
+		FCAD44952142578300B213BC /* convertor_hr.js in Resources */ = {isa = PBXBuildFile; fileRef = FCAD44942142578300B213BC /* convertor_hr.js */; };
 		FCB3F833213E164F003C8BE0 /* HRIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = FCB3F832213E164F003C8BE0 /* HRIndicatorView.m */; };
 		FCBAD5DC210EACA0001A8BF5 /* AnnotatedPhotoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBAD5DB210EACA0001A8BF5 /* AnnotatedPhotoCell.m */; };
 		FCBAD5DF210EB03B001A8BF5 /* PinterestLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBAD5DE210EB03B001A8BF5 /* PinterestLayout.m */; };
-		FCC08D6F213FD2F000E766B7 /* IndicatorLoc.hr in Resources */ = {isa = PBXBuildFile; fileRef = FCC08D6E213FD2F000E766B7 /* IndicatorLoc.hr */; };
 		FCE14F83213E31B100CFD22C /* HRInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCE14F82213E31B100CFD22C /* HRInfoViewController.m */; };
 		FCE14FF9213E80C700CFD22C /* user_macro.hr in Resources */ = {isa = PBXBuildFile; fileRef = FCE14FF8213E80C700CFD22C /* user_macro.hr */; };
 /* End PBXBuildFile section */
@@ -57,11 +61,8 @@
 		D5FAC0F5211DC9E30050596D /* user_constant.hr */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = user_constant.hr; sourceTree = "<group>"; };
 		D5FAC0F7211DC9E30050596D /* FileTransferServiceBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileTransferServiceBrowser.h; sourceTree = "<group>"; };
 		D5FAC0F9211DC9E30050596D /* SourceCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourceCode.h; sourceTree = "<group>"; };
-		D5FAC0FA211DC9E30050596D /* Packet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Packet.m; sourceTree = "<group>"; };
-		D5FAC0FB211DC9E30050596D /* Packet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Packet.h; sourceTree = "<group>"; };
 		D5FAC0FC211DC9E30050596D /* SourceCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SourceCode.m; sourceTree = "<group>"; };
 		D5FAC0FD211DC9E30050596D /* FileTransferServiceBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileTransferServiceBrowser.m; sourceTree = "<group>"; };
-		D5FAC100211DC9E30050596D /* convertor_bundle_hr.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = convertor_bundle_hr.js; sourceTree = "<group>"; };
 		D5FAC102211DC9E30050596D /* JPEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPEngine.m; sourceTree = "<group>"; };
 		D5FAC104211DC9E30050596D /* JPCleaner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPCleaner.m; sourceTree = "<group>"; };
 		D5FAC105211DC9E30050596D /* JPCleaner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPCleaner.h; sourceTree = "<group>"; };
@@ -71,7 +72,7 @@
 		D5FAC10B211DC9E30050596D /* JPMemory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPMemory.m; sourceTree = "<group>"; };
 		D5FAC10C211DC9E30050596D /* JPCFunction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPCFunction.m; sourceTree = "<group>"; };
 		D5FAC10D211DC9E30050596D /* JPStructPointer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPStructPointer.h; sourceTree = "<group>"; };
-		D5FAC10E211DC9E30050596D /* constants.hogcs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = constants.hogcs; sourceTree = "<group>"; };
+		D5FAC10E211DC9E30050596D /* constants.hr */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = constants.hr; sourceTree = "<group>"; };
 		D5FAC110211DC9E30050596D /* JPBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPBlock.h; sourceTree = "<group>"; };
 		D5FAC111211DC9E30050596D /* JPBlockWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPBlockWrapper.m; sourceTree = "<group>"; };
 		D5FAC112211DC9E30050596D /* JPBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPBlock.m; sourceTree = "<group>"; };
@@ -110,6 +111,12 @@
 		D5FAC13A211DC9E30050596D /* main.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = main.js; sourceTree = "<group>"; };
 		D5FAC13B211DC9E30050596D /* HotComplileEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotComplileEngine.m; sourceTree = "<group>"; };
 		F5EF3A1DA4BDB2A3D82912F7 /* Pods-Demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Demo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Demo/Pods-Demo.debug.xcconfig"; sourceTree = "<group>"; };
+		FC300B732142034600C58D66 /* macro_parser_hr.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = macro_parser_hr.js; sourceTree = "<group>"; };
+		FC300B752142063100C58D66 /* HRMacroParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HRMacroParser.h; sourceTree = "<group>"; };
+		FC300B762142063100C58D66 /* HRMacroParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HRMacroParser.m; sourceTree = "<group>"; };
+		FC300B9E21420F0F00C58D66 /* macro.hr */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = macro.hr; sourceTree = "<group>"; };
+		FC300BA0214220C600C58D66 /* ReferenceCycleView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReferenceCycleView.h; sourceTree = "<group>"; };
+		FC300BA1214220C600C58D66 /* ReferenceCycleView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ReferenceCycleView.m; sourceTree = "<group>"; };
 		FC67496220EB29CD0075F4C4 /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FC67496520EB29CD0075F4C4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		FC67496620EB29CD0075F4C4 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -121,13 +128,17 @@
 		FC67497320EB29D60075F4C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FC67497420EB29D60075F4C4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		FC6749C020EB4A0D0075F4C4 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
+		FCAD448D2142266600B213BC /* JPWeakStrong.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JPWeakStrong.h; sourceTree = "<group>"; };
+		FCAD448E2142266600B213BC /* JPWeakStrong.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JPWeakStrong.m; sourceTree = "<group>"; };
+		FCAD4491214254DF00B213BC /* JPCollection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JPCollection.h; sourceTree = "<group>"; };
+		FCAD4492214254DF00B213BC /* JPCollection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JPCollection.m; sourceTree = "<group>"; };
+		FCAD44942142578300B213BC /* convertor_hr.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = convertor_hr.js; sourceTree = "<group>"; };
 		FCB3F831213E164F003C8BE0 /* HRIndicatorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HRIndicatorView.h; sourceTree = "<group>"; };
 		FCB3F832213E164F003C8BE0 /* HRIndicatorView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HRIndicatorView.m; sourceTree = "<group>"; };
 		FCBAD5DA210EACA0001A8BF5 /* AnnotatedPhotoCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AnnotatedPhotoCell.h; sourceTree = "<group>"; };
 		FCBAD5DB210EACA0001A8BF5 /* AnnotatedPhotoCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AnnotatedPhotoCell.m; sourceTree = "<group>"; };
 		FCBAD5DD210EB03B001A8BF5 /* PinterestLayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PinterestLayout.h; sourceTree = "<group>"; };
 		FCBAD5DE210EB03B001A8BF5 /* PinterestLayout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PinterestLayout.m; sourceTree = "<group>"; };
-		FCC08D6E213FD2F000E766B7 /* IndicatorLoc.hr */ = {isa = PBXFileReference; lastKnownFileType = text; path = IndicatorLoc.hr; sourceTree = "<group>"; };
 		FCE14F81213E31B100CFD22C /* HRInfoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HRInfoViewController.h; sourceTree = "<group>"; };
 		FCE14F82213E31B100CFD22C /* HRInfoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HRInfoViewController.m; sourceTree = "<group>"; };
 		FCE14FF8213E80C700CFD22C /* user_macro.hr */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = user_macro.hr; sourceTree = "<group>"; };
@@ -169,7 +180,8 @@
 				D5FAC13A211DC9E30050596D /* main.js */,
 				FCE14FF8213E80C700CFD22C /* user_macro.hr */,
 				D5FAC0F5211DC9E30050596D /* user_constant.hr */,
-				FCE14FFA213E812D00CFD22C /* HR */,
+				FC300B732142034600C58D66 /* macro_parser_hr.js */,
+				FCE14FFA213E812D00CFD22C /* HotReload */,
 				D5FAC0FF211DC9E30050596D /* JPConvertorPlus */,
 				D5FAC101211DC9E30050596D /* JSPatchPlus */,
 				D5FAC11F211DC9E30050596D /* ThridParty */,
@@ -191,8 +203,6 @@
 			isa = PBXGroup;
 			children = (
 				D5FAC0F9211DC9E30050596D /* SourceCode.h */,
-				D5FAC0FA211DC9E30050596D /* Packet.m */,
-				D5FAC0FB211DC9E30050596D /* Packet.h */,
 				D5FAC0FC211DC9E30050596D /* SourceCode.m */,
 			);
 			path = TransferDatas;
@@ -201,7 +211,7 @@
 		D5FAC0FF211DC9E30050596D /* JPConvertorPlus */ = {
 			isa = PBXGroup;
 			children = (
-				D5FAC100211DC9E30050596D /* convertor_bundle_hr.js */,
+				FCAD44942142578300B213BC /* convertor_hr.js */,
 			);
 			path = JPConvertorPlus;
 			sourceTree = "<group>";
@@ -220,13 +230,16 @@
 		D5FAC106211DC9E30050596D /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				D5FAC10E211DC9E30050596D /* constants.hogcs */,
+				FC300B9E21420F0F00C58D66 /* macro.hr */,
+				D5FAC10E211DC9E30050596D /* constants.hr */,
 				FCC08D03213F77B400E766B7 /* JPCleaner */,
 				D5FAC107211DC9E30050596D /* JPCFunction */,
 				D5FAC10F211DC9E30050596D /* JPBlock */,
 				D5FAC114211DC9E30050596D /* JPNSFunction */,
 				D5FAC117211DC9E30050596D /* JPMasonry */,
 				D5FAC11A211DC9E30050596D /* JPCGFunction */,
+				FCAD449021424E6400B213BC /* JPWeakStrong */,
+				FCAD4496214262E100B213BC /* JPCollection */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -235,11 +248,11 @@
 			isa = PBXGroup;
 			children = (
 				D5FAC108211DC9E30050596D /* JPMemory.h */,
-				D5FAC109211DC9E30050596D /* JPCFunction.h */,
-				D5FAC10A211DC9E30050596D /* JPStructPointer.m */,
 				D5FAC10B211DC9E30050596D /* JPMemory.m */,
+				D5FAC109211DC9E30050596D /* JPCFunction.h */,
 				D5FAC10C211DC9E30050596D /* JPCFunction.m */,
 				D5FAC10D211DC9E30050596D /* JPStructPointer.h */,
+				D5FAC10A211DC9E30050596D /* JPStructPointer.m */,
 			);
 			path = JPCFunction;
 			sourceTree = "<group>";
@@ -369,6 +382,8 @@
 				FCBAD5DB210EACA0001A8BF5 /* AnnotatedPhotoCell.m */,
 				FCBAD5DD210EB03B001A8BF5 /* PinterestLayout.h */,
 				FCBAD5DE210EB03B001A8BF5 /* PinterestLayout.m */,
+				FC300BA0214220C600C58D66 /* ReferenceCycleView.h */,
+				FC300BA1214220C600C58D66 /* ReferenceCycleView.m */,
 			);
 			path = Demo;
 			sourceTree = "<group>";
@@ -393,6 +408,24 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		FCAD449021424E6400B213BC /* JPWeakStrong */ = {
+			isa = PBXGroup;
+			children = (
+				FCAD448D2142266600B213BC /* JPWeakStrong.h */,
+				FCAD448E2142266600B213BC /* JPWeakStrong.m */,
+			);
+			path = JPWeakStrong;
+			sourceTree = "<group>";
+		};
+		FCAD4496214262E100B213BC /* JPCollection */ = {
+			isa = PBXGroup;
+			children = (
+				FCAD4491214254DF00B213BC /* JPCollection.h */,
+				FCAD4492214254DF00B213BC /* JPCollection.m */,
+			);
+			path = JPCollection;
+			sourceTree = "<group>";
+		};
 		FCC08D03213F77B400E766B7 /* JPCleaner */ = {
 			isa = PBXGroup;
 			children = (
@@ -402,7 +435,7 @@
 			path = JPCleaner;
 			sourceTree = "<group>";
 		};
-		FCE14FFA213E812D00CFD22C /* HR */ = {
+		FCE14FFA213E812D00CFD22C /* HotReload */ = {
 			isa = PBXGroup;
 			children = (
 				D5FAC0F6211DC9E30050596D /* Transportation */,
@@ -412,9 +445,10 @@
 				FCB3F832213E164F003C8BE0 /* HRIndicatorView.m */,
 				FCE14F81213E31B100CFD22C /* HRInfoViewController.h */,
 				FCE14F82213E31B100CFD22C /* HRInfoViewController.m */,
-				FCC08D6E213FD2F000E766B7 /* IndicatorLoc.hr */,
+				FC300B752142063100C58D66 /* HRMacroParser.h */,
+				FC300B762142063100C58D66 /* HRMacroParser.m */,
 			);
-			path = HR;
+			path = HotReload;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -477,12 +511,13 @@
 			files = (
 				FC67497220EB29D60075F4C4 /* LaunchScreen.storyboard in Resources */,
 				D5FAC13C211DC9E30050596D /* user_constant.hr in Resources */,
-				D5FAC146211DC9E30050596D /* constants.hogcs in Resources */,
+				FC300B9F21420F0F00C58D66 /* macro.hr in Resources */,
+				D5FAC146211DC9E30050596D /* constants.hr in Resources */,
 				FCE14FF9213E80C700CFD22C /* user_macro.hr in Resources */,
-				D5FAC140211DC9E30050596D /* convertor_bundle_hr.js in Resources */,
+				FCAD44952142578300B213BC /* convertor_hr.js in Resources */,
 				D5FAC14C211DC9E30050596D /* JSPatch.js in Resources */,
 				FC67496F20EB29D60075F4C4 /* Assets.xcassets in Resources */,
-				FCC08D6F213FD2F000E766B7 /* IndicatorLoc.hr in Resources */,
+				FC300B742142034700C58D66 /* macro_parser_hr.js in Resources */,
 				D5FAC154211DC9E30050596D /* main.js in Resources */,
 				FC67496D20EB29CD0075F4C4 /* Main.storyboard in Resources */,
 				D5FAC14F211DC9E30050596D /* Documentation.html in Resources */,
@@ -518,8 +553,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				D5FAC14E211DC9E30050596D /* SGDirWatchdog.m in Sources */,
-				D5FAC13D211DC9E30050596D /* Packet.m in Sources */,
 				FCE14F83213E31B100CFD22C /* HRInfoViewController.m in Sources */,
+				FC300B772142063100C58D66 /* HRMacroParser.m in Sources */,
 				D5FAC145211DC9E30050596D /* JPCFunction.m in Sources */,
 				D5FAC141211DC9E30050596D /* JPEngine.m in Sources */,
 				D5FAC147211DC9E30050596D /* JPBlockWrapper.m in Sources */,
@@ -534,9 +569,12 @@
 				D5FAC150211DC9E30050596D /* GCDAsyncUdpSocket.m in Sources */,
 				D5FAC151211DC9E30050596D /* GCDAsyncSocket.m in Sources */,
 				FCBAD5DC210EACA0001A8BF5 /* AnnotatedPhotoCell.m in Sources */,
+				FC300BA2214220C600C58D66 /* ReferenceCycleView.m in Sources */,
 				D5FAC14D211DC9E30050596D /* FileSystemWatch.m in Sources */,
 				FC67497520EB29D60075F4C4 /* main.m in Sources */,
 				D5FAC143211DC9E30050596D /* JPStructPointer.m in Sources */,
+				FCAD448F2142266600B213BC /* JPWeakStrong.m in Sources */,
+				FCAD4493214254DF00B213BC /* JPCollection.m in Sources */,
 				FC67496720EB29CD0075F4C4 /* AppDelegate.m in Sources */,
 				FCB3F833213E164F003C8BE0 /* HRIndicatorView.m in Sources */,
 				D5FAC152211DC9E30050596D /* JPMethodSignature.m in Sources */,

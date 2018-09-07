@@ -268,9 +268,8 @@ class JPAssignContext extends JPContext {
             }
         }
         else {
-            if (/jp|__underline__|element\(.+\)\s*$/gm.test(lastProperty)) {
-                console.log(lastProperty);
-                lastProperty = lastProperty.replace(/jp\|__underline__\|element\((.+)\)\s*$/gm, 'setJp|__underline__|element($1,' + this.right.parse() + ')');
+            if (/jp_element\(.+\)\s*$/gm.test(lastProperty)) {
+                lastProperty = lastProperty.replace(/jp_element\((.+)\)\s*$/gm, 'setJp_element|__underline__|obj($1,' + this.right.parse() + ')');
             }
             else {
                 lastProperty = 'set' + lastProperty[0].toUpperCase() + lastProperty.substr(1) + '(' + this.right.parse() + ')';
@@ -317,7 +316,7 @@ class JPPostfixContext extends JPContext {
 	}
 
     parse () {
-        return '|__dot__|jp|__underline__|element(' + this.content.parse() + ')';
+        return '|__dot__|jp_element(' + this.content.parse() + ')';
     }
 }
 

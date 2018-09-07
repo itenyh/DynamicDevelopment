@@ -217,12 +217,12 @@ static void (^_exceptionBlock)(NSString *log) = ^void(NSString *log) {
         objc_setAssociatedObject(realObj, kPropAssociatedObjectKey, val, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     };
     
-    context[@"__weak"] = ^id(JSValue *jsval) {
+    context[@"weakify"] = ^id(JSValue *jsval) {
         id obj = formatJSToOC(jsval);
         return [[JSContext currentContext][@"_formatOCToJS"] callWithArguments:@[formatOCToJS([JPBoxing boxWeakObj:obj])]];
     };
 
-    context[@"__strong"] = ^id(JSValue *jsval) {
+    context[@"strongify"] = ^id(JSValue *jsval) {
         id obj = formatJSToOC(jsval);
         return [[JSContext currentContext][@"_formatOCToJS"] callWithArguments:@[formatOCToJS(obj)]];
     };
