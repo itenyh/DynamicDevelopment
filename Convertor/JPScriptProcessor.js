@@ -82,10 +82,6 @@ JPScriptProcessor.prototype = {
         this.script = requires + this.script;
         return this;
     },
-    rectFormat: function() {
-        this.script = this.script.replace(/(frame|bounds).(size|origin)/gm, "$1");
-        return this;
-    },
     replace_with__: function() {
         var regex = /(\.{1}[a-zA-z_]{1}[a-zA-z_1-9]*)/g;
         var index = 0;
@@ -103,7 +99,7 @@ JPScriptProcessor.prototype = {
         return this;
     },
     finalScript: function() {
-        this.stripSymbolAt().replaceString().rectFormat().processPropertyGetter().restoreDot().replace_with__().restoreUnderline().dynamicPropertyGetter().requireClasses().replaceNil().replaceSuper().restoreString().beautify();
+        this.stripSymbolAt().replaceString().processPropertyGetter().restoreDot().replace_with__().restoreUnderline().dynamicPropertyGetter().requireClasses().replaceNil().replaceSuper().restoreString().beautify();
         return this.script;
     }
 }

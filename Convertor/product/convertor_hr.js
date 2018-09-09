@@ -1,4 +1,3 @@
-var global = {};
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 var flatten = require('flattree').flatten;
 var c = require('./JPContext')
@@ -1517,10 +1516,6 @@ JPScriptProcessor.prototype = {
         this.script = requires + this.script;
         return this;
     },
-    rectFormat: function() {
-        this.script = this.script.replace(/(frame|bounds).(size|origin)/gm, "$1");
-        return this;
-    },
     replace_with__: function() {
         var regex = /(\.{1}[a-zA-z_]{1}[a-zA-z_1-9]*)/g;
         var index = 0;
@@ -1538,7 +1533,7 @@ JPScriptProcessor.prototype = {
         return this;
     },
     finalScript: function() {
-        this.stripSymbolAt().replaceString().rectFormat().processPropertyGetter().restoreDot().replace_with__().restoreUnderline().dynamicPropertyGetter().requireClasses().replaceNil().replaceSuper().restoreString().beautify();
+        this.stripSymbolAt().replaceString().processPropertyGetter().restoreDot().replace_with__().restoreUnderline().dynamicPropertyGetter().requireClasses().replaceNil().replaceSuper().restoreString().beautify();
         return this.script;
     }
 }

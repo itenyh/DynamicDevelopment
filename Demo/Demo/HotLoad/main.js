@@ -1,4 +1,4 @@
-require('NSMutableArray,NSArray,NSMutableDictionary,UITableViewCell,NSDate,UITableView,ReferenceCycleView');
+require('UITableViewCell,NSDate,UITableView,ReferenceCycleView');
 defineClass('TestViewController', null, {
     viewDidLoad: function() {
 
@@ -6,13 +6,19 @@ defineClass('TestViewController', null, {
 
 
 
-        var arr = NSMutableArray.arrayWithArray(NSArray.arrayWithObjects("123", "445", null));
-        arr.setJp__element_obj(1, "55");
+        var f = self.rect();
+        f.origin().setX(100);
+        NSLog("%f", f.origin().x());
 
-        var dic = NSMutableDictionary.dictionaryWithObjectsAndKeys("obj", "key", null);
-        dic.setJp__element_obj("key1", "obj1");
-        NSLog("%@", dic.jp__element("key1"));
-
+    },
+    point: function() {
+        return CGPointMake(32, 3);
+    },
+    rect: function() {
+        return CGRectMake(1, 2, 3, 4);
+    },
+    a_arg1: function(arg, arg1) {
+        return arg + arg1;
     },
     tableView_heightForRowAtIndexPath: function(tableView, indexPath) {
         return 50;
@@ -41,6 +47,9 @@ defineClass('TestViewController', null, {
     },
 }, null, {
     viewDidLoad: 'void',
+    point: 'CGPoint',
+    rect: 'CGRect',
+    a_arg1: 'int,int,int',
     tableView_heightForRowAtIndexPath: 'CGFloat,UITableView*,NSIndexPath*',
     tableView_cellForRowAtIndexPath: 'UITableViewCell*,UITableView*,NSIndexPath*',
     tableView_numberOfRowsInSection: 'NSInteger,UITableView*,NSInteger',

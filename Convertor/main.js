@@ -5,7 +5,7 @@ var fs = require('fs');
 
 var data = "@implementation Temp \n " +
     "- (void)addExtensions:(NSArray *)extensionNames {\n" +
-    " a[1] = 1\n" +
+    " CGFloat width = self.frame.size.width;\n" +
     "    }\n" +
     "}\n" +
     "@end";

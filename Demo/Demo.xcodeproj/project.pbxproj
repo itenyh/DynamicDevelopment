@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		73F2FE602108B353001C8180 /* TestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F2FE5F2108B353001C8180 /* TestViewController.m */; };
 		AE40BFB38E170D0FB9EB7205 /* libPods-Demo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6ECA50D021CECD28D041DFC1 /* libPods-Demo.a */; };
+		D55ED8EC21440E1A00D5BC0A /* JPStruct.m in Sources */ = {isa = PBXBuildFile; fileRef = D55ED8EB21440E1A00D5BC0A /* JPStruct.m */; };
 		D5FAC13C211DC9E30050596D /* user_constant.hr in Resources */ = {isa = PBXBuildFile; fileRef = D5FAC0F5211DC9E30050596D /* user_constant.hr */; };
 		D5FAC13E211DC9E30050596D /* SourceCode.m in Sources */ = {isa = PBXBuildFile; fileRef = D5FAC0FC211DC9E30050596D /* SourceCode.m */; };
 		D5FAC13F211DC9E30050596D /* FileTransferServiceBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = D5FAC0FD211DC9E30050596D /* FileTransferServiceBrowser.m */; };
@@ -58,6 +59,8 @@
 		6ECA50D021CECD28D041DFC1 /* libPods-Demo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Demo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		73F2FE5E2108B353001C8180 /* TestViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestViewController.h; sourceTree = "<group>"; };
 		73F2FE5F2108B353001C8180 /* TestViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestViewController.m; sourceTree = "<group>"; };
+		D55ED8EA21440E1A00D5BC0A /* JPStruct.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JPStruct.h; sourceTree = "<group>"; };
+		D55ED8EB21440E1A00D5BC0A /* JPStruct.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JPStruct.m; sourceTree = "<group>"; };
 		D5FAC0F5211DC9E30050596D /* user_constant.hr */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = user_constant.hr; sourceTree = "<group>"; };
 		D5FAC0F7211DC9E30050596D /* FileTransferServiceBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileTransferServiceBrowser.h; sourceTree = "<group>"; };
 		D5FAC0F9211DC9E30050596D /* SourceCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourceCode.h; sourceTree = "<group>"; };
@@ -240,6 +243,8 @@
 				D5FAC11A211DC9E30050596D /* JPCGFunction */,
 				FCAD449021424E6400B213BC /* JPWeakStrong */,
 				FCAD4496214262E100B213BC /* JPCollection */,
+				D55ED8EA21440E1A00D5BC0A /* JPStruct.h */,
+				D55ED8EB21440E1A00D5BC0A /* JPStruct.m */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -555,6 +560,7 @@
 				D5FAC14E211DC9E30050596D /* SGDirWatchdog.m in Sources */,
 				FCE14F83213E31B100CFD22C /* HRInfoViewController.m in Sources */,
 				FC300B772142063100C58D66 /* HRMacroParser.m in Sources */,
+				D55ED8EC21440E1A00D5BC0A /* JPStruct.m in Sources */,
 				D5FAC145211DC9E30050596D /* JPCFunction.m in Sources */,
 				D5FAC141211DC9E30050596D /* JPEngine.m in Sources */,
 				D5FAC147211DC9E30050596D /* JPBlockWrapper.m in Sources */,

@@ -40,7 +40,7 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
 
 + (void)load {
     HotComplileEngine *engine = [HotComplileEngine sharedInstance];
-    engine.jsSavePath = @"/Users/iten/Desktop/Working____/Demo/Demo/HotLoad/";
+    engine.jsSavePath = @"/Users/mkeqi/Desktop/Working____/Demo/Demo/HotLoad/";
     [engine hotReloadProject];
     
     [engine performSelector:@selector(setupUI) withObject:nil afterDelay:1];

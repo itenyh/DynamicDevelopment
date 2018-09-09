@@ -31,36 +31,44 @@ typedef void (^ParserCallBack)(JSValue *error, NSString *code);
 
     [super viewDidLoad];
     
-//    self.view.backgroundColor = [UIColor redColor];
 //    [self.view addSubview:self.tbView];
 //    [self.tbView mas_makeConstraints:^(MASConstraintMaker *make) {
 //        make.edges.equalTo(self.view);
 //    }];
-////    fweakify(self)
-//    self.cycleView.block = ^(NSString *code) {
-////        fstrongify(self)
-//        NSLog(@"codie: %@", code);
-//        self.nameLabel = nil;
-//    };
 //
-//    self.cycleView.block(@"hahhaa");
-    
-//    UIView *view = [UIView new];
-//    view.backgroundColor = [UIColor redColor];
-//    [self.view addSubview:view];
-//    view.frame = CGRectMake(0, 0, 100, 100);
+//    NSMethodSignature *sig = [self methodSignatureForSelector:@selector(a:arg1:)];
+//    NSInvocation *invko = [NSInvocation invocationWithMethodSignature:sig];
+//    [invko setTarget:self];
+//    [invko setSelector:@selector(a:arg1:)];
+//    double arg = 4.0f;
+//    long arg1 = 5;
+//    [invko setArgument:&arg atIndex:2];
+//    [invko setArgument:&arg1 atIndex:3];
+//    [invko invoke];
+//    long i;
+//    [invko getReturnValue:&i];
+//    NSLog(@"%ld", i);
 //
-//    CGRect f = view.frame;
-//    f.origin.x = 10;
-//    view.frame = f;
+//    [self a:3 arg1:4];
     
-    NSMutableArray *arr = [NSMutableArray arrayWithArray:@[@"123", @"445"]];
-    arr[1] = @"55";
+//    [self rect];
     
-    NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"obj", @"key", nil];
-    dic[@"key1"] = @"obj1";
-    NSLog(@"%@", dic[@"key1"]);
+    CGRect f = [self rect];
+    f.origin.x = 100;
+    NSLog(@"%f", f.origin.x);
     
+}
+
+- (CGPoint)point {
+    return CGPointMake(32, 3);
+}
+
+- (CGRect)rect {
+    return CGRectMake(1, 2, 3, 4);
+}
+
+- (int)a:(int)arg arg1:(int)arg1 {
+    return arg + arg1;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {

@@ -5,6 +5,8 @@
 //  Copyright (c) 2015 bang. All rights reserved.
 //
 
+#import "JPStruct.h"
+
 #import "JPEngine.h"
 #import <objc/runtime.h>
 #import <objc/message.h>
@@ -1051,6 +1053,16 @@ static id callSelector(NSString *className, NSString *selectorName, JSValue *arg
             instance = nil;
         } else if (!instance || instance == _nilObj || [instance isKindOfClass:[JPBoxing class]]) {
             return @{@"__isNil": @(YES)};
+        } else if (instance.class == JPStruct.class) {
+            NSMutableDictionary *dict = ((JPStruct *)instance).value;
+            if ([selectorName rangeOfString:@"set"].location == 0) {
+                NSString *propertyHeadCharacter = [selectorName substringWithRange:NSMakeRange(3, 1)].lowercaseString;
+                NSString *property = [NSString stringWithFormat:@"%@%@", propertyHeadCharacter, [selectorName substringWithRange:NSMakeRange(4, selectorName.length - 5)]];
+                dict[property] = formatJSToOC(arguments[0]);
+            }
+            else {
+                return [JPStruct formatOCToJS:dict[selectorName]];
+            }
         }
     }
     id argumentsObj = formatJSToOC(arguments);
@@ -1325,13 +1337,20 @@ static id callSelector(NSString *className, NSString *selectorName, JSValue *arg
 
                 case '{': {
                     NSString *typeString = extractStructName([NSString stringWithUTF8String:returnType]);
+                    if ([typeString rangeOfString:@"CGRect"].location != NSNotFound) {
+                        CGRect result;
+                        [invocation getReturnValue:&result];
+                        
+                        return formatOCToJS([JPStruct jpStructWith:result]);
+                    }
+                    JPStruct *jpStruct = [JPStruct new];
                     #define JP_CALL_RET_STRUCT(_type, _methodName) \
                     if ([typeString rangeOfString:@#_type].location != NSNotFound) {    \
                         _type result;   \
                         [invocation getReturnValue:&result];    \
-                        return [JSValue _methodName:result inContext:_context];    \
+                        jpStruct.value = [JSValue _methodName:result inContext:_context];    \
+                        return formatOCToJS(jpStruct); \
                     }
-                    JP_CALL_RET_STRUCT(CGRect, valueWithRect)
                     JP_CALL_RET_STRUCT(CGPoint, valueWithPoint)
                     JP_CALL_RET_STRUCT(CGSize, valueWithSize)
                     JP_CALL_RET_STRUCT(NSRange, valueWithRange)
@@ -1342,8 +1361,9 @@ static id callSelector(NSString *className, NSString *selectorName, JSValue *arg
                             void *ret = malloc(size);
                             [invocation getReturnValue:ret];
                             NSDictionary *dict = getDictOfStruct(ret, structDefine);
+                            jpStruct.value = dict;
                             free(ret);
-                            return dict;
+                            return formatOCToJS(jpStruct);
                         }
                     }
                     break;
