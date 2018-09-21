@@ -53,8 +53,11 @@ typedef void (^ParserCallBack)(JSValue *error, NSString *code);
     
 //    [self rect];
     
+    
+    
     CGRect f = [self rect];
     f.origin.x = 100;
+    f.origin = CGPointMake(43, 3);
     NSLog(@"%f", f.origin.x);
     
 }
