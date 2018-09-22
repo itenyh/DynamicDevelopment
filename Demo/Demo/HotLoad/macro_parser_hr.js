@@ -12,6 +12,18 @@ Sources at https://github.com/ParksProjets/C-Preprocessor
 
 */
 
+var ignoreCmd = {'enum' : 1,
+				 'endenum' : 1,
+	             'error' : 1,
+	             'pragma' : 1,
+	             'endif' : 1,
+	             'else' : 1,
+	             'elif' : 1,
+				 'ifndef' : 1,
+	             'ifdef' : 1,
+	             'undef' : 1,
+				 'if' : 1,
+				 'include' : 1};
 
 // Libraries
 var EventEmitter = require('events'),
@@ -58,7 +70,7 @@ var Compiler = function(opt) {
 	// Options object
 	this.options = {};
 	this.options.newLine = '\n';
-	this.options.commentEscape = true;
+	this.options.commentEscape = false;
 	this.options.includeSpaces = 0;
 	this.options.emptyLinesLimit = 0;
 	this.options.basePath = './';
@@ -323,6 +335,8 @@ Processor.prototype.parseNext = function() {
 
 	// Get the # directive
 	var cmd = Directives[name.trimLeft()];
+	if (ignoreCmd[cmd])
+        return this.addLine(this.addDefines(line));
 
 	// If the command exists: call the corresponding function
 	if (cmd)
@@ -860,7 +874,7 @@ createDirective("if", function(expr) {
 
 // #ifdef directive (note: '#ifdef VARIABLE' is faster than '#if defined(VARIABLE)')
 createDirective("ifdef", function(text) {
-	
+
 	// Get the constant/macro name
 	var name = text.split(' ')[0];
 
@@ -875,7 +889,7 @@ createDirective("ifdef", function(text) {
 
 // #ifndef directive (note: '#ifndef VARIABLE' is faster than '#if !defined(VARIABLE)')
 createDirective("ifndef", function(text) {
-	
+
 	// Get the constant/macro name
 	var name = text.split(' ')[0];
 
@@ -883,10 +897,6 @@ createDirective("ifndef", function(text) {
 	if (this.defines[name] !== undefined)
 		this.conditionNext();
 });
-
-
-
-
 
 
 
@@ -927,7 +937,7 @@ createDirective("endif", function(expr, called) {
 });
 // #pragma directive
 createDirective("pragma", function(text) {
-	
+
 	text = text.trim();
 
 
@@ -940,7 +950,7 @@ createDirective("pragma", function(text) {
 	else if (text.startsWith('push_macro')) {
 
 		var match = text.match(/push_macro\("([^"]+)"\)/);
-		
+
 		if (match === null || match[1].length == 0)
 			this.error(`wrong pragma format`);
 		else
@@ -952,7 +962,7 @@ createDirective("pragma", function(text) {
 	else if (text.startsWith('pop_macro')) {
 
 		var match = text.match(/pop_macro\("([^"]+)"\)/);
-		
+
 		if (match === null || match[1].length == 0)
 			this.error(`wrong pragma format`);
 		else
@@ -1580,6 +1590,9 @@ function functionBindPolyfill(context) {
 
 },{}],5:[function(require,module,exports){
 (function (process){
+// .dirname, .basename, and .extname methods are extracted from Node.js v8.11.1,
+// backported and transplited with Babel, with backwards-compat fixes
+
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -1630,14 +1643,6 @@ function normalizeArray(parts, allowAboveRoot) {
 
   return parts;
 }
-
-// Split a filename into [root, dir, basename, ext], unix version
-// 'root' is just a slash, or nothing.
-var splitPathRe =
-    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
-var splitPath = function(filename) {
-  return splitPathRe.exec(filename).slice(1);
-};
 
 // path.resolve([from ...], to)
 // posix version
@@ -1754,37 +1759,120 @@ exports.relative = function(from, to) {
 exports.sep = '/';
 exports.delimiter = ':';
 
-exports.dirname = function(path) {
-  var result = splitPath(path),
-      root = result[0],
-      dir = result[1];
-
-  if (!root && !dir) {
-    // No dirname whatsoever
-    return '.';
+exports.dirname = function (path) {
+  if (typeof path !== 'string') path = path + '';
+  if (path.length === 0) return '.';
+  var code = path.charCodeAt(0);
+  var hasRoot = code === 47 /*/*/;
+  var end = -1;
+  var matchedSlash = true;
+  for (var i = path.length - 1; i >= 1; --i) {
+    code = path.charCodeAt(i);
+    if (code === 47 /*/*/) {
+        if (!matchedSlash) {
+          end = i;
+          break;
+        }
+      } else {
+      // We saw the first non-path separator
+      matchedSlash = false;
+    }
   }
 
-  if (dir) {
-    // It has a dirname, strip trailing slash
-    dir = dir.substr(0, dir.length - 1);
+  if (end === -1) return hasRoot ? '/' : '.';
+  if (hasRoot && end === 1) {
+    // return '//';
+    // Backwards-compat fix:
+    return '/';
   }
-
-  return root + dir;
+  return path.slice(0, end);
 };
 
+function basename(path) {
+  if (typeof path !== 'string') path = path + '';
 
-exports.basename = function(path, ext) {
-  var f = splitPath(path)[2];
-  // TODO: make this comparison case-insensitive on windows?
+  var start = 0;
+  var end = -1;
+  var matchedSlash = true;
+  var i;
+
+  for (i = path.length - 1; i >= 0; --i) {
+    if (path.charCodeAt(i) === 47 /*/*/) {
+        // If we reached a path separator that was not part of a set of path
+        // separators at the end of the string, stop now
+        if (!matchedSlash) {
+          start = i + 1;
+          break;
+        }
+      } else if (end === -1) {
+      // We saw the first non-path separator, mark this as the end of our
+      // path component
+      matchedSlash = false;
+      end = i + 1;
+    }
+  }
+
+  if (end === -1) return '';
+  return path.slice(start, end);
+}
+
+// Uses a mixed approach for backwards-compatibility, as ext behavior changed
+// in new Node.js versions, so only basename() above is backported here
+exports.basename = function (path, ext) {
+  var f = basename(path);
   if (ext && f.substr(-1 * ext.length) === ext) {
     f = f.substr(0, f.length - ext.length);
   }
   return f;
 };
 
+exports.extname = function (path) {
+  if (typeof path !== 'string') path = path + '';
+  var startDot = -1;
+  var startPart = 0;
+  var end = -1;
+  var matchedSlash = true;
+  // Track the state of characters (if any) we see before our first dot and
+  // after any path separator we find
+  var preDotState = 0;
+  for (var i = path.length - 1; i >= 0; --i) {
+    var code = path.charCodeAt(i);
+    if (code === 47 /*/*/) {
+        // If we reached a path separator that was not part of a set of path
+        // separators at the end of the string, stop now
+        if (!matchedSlash) {
+          startPart = i + 1;
+          break;
+        }
+        continue;
+      }
+    if (end === -1) {
+      // We saw the first non-path separator, mark this as the end of our
+      // extension
+      matchedSlash = false;
+      end = i + 1;
+    }
+    if (code === 46 /*.*/) {
+        // If this is our first dot, mark it as the start of our extension
+        if (startDot === -1)
+          startDot = i;
+        else if (preDotState !== 1)
+          preDotState = 1;
+    } else if (startDot !== -1) {
+      // We saw a non-dot and non-path separator before our dot, so we should
+      // have a good chance at having a non-empty extension
+      preDotState = -1;
+    }
+  }
 
-exports.extname = function(path) {
-  return splitPath(path)[3];
+  if (startDot === -1 || end === -1 ||
+      // We saw a non-dot character immediately before the dot
+      preDotState === 0 ||
+      // The (right-most) trimmed path component is exactly '..'
+      preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
+    return '';
+  }
+  return path.slice(startDot, end);
 };
 
 function filter (xs, f) {

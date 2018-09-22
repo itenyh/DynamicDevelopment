@@ -3,13 +3,9 @@ var fs = require('fs');
 
 
 
-// var code = '#define MJRefreshCheckState \\\n' +
-//     'MJRefreshState oldState = self.state; \\\n' +
-//     'if (state == oldState) return; \\\n' +
-//     '[super setState:state];' +
-//     'MJRefreshCheckState; \n' +
-//     '';
-var code = fs.readFileSync('/Users/iten/Desktop/iOS_BigData/cqBigData/cqBigData/MainFrame/BDAnalysis/BDMain/ViewController/BDMainViewController.m', 'utf8');
+var code = '#define A 1 \n var n = A + 1; \n //asdfasd ' +
+    '';
+// var code = fs.readFileSync('/Users/iten/Desktop/iOS_BigData/cqBigData/cqBigData/MainFrame/BDAnalysis/BDMain/ViewController/BDMainViewController.m', 'utf8');
 
 // compiler.compile(code, function(err, result) {
 //     console.log(err);

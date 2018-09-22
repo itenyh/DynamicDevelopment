@@ -10,6 +10,18 @@ Sources at https://github.com/ParksProjets/C-Preprocessor
 
 */
 
+var ignoreCmd = {'enum' : 1,
+				 'endenum' : 1,
+	             'error' : 1,
+	             'pragma' : 1,
+	             'endif' : 1,
+	             'else' : 1,
+	             'elif' : 1,
+				 'ifndef' : 1,
+	             'ifdef' : 1,
+	             'undef' : 1,
+				 'if' : 1,
+				 'include' : 1};
 
 // Libraries
 var EventEmitter = require('events'),
@@ -56,7 +68,7 @@ var Compiler = function(opt) {
 	// Options object
 	this.options = {};
 	this.options.newLine = '\n';
-	this.options.commentEscape = true;
+	this.options.commentEscape = false;
 	this.options.includeSpaces = 0;
 	this.options.emptyLinesLimit = 0;
 	this.options.basePath = './';
@@ -321,6 +333,8 @@ Processor.prototype.parseNext = function() {
 
 	// Get the # directive
 	var cmd = Directives[name.trimLeft()];
+	if (ignoreCmd[cmd])
+        return this.addLine(this.addDefines(line));
 
 	// If the command exists: call the corresponding function
 	if (cmd)
@@ -858,7 +872,7 @@ createDirective("if", function(expr) {
 
 // #ifdef directive (note: '#ifdef VARIABLE' is faster than '#if defined(VARIABLE)')
 createDirective("ifdef", function(text) {
-	
+
 	// Get the constant/macro name
 	var name = text.split(' ')[0];
 
@@ -873,7 +887,7 @@ createDirective("ifdef", function(text) {
 
 // #ifndef directive (note: '#ifndef VARIABLE' is faster than '#if !defined(VARIABLE)')
 createDirective("ifndef", function(text) {
-	
+
 	// Get the constant/macro name
 	var name = text.split(' ')[0];
 
@@ -881,10 +895,6 @@ createDirective("ifndef", function(text) {
 	if (this.defines[name] !== undefined)
 		this.conditionNext();
 });
-
-
-
-
 
 
 

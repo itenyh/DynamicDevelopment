@@ -27,6 +27,9 @@
 + (JPStruct *)jpStructWith:(CGRect)rect {
     JPStruct *result = [JPStruct new];
     result.value = [NSMutableDictionary dictionaryWithDictionary: @{@"origin":@{@"x":@(rect.origin.x), @"y":@(rect.origin.y)}, @"size":@{@"width":@(rect.size.width), @"height":@(rect.size.height)}}];
+    
+    
+    
     return result;
 }
 

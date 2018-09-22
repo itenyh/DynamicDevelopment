@@ -6,7 +6,7 @@
 //  Copyright © 2018年 Essence. All rights reserved.
 //
 
-#define kk [NSDate dd]
+#define kka @"34234"
 #define dd date
 
 #import <JavaScriptCore/JavaScriptCore.h>
@@ -31,34 +31,16 @@ typedef void (^ParserCallBack)(JSValue *error, NSString *code);
 
     [super viewDidLoad];
     
-//    [self.view addSubview:self.tbView];
-//    [self.tbView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.edges.equalTo(self.view);
-//    }];
-//
-//    NSMethodSignature *sig = [self methodSignatureForSelector:@selector(a:arg1:)];
-//    NSInvocation *invko = [NSInvocation invocationWithMethodSignature:sig];
-//    [invko setTarget:self];
-//    [invko setSelector:@selector(a:arg1:)];
-//    double arg = 4.0f;
-//    long arg1 = 5;
-//    [invko setArgument:&arg atIndex:2];
-//    [invko setArgument:&arg1 atIndex:3];
-//    [invko invoke];
-//    long i;
-//    [invko getReturnValue:&i];
-//    NSLog(@"%ld", i);
-//
-//    [self a:3 arg1:4];
+    [self.view addSubview:self.tbView];
+    [self.tbView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(self.view);
+    }];
+
     
-//    [self rect];
-    
-    
-    
-    CGRect f = [self rect];
-    f.origin.x = 100;
-    f.origin = CGPointMake(43, 3);
-    NSLog(@"%f", f.origin.x);
+//    CGRect f = [self rect];
+//    f.origin.x = 100;
+//    f.origin = CGPointMake(43, 3);
+//    NSLog(@"%f", f.origin.x);
     
 }
 
@@ -80,7 +62,7 @@ typedef void (^ParserCallBack)(JSValue *error, NSString *code);
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"fasfasd"];
-    cell.textLabel.text = [NSString stringWithFormat:@"第 %ld 排: %@", indexPath.row, kk];
+    cell.textLabel.text = [NSString stringWithFormat:@"第 %ld 排: %@", indexPath.row, kka];
     return cell;
 }
 

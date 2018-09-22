@@ -1,14 +1,15 @@
-require('UITableViewCell,NSDate,UITableView,ReferenceCycleView');
+require('UITableViewCell,UITableView,ReferenceCycleView');
 defineClass('TestViewController', null, {
     viewDidLoad: function() {
 
         self.super().viewDidLoad();
 
+        self.view().addSubview(self.tbView());
+        self.tbView().mas__makeConstraints(block('void, MASConstraintMaker*', function(make) {
+            make.edges().equalTo()(self.view());
+        }));
 
 
-        var f = self.rect();
-        f.origin().setX(100);
-        NSLog("%f", f.origin().x());
 
     },
     point: function() {
@@ -25,7 +26,7 @@ defineClass('TestViewController', null, {
     },
     tableView_cellForRowAtIndexPath: function(tableView, indexPath) {
         var cell = UITableViewCell.alloc().initWithStyle_reuseIdentifier(UITableViewCellStyleDefault, "fasfasd");
-        cell.textLabel().setText(NSStringFormat("第 %ld 排: %@", indexPath.row(), NSDate.date()));
+        cell.textLabel().setText(NSStringFormat("第 %ld 排: %@", indexPath.row(), "34234"));
         return cell;
     },
     tableView_numberOfRowsInSection: function(tableView, section) {
