@@ -6,7 +6,7 @@
 //  Copyright © 2018年 Essence. All rights reserved.
 //
 
-#define kka @"34234"
+#define kka @"sadjkfa"
 #define dd date
 
 #import <JavaScriptCore/JavaScriptCore.h>
@@ -14,6 +14,8 @@
 #import "ViewController.h"
 #import <objc/runtime.h>
 #import "ReferenceCycleView.h"
+
+#import "UIView+Test.h"
 
 typedef void (^ParserCallBack)(JSValue *error, NSString *code);
 
@@ -27,20 +29,32 @@ typedef void (^ParserCallBack)(JSValue *error, NSString *code);
 
 @implementation TestViewController
 
+#pragma - mark ViewDidLoad
+
 - (void)viewDidLoad {
 
     [super viewDidLoad];
-    
-    [self.view addSubview:self.tbView];
-    [self.tbView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(self.view);
-    }];
+//    self.view.backgroundColor = [UIColor whiteColor];
+//    [self.view addSubview:self.tbView];
+//    [self.tbView mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.edges.equalTo(self.view);
+//    }];
 
+    UIView *view = [UIView new];
+    view.backgroundColor = [UIColor redColor];
+    [self.view addSubview:view];
+    CGRect rec = [self rect1:self.view.frame];
+//    NSLog(@"%@", rec);
+//    rec.size.height = 123;
+////    NSLog(@"%@", rec);
+    view.frame = rec;
     
 //    CGRect f = [self rect];
 //    f.origin.x = 100;
 //    f.origin = CGPointMake(43, 3);
-//    NSLog(@"%f", f.origin.x);
+//    NSLog(@"%@",  [self rect:CGRectMake(10, 0, 0, 0)]);
+//    [self sdfk];π
+//    [self rect:CGRectMake(0, 0, 0, 0)];
     
 }
 
@@ -48,8 +62,17 @@ typedef void (^ParserCallBack)(JSValue *error, NSString *code);
     return CGPointMake(32, 3);
 }
 
-- (CGRect)rect {
-    return CGRectMake(1, 2, 3, 4);
+#pragma )(
+- (CGRect)rect1:(CGRect)rect {
+    rect.size.width = 10;
+    rect.size.height = 100;
+    return rect;
+}
+
+#pragma )(
+- (CGRect)rect:(CGRect)rect {
+    return rect;
+//    return CGRectMake(0, 0, 13, 34);
 }
 
 - (int)a:(int)arg arg1:(int)arg1 {

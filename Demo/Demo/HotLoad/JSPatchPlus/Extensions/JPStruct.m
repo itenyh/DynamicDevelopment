@@ -26,11 +26,27 @@
 
 + (JPStruct *)jpStructWith:(CGRect)rect {
     JPStruct *result = [JPStruct new];
-    result.value = [NSMutableDictionary dictionaryWithDictionary: @{@"origin":@{@"x":@(rect.origin.x), @"y":@(rect.origin.y)}, @"size":@{@"width":@(rect.size.width), @"height":@(rect.size.height)}}];
-    
-    
-    
+    id origin = [JPStruct mut:@{@"x":@(rect.origin.x), @"y":@(rect.origin.y)}];
+    id size = [JPStruct mut:@{@"width":@(rect.size.width), @"height":@(rect.size.height)}];
+    result.value = [JPStruct mut: @{@"origin":origin, @"size":size}];
     return result;
 }
+
+- (CGRect)toRect {
+    CGRect rect;
+    NSMutableDictionary *value = self.value;
+    NSMutableDictionary *origin = value[@"origin"];
+    NSMutableDictionary *size = value[@"size"];
+    rect.origin.x = [origin[@"x"] floatValue];
+    rect.origin.y = [origin[@"y"] floatValue];
+    rect.size.width = [size[@"width"] floatValue];
+    rect.size.height = [size[@"height"] floatValue];
+    return rect;
+}
+
++ (NSMutableDictionary *)mut:(NSDictionary *)dict {
+    return [NSMutableDictionary dictionaryWithDictionary:dict];
+}
+
 
 @end

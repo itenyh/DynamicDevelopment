@@ -7,6 +7,7 @@
 //
 
 #import "JPCGFunction.h"
+#import "JPStruct.h"
 
 @implementation JPCGFunction
 
@@ -30,7 +31,7 @@
         NSNumber *yNumber = ((JSValue *)args[1]).toNumber;
         NSNumber *widthNumber = ((JSValue *)args[2]).toNumber;
         NSNumber *heightNumber = ((JSValue *)args[3]).toNumber;
-        return [JSValue valueWithRect:CGRectMake([xNumber doubleValue], [yNumber doubleValue], [widthNumber doubleValue], [heightNumber doubleValue]) inContext:weakContext];
+        return [JPExtension formatOCToJS:[JPStruct jpStructWith:CGRectMake([xNumber doubleValue], [yNumber doubleValue], [widthNumber doubleValue], [heightNumber doubleValue])]];
     };
     
     context[@"CGSizeMake"] = ^() {

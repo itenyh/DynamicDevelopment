@@ -335,8 +335,9 @@ Processor.prototype.parseNext = function() {
 
 	// Get the # directive
 	var cmd = Directives[name.trimLeft()];
-	if (ignoreCmd[cmd])
+	if (ignoreCmd[name]) {
         return this.addLine(this.addDefines(line));
+    }
 
 	// If the command exists: call the corresponding function
 	if (cmd)

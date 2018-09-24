@@ -13,5 +13,6 @@
 @property (nonatomic, strong) id value;
 
 + (JPStruct *)jpStructWith:(CGRect)rect;
+- (CGRect)toRect;
 
 @end

@@ -755,7 +755,13 @@ static void JPForwardInvocation(__unsafe_unretained id assignSlf, SEL selector, 
                     [argList addObject:[JSValue _transFunc:arg inContext:_context]];  \
                     break; \
                 }
-                JP_FWD_ARG_STRUCT(CGRect, valueWithRect)
+                if ([typeString rangeOfString:@"CGRect"].location != NSNotFound) {
+                    CGRect arg;
+                    [invocation getArgument:&arg atIndex:i];
+                    JPStruct *jpStruct = [JPStruct jpStructWith:arg];
+                    [argList addObject:jpStruct];
+                    break;
+                }
                 JP_FWD_ARG_STRUCT(CGPoint, valueWithPoint)
                 JP_FWD_ARG_STRUCT(CGSize, valueWithSize)
                 JP_FWD_ARG_STRUCT(NSRange, valueWithRange)
@@ -916,7 +922,13 @@ static void JPForwardInvocation(__unsafe_unretained id assignSlf, SEL selector, 
                 [invocation setReturnValue:&ret];\
                 break;  \
             }
-            JP_FWD_RET_STRUCT(CGRect, toRect)
+            if ([typeString rangeOfString:@"CGRect"].location != NSNotFound) {
+                JP_FWD_RET_CALL_JS
+                id __autoreleasing jpStruct = formatJSToOC(jsval);
+                CGRect rect =[jpStruct toRect];
+                [invocation setReturnValue:&rect];
+                break;
+            }
             JP_FWD_RET_STRUCT(CGPoint, toPoint)
             JP_FWD_RET_STRUCT(CGSize, toSize)
             JP_FWD_RET_STRUCT(NSRange, toRange)
@@ -1059,6 +1071,7 @@ static id callSelector(NSString *className, NSString *selectorName, JSValue *arg
                 NSString *propertyHeadCharacter = [selectorName substringWithRange:NSMakeRange(3, 1)].lowercaseString;
                 NSString *property = [NSString stringWithFormat:@"%@%@", propertyHeadCharacter, [selectorName substringWithRange:NSMakeRange(4, selectorName.length - 5)]];
                 dict[property] = formatJSToOC(arguments[0]);
+                return nil;
             }
             else {
                 return [JPStruct formatOCToJS:dict[selectorName]];
@@ -1194,7 +1207,12 @@ static id callSelector(NSString *className, NSString *selectorName, JSValue *arg
                     [invocation setArgument:&value atIndex:i];  \
                     break; \
                 }
-                JP_CALL_ARG_STRUCT(CGRect, toRect)
+                if ([typeString rangeOfString:@"CGRect"].location != NSNotFound) {
+                    JPStruct *jpStuct = (JPStruct *)valObj;
+                    CGRect value = [jpStuct toRect];
+                    [invocation setArgument:&value atIndex:i];
+                    break;
+                }
                 JP_CALL_ARG_STRUCT(CGPoint, toPoint)
                 JP_CALL_ARG_STRUCT(CGSize, toSize)
                 JP_CALL_ARG_STRUCT(NSRange, toRange)
@@ -1340,8 +1358,8 @@ static id callSelector(NSString *className, NSString *selectorName, JSValue *arg
                     if ([typeString rangeOfString:@"CGRect"].location != NSNotFound) {
                         CGRect result;
                         [invocation getReturnValue:&result];
-                        
-                        return formatOCToJS([JPStruct jpStructWith:result]);
+                        JPStruct *returnValue = [JPStruct jpStructWith:result];
+                        return formatOCToJS(returnValue);
                     }
                     JPStruct *jpStruct = [JPStruct new];
                     #define JP_CALL_RET_STRUCT(_type, _methodName) \

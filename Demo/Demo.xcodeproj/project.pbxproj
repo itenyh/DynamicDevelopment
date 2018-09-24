@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		73F2FE602108B353001C8180 /* TestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F2FE5F2108B353001C8180 /* TestViewController.m */; };
 		AE40BFB38E170D0FB9EB7205 /* libPods-Demo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6ECA50D021CECD28D041DFC1 /* libPods-Demo.a */; };
+		D51A265521586E45006834C7 /* UIView+Test.m in Sources */ = {isa = PBXBuildFile; fileRef = D51A265421586E45006834C7 /* UIView+Test.m */; };
 		D55ED8EC21440E1A00D5BC0A /* JPStruct.m in Sources */ = {isa = PBXBuildFile; fileRef = D55ED8EB21440E1A00D5BC0A /* JPStruct.m */; };
 		D5FAC13C211DC9E30050596D /* user_constant.hr in Resources */ = {isa = PBXBuildFile; fileRef = D5FAC0F5211DC9E30050596D /* user_constant.hr */; };
 		D5FAC13E211DC9E30050596D /* SourceCode.m in Sources */ = {isa = PBXBuildFile; fileRef = D5FAC0FC211DC9E30050596D /* SourceCode.m */; };
@@ -59,6 +60,8 @@
 		6ECA50D021CECD28D041DFC1 /* libPods-Demo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Demo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		73F2FE5E2108B353001C8180 /* TestViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestViewController.h; sourceTree = "<group>"; };
 		73F2FE5F2108B353001C8180 /* TestViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestViewController.m; sourceTree = "<group>"; };
+		D51A265321586E45006834C7 /* UIView+Test.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIView+Test.h"; sourceTree = "<group>"; };
+		D51A265421586E45006834C7 /* UIView+Test.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIView+Test.m"; sourceTree = "<group>"; };
 		D55ED8EA21440E1A00D5BC0A /* JPStruct.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JPStruct.h; sourceTree = "<group>"; };
 		D55ED8EB21440E1A00D5BC0A /* JPStruct.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JPStruct.m; sourceTree = "<group>"; };
 		D5FAC0F5211DC9E30050596D /* user_constant.hr */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = user_constant.hr; sourceTree = "<group>"; };
@@ -389,6 +392,8 @@
 				FCBAD5DE210EB03B001A8BF5 /* PinterestLayout.m */,
 				FC300BA0214220C600C58D66 /* ReferenceCycleView.h */,
 				FC300BA1214220C600C58D66 /* ReferenceCycleView.m */,
+				D51A265321586E45006834C7 /* UIView+Test.h */,
+				D51A265421586E45006834C7 /* UIView+Test.m */,
 			);
 			path = Demo;
 			sourceTree = "<group>";
@@ -569,6 +574,7 @@
 				FCBAD5DF210EB03B001A8BF5 /* PinterestLayout.m in Sources */,
 				D5FAC144211DC9E30050596D /* JPMemory.m in Sources */,
 				D5FAC13E211DC9E30050596D /* SourceCode.m in Sources */,
+				D51A265521586E45006834C7 /* UIView+Test.m in Sources */,
 				D5FAC148211DC9E30050596D /* JPBlock.m in Sources */,
 				D5FAC14B211DC9E30050596D /* JPCGFunction.m in Sources */,
 				D5FAC155211DC9E30050596D /* HotComplileEngine.m in Sources */,

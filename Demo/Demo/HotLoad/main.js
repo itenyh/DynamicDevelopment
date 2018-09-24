@@ -1,22 +1,19 @@
-require('UITableViewCell,UITableView,ReferenceCycleView');
+require('UIView,UIColor,UITableViewCell,UITableView,ReferenceCycleView');
 defineClass('TestViewController', null, {
     viewDidLoad: function() {
 
         self.super().viewDidLoad();
 
-        self.view().addSubview(self.tbView());
-        self.tbView().mas__makeConstraints(block('void, MASConstraintMaker*', function(make) {
-            make.edges().equalTo()(self.view());
-        }));
-
+        var view = UIView.new();
+        view.setBackgroundColor(UIColor.redColor());
+        self.view().addSubview(view);
+        var rec = self.rect1(self.view().frame());
+        view.setFrame(rec);
 
 
     },
     point: function() {
         return CGPointMake(32, 3);
-    },
-    rect: function() {
-        return CGRectMake(1, 2, 3, 4);
     },
     a_arg1: function(arg, arg1) {
         return arg + arg1;
@@ -26,7 +23,7 @@ defineClass('TestViewController', null, {
     },
     tableView_cellForRowAtIndexPath: function(tableView, indexPath) {
         var cell = UITableViewCell.alloc().initWithStyle_reuseIdentifier(UITableViewCellStyleDefault, "fasfasd");
-        cell.textLabel().setText(NSStringFormat("第 %ld 排: %@", indexPath.row(), "34234"));
+        cell.textLabel().setText(NSStringFormat("第 %ld 排: %@", indexPath.row(), "sadjkfa"));
         return cell;
     },
     tableView_numberOfRowsInSection: function(tableView, section) {
@@ -49,7 +46,6 @@ defineClass('TestViewController', null, {
 }, null, {
     viewDidLoad: 'void',
     point: 'CGPoint',
-    rect: 'CGRect',
     a_arg1: 'int,int,int',
     tableView_heightForRowAtIndexPath: 'CGFloat,UITableView*,NSIndexPath*',
     tableView_cellForRowAtIndexPath: 'UITableViewCell*,UITableView*,NSIndexPath*',
