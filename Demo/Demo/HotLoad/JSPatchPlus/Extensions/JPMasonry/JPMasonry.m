@@ -6,6 +6,7 @@
 //  Copyright © 2018年 Essence. All rights reserved.
 //
 
+#import <UIKit/UIKit.h>
 #import "JPMasonry.h"
 
 @implementation JPMasonry

@@ -12,6 +12,7 @@
 @protocol HRIndicatorViewDelegate <NSObject>
 
 - (void)HRIndicatorViewDelegateClicked:(HRIndicatorView *)view;
+- (void)HRIndicatorViewDelegateDoubleClicked:(HRIndicatorView *)view;
 
 @end
 

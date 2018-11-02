@@ -31,8 +31,14 @@
     [self addGestureRecognizer:panRecognizer];
     
     UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touch:)];
+    tapRecognizer.numberOfTapsRequired = 1;
     [self addGestureRecognizer:tapRecognizer];
     
+    UITapGestureRecognizer *doubleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTouch:)];
+    doubleTapRecognizer.numberOfTapsRequired = 2;
+    [self addGestureRecognizer:doubleTapRecognizer];
+    
+    [tapRecognizer requireGestureRecognizerToFail:doubleTapRecognizer];
 }
 
 - (void)move:(UIPanGestureRecognizer *)sender {
@@ -90,6 +96,12 @@
 - (void)touch:(UITapGestureRecognizer *)sender {
     if (self.delegate && [self.delegate respondsToSelector:@selector(HRIndicatorViewDelegateClicked:)]) {
         [self.delegate HRIndicatorViewDelegateClicked:self];
+    }
+}
+
+- (void)doubleTouch:(UITapGestureRecognizer *)sender {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(HRIndicatorViewDelegateDoubleClicked:)]) {
+        [self.delegate HRIndicatorViewDelegateDoubleClicked:self];
     }
 }
 

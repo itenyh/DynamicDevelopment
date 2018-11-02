@@ -40,7 +40,7 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
 
 + (void)load {
     HotComplileEngine *engine = [HotComplileEngine sharedInstance];
-    engine.jsSavePath = @"/Users/mkeqi/Desktop/Working____/Demo/Demo/HotLoad/";
+    engine.jsSavePath = @"/Users/iten/iten的文档/Code/HotFlight/HotFlight/HotLoad/";
     [engine hotReloadProject];
     
     [engine performSelector:@selector(setupUI) withObject:nil afterDelay:1];
@@ -69,7 +69,7 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
 
 - (void)setupEngine {
     [JPEngine startEngine];
-    [self addExtensions:@[@"JPBlock", @"JPCFunction", @"JPCGFunction", @"JPMasonry", @"JPNSFunction", @"JPWeakStrong"]];
+    [self addExtensions:@[@"JPBlock", @"JPCFunction", @"JPCGFunction", @"JPMasonry", @"JPNSFunction", @"JPWeakStrong", @"JPDispatch"]];
     
     [JPEngine handleException:^(NSString *msg) {
         self.indicatorView.state = HRIndicatorViewError;
@@ -102,6 +102,10 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
         [rootViewController presentViewController:self.infoController animated:YES completion:nil];
         self.infoController.isPresented = YES;
     }
+}
+
+- (void)HRIndicatorViewDelegateDoubleClicked:(HRIndicatorView *)view {
+    [self loadMainJs];
 }
 
 #pragma - mark FileTransferServiceBrowserDelegate
