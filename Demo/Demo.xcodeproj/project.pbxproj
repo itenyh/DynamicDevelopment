@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		735262CD21BBF6BE00CE5C40 /* TestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 735262CC21BBF6BE00CE5C40 /* TestViewController.m */; };
 		73AD884D21BBAD7E001B1F91 /* macro_parser_hr.js in Resources */ = {isa = PBXBuildFile; fileRef = 73AD87F521BBAD7E001B1F91 /* macro_parser_hr.js */; };
 		73AD884E21BBAD7E001B1F91 /* JPEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AD87F721BBAD7E001B1F91 /* JPEngine.m */; };
 		73AD884F21BBAD7E001B1F91 /* JPWeakStrong.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AD87FA21BBAD7E001B1F91 /* JPWeakStrong.m */; };
@@ -56,6 +57,8 @@
 /* Begin PBXFileReference section */
 		23F8B04A667D49CB3F0F0296 /* Pods-Demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Demo.release.xcconfig"; path = "Pods/Target Support Files/Pods-Demo/Pods-Demo.release.xcconfig"; sourceTree = "<group>"; };
 		6ECA50D021CECD28D041DFC1 /* libPods-Demo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Demo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		735262CB21BBF6BE00CE5C40 /* TestViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestViewController.h; sourceTree = "<group>"; };
+		735262CC21BBF6BE00CE5C40 /* TestViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestViewController.m; sourceTree = "<group>"; };
 		73AD87F521BBAD7E001B1F91 /* macro_parser_hr.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = macro_parser_hr.js; sourceTree = "<group>"; };
 		73AD87F721BBAD7E001B1F91 /* JPEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPEngine.m; sourceTree = "<group>"; };
 		73AD87FA21BBAD7E001B1F91 /* JPWeakStrong.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPWeakStrong.m; sourceTree = "<group>"; };
@@ -379,8 +382,8 @@
 		73AD883E21BBAD7E001B1F91 /* Transportation */ = {
 			isa = PBXGroup;
 			children = (
-				73AD883F21BBAD7E001B1F91 /* FileTransferServiceBrowser.h */,
 				73AD884021BBAD7E001B1F91 /* TransferDatas */,
+				73AD883F21BBAD7E001B1F91 /* FileTransferServiceBrowser.h */,
 				73AD884321BBAD7E001B1F91 /* FileTransferServiceBrowser.m */,
 			);
 			path = Transportation;
@@ -427,6 +430,8 @@
 				FCBAD5DB210EACA0001A8BF5 /* AnnotatedPhotoCell.m */,
 				FCBAD5DD210EB03B001A8BF5 /* PinterestLayout.h */,
 				FCBAD5DE210EB03B001A8BF5 /* PinterestLayout.m */,
+				735262CB21BBF6BE00CE5C40 /* TestViewController.h */,
+				735262CC21BBF6BE00CE5C40 /* TestViewController.m */,
 			);
 			path = Demo;
 			sourceTree = "<group>";
@@ -554,6 +559,7 @@
 			files = (
 				73AD885421BBAD7E001B1F91 /* JPStruct.m in Sources */,
 				73AD885921BBAD7E001B1F91 /* JPMasonry.m in Sources */,
+				735262CD21BBF6BE00CE5C40 /* TestViewController.m in Sources */,
 				73AD885621BBAD7E001B1F91 /* JPBlockWrapper.m in Sources */,
 				73AD886C21BBAD7E001B1F91 /* HRMacroParser.m in Sources */,
 				73AD884E21BBAD7E001B1F91 /* JPEngine.m in Sources */,

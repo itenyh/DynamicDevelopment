@@ -56,7 +56,7 @@
 
 - (NSArray *)photoHeight {
     if (!_photoHeight) {
-        _photoHeight = [NSArray arrayWithObjects:@210, @90, @91, @9, @111, @67, @120, @119, @189, nil];
+        _photoHeight = [NSArray arrayWithObjects:@210, @90, @29, @29, @111, @67, @120, @119, @189, nil];
     }
     return _photoHeight;
 }

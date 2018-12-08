@@ -10,6 +10,8 @@
 #import "HotComplileEngine.h"
 #import "ViewController.h"
 
+#import "TestViewController.h"
+
 @interface AppDelegate ()
 
 @end
@@ -21,7 +23,7 @@
     // Override point for customization after application launch.
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:[ViewController new]];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:[TestViewController new]];
     navController.navigationBar.hidden = YES;
     self.window.rootViewController = navController;
     [self.window makeKeyAndVisible];
