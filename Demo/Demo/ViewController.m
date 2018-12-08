@@ -19,6 +19,7 @@
 
 @implementation ViewController
 
+#pragma ()
 - (void)viewDidLoad {
     [self.view addSubview:self.collectionView];
     [self.collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
