@@ -16,6 +16,25 @@
     
     [context evaluateScript:@"defineCFunction(\"NSStringFromClass\", \"NSString *, Class\")"];
     
+    context[@"address"] = ^(JSValue *value) {
+        JPBoxing *box = [JPBoxing new];
+        int temp = [value toInt32];
+        box.pointer = &temp;
+        return box;
+    };
+    
+    context[@"NSMakeRange"] = ^() {
+        NSArray *args = [JSContext currentArguments];
+        NSNumber *locNumber = ((JSValue *)args[0]).toNumber;
+        NSNumber *lenNumber = ((JSValue *)args[1]).toNumber;
+        NSRange range = NSMakeRange([locNumber integerValue], [lenNumber integerValue]);
+        return [JSValue valueWithRange:range inContext:weakContext];
+    };
+    
+    context[@"_OC_equal"] = ^(JSValue *arg1, JSValue *arg2) {
+        return [JPExtension formatJSToOC:arg1] == [JPExtension formatJSToOC:arg2];
+    };
+    
     context[@"NSLog"] = ^() {
         NSString *logContent = [[weakContext objectForKeyedSubscript:@"NSStringFormat"] callWithArguments:[JSContext currentArguments]].toString;
         NSLog(@"%@", logContent);

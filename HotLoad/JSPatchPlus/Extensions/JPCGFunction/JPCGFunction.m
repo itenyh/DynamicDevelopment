@@ -6,7 +6,9 @@
 //  Copyright © 2018年 Essence. All rights reserved.
 //
 
+#import <UIKit/UIKit.h>
 #import "JPCGFunction.h"
+#import "JPStruct.h"
 
 @implementation JPCGFunction
 
@@ -15,11 +17,11 @@
     [JPEngine defineStruct:@{
                              @"name": @"UIEdgeInsets",
                              @"types": @"FFFF",
-                             @"keys": @[@"top", @"right", @"bottom", @"left"]
+                             @"keys": @[@"top", @"left", @"bottom", @"right"]
                              }];
 
     NSString *bundlePath = [[NSBundle mainBundle] bundlePath];
-    NSString *file = [NSString stringWithFormat:@"%@/%@", bundlePath, @"constants.hogcs"];
+    NSString *file = [NSString stringWithFormat:@"%@/%@", bundlePath, @"constants.hr"];
     NSString *content = [NSString stringWithContentsOfFile:file encoding:NSUTF8StringEncoding error:nil];
     [context evaluateScript:content];
     
@@ -30,7 +32,7 @@
         NSNumber *yNumber = ((JSValue *)args[1]).toNumber;
         NSNumber *widthNumber = ((JSValue *)args[2]).toNumber;
         NSNumber *heightNumber = ((JSValue *)args[3]).toNumber;
-        return [JSValue valueWithRect:CGRectMake([xNumber doubleValue], [yNumber doubleValue], [widthNumber doubleValue], [heightNumber doubleValue]) inContext:weakContext];
+        return [JPExtension formatOCToJS:[JPStruct jpStructWith:CGRectMake([xNumber doubleValue], [yNumber doubleValue], [widthNumber doubleValue], [heightNumber doubleValue])]];
     };
     
     context[@"CGSizeMake"] = ^() {
@@ -39,6 +41,14 @@
         NSNumber *heightNumber = ((JSValue *)args[1]).toNumber;
         CGSize size = CGSizeMake([widthNumber doubleValue], [heightNumber doubleValue]);
         return [JSValue valueWithSize:size inContext:weakContext];
+    };
+    
+    context[@"CGPointMake"] = ^() {
+        NSArray *args = [JSContext currentArguments];
+        NSNumber *xNumber = ((JSValue *)args[0]).toNumber;
+        NSNumber *yNumber = ((JSValue *)args[1]).toNumber;
+        CGPoint point = CGPointMake([xNumber doubleValue], [yNumber doubleValue]);
+        return [JSValue valueWithPoint:point inContext:weakContext];
     };
     
     context[@"CGRectIntersectsRect"] = ^() {

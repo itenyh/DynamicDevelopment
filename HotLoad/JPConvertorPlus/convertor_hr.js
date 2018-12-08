@@ -20,7 +20,10 @@ var JPCommonContext = c.JPCommonContext,
     JPBridgeContext = c.JPBridgeContext,
     JPForInVariableSetContext = c.JPForInVariableSetContext,
     JPArrayContext = c.JPArrayContext,
-    JPArrayContentContext = c.JPArrayContentContext
+    JPArrayContentContext = c.JPArrayContentContext,
+    JPOperatorsContext = c.JPOperatorsContext,
+    JPOperatorsLeftContext = c.JPOperatorsLeftContext,
+    JPOperatorsRightContext = c.JPOperatorsRightContext
 
 
 function viewTree(tree) {
@@ -106,9 +109,14 @@ function getAllChildren(context) {
     else if (context instanceof JPArrayContext) {
         childrenTree.push(createStructure(context.content));
     }
+    else if (context instanceof JPOperatorsContext) {
+        childrenTree.push(createStructure(context.left));
+        childrenTree.push(createStructure(context.right));
+    }
     else {
         childrenTree.push(createStructure(context.next));
     }
+
     return childrenTree;
 }
 
@@ -117,7 +125,7 @@ exports.view = view;
 var localMethods = [];
 var delayParsedContexts = [];	//{locationMark:"###1###", context:context}
 var isFinishedParsed = false;
-
+var methodNameToType = [];
 
 /////////////////Base
 class JPContext {
@@ -176,27 +184,45 @@ class JPClassContext extends JPContext {
         this.className = '';
         this.instanceMethods = [];
         this.classMethods = [];
-        this.ignore = 0;
 	}
 
 	parse () {
-        var script = this.ignore ? '' : "defineClass('" + this.className + "', {";
-        for (var i = 0; i < this.instanceMethods.length; i ++) {
-            var separator = this.ignore && this.instanceMethods.length <= 1 ? '': ',';
-            script += this.instanceMethods[i].parse() + separator;
-            localMethods.push(this.instanceMethods[i].parsedMethodName);
+        var script =  "defineClass('" + this.className + "', null, ";
+        var instanceMethodScript = this.instanceMethods.length == 0 ? null : '{';
+        if (this.instanceMethods.length > 0) {
+            for (var i = 0; i < this.instanceMethods.length; i++) {
+                var separator = this.instanceMethods.length <= 1 ? '' : ',';
+                instanceMethodScript += this.instanceMethods[i].parse() + separator;
+                localMethods.push(this.instanceMethods[i].parsedMethodName);
+            }
+            instanceMethodScript += '}';
         }
-        script += this.ignore ? '' : '}';
+        script += instanceMethodScript + ", ";
+
+        var classMethodScript = this.classMethods.length == 0 ? null : '{';
         if (this.classMethods.length) {
-            script += this.ignore ? '' : ',{';
             for (var i = 0; i < this.classMethods.length; i ++) {
-                var separator = this.ignore && this.classMethods.length <= 1 ? '': ','
-                script += this.classMethods[i].parse() + separator;
+                var separator = this.classMethods.length <= 1 ? '': ','
+                classMethodScript += this.classMethods[i].parse() + separator;
                 localMethods.push(this.classMethods[i].parsedMethodName);
             }
-            script += this.ignore ? '' : '}'
+            classMethodScript += '}'
         }
-        script += this.ignore ? '' : ');';
+        script += classMethodScript + ", ";
+
+        var methodNameToTypeScript = null;
+        for (var name in methodNameToType) {
+            if (!methodNameToTypeScript) methodNameToTypeScript = '{';
+            methodNameToTypeScript += (name) + ":" + "'" +  methodNameToType[name] + "'";
+            methodNameToTypeScript += ', ';
+        }
+        if (methodNameToTypeScript) {
+            methodNameToTypeScript = methodNameToTypeScript.substring(0, methodNameToTypeScript.length - 2);
+            methodNameToTypeScript += '}';
+        };
+        script += methodNameToTypeScript
+        script += ');';
+        methodNameToType = [];
 
         isFinishedParsed = true;
         for (var i in delayParsedContexts) {
@@ -216,7 +242,8 @@ class JPMethodContext extends  JPContext {
 		super()
         this.names = [];
         this.params = [];
-        this.parsedMethodName = ''
+        this.types = [];
+        this.parsedMethodName = '';
         this.ignore = 0;
 	}
 
@@ -238,6 +265,7 @@ class JPMethodContext extends  JPContext {
             script += ctx.parse();
         }
         script += this.ignore ? '' : '}'
+        methodNameToType[this.parsedMethodName] = this.types.join(',');
         return script;
     }
 
@@ -323,6 +351,9 @@ class JPBlockContext extends JPContext {
             return script + this.content.parse() + "}";
         }
         else {
+            for (var typeIndex in this.types) {
+                this.types[typeIndex] = this.types[typeIndex].replace(/(_Nonnull)/gm, '');
+            }
             var paramTypes = this.types.length ? "'void, " + this.types.join(',') + "', " : "'void' , ";
             var script = 'block(' + paramTypes + 'function(' + this.names.join(',') + ') {';
             return script + this.content.parse() + "})";
@@ -361,8 +392,8 @@ class JPAssignContext extends JPContext {
             }
         }
         else {
-            if (/jp|__underline__|element\(.+\)\s*$/gm.test(lastProperty)) {
-                lastProperty = lastProperty.replace(/jp|__underline__|element\((.+)\)\s*$/gm, 'setJp|__underline__|element($1,' + this.right.parse() + ')');
+            if (/jp_element\(.+\)\s*$/gm.test(lastProperty)) {
+                lastProperty = lastProperty.replace(/jp_element\((.+)\)\s*$/gm, 'setJp_element|__underline__|obj($1,' + this.right.parse() + ')');
             }
             else {
                 lastProperty = 'set' + lastProperty[0].toUpperCase() + lastProperty.substr(1) + '(' + this.right.parse() + ')';
@@ -409,7 +440,7 @@ class JPPostfixContext extends JPContext {
 	}
 
     parse () {
-        return '|__dot__|jp|__underline__|element(' + this.content.parse() + ')';
+        return '|__dot__|jp_element(' + this.content.parse() + ')';
     }
 }
 
@@ -505,6 +536,51 @@ JPContext.prototype.toString = function() {
     return 'JPContext_' + this.id;
 }
 
+/////////////////JPSelectorContext
+class JPSelectorContext extends JPContext {
+    constructor () {
+        super()
+        this.selectorName = "";
+    }
+    parse () {
+        return "\"" + this.selectorName + "\"";
+    }
+}
+
+/////////////////JPOperatorsContext
+class JPOperatorsContext extends JPContext {
+    constructor () {
+        super()
+        this.left = null;
+        this.right = null;
+        this.parent = null;
+        this.operator = null;
+    }
+    parse () {
+        var operatorStr;
+        if (this.operator == '==') {
+            operatorStr = 'equal';
+        }
+        else if (this.operator == '!=') {
+            operatorStr = 'notequal';
+        }
+        return 'jp|__underline__|' + operatorStr + '(' + this.left.parse() +', ' + this.right.parse() + ')';
+    }
+}
+
+class JPOperatorsLeftContext extends JPBridgeContext {
+    constructor () {
+        super()
+        this.parent = null;
+    }
+}
+
+class JPOperatorsRightContext extends JPBridgeContext {
+    constructor () {
+        super()
+        this.parent = null;
+    }
+}
 
 /////////////////exports
 
@@ -529,7 +605,12 @@ exports.JPArrayContentContext = JPArrayContentContext;
 exports.JPDictionaryContext = JPDictionaryContext;
 exports.JPDictionaryContentContext = JPDictionaryContentContext;
 exports.JPDictionaryObjContext = JPDictionaryObjContext;
+exports.JPSelectorContext = JPSelectorContext;
+exports.JPOperatorsContext = JPOperatorsContext;
+exports.JPOperatorsLeftContext = JPOperatorsLeftContext;
+exports.JPOperatorsRightContext = JPOperatorsRightContext;
 exports.JPBridgeContext = JPBridgeContext;
+
 },{}],3:[function(require,module,exports){
 (function (global){
 var antlr4 = require('./parser/antlr4/index');
@@ -541,24 +622,27 @@ var JPScriptProcessor = require('./JPScriptProcessor').JPScriptProcessor
 
 var convertor = function(script, cb) {
 
-    var ignoreClass = 0, ignoreMethod = 0;
+    var translateErrors = [];
+
     script = script.replace(/(^\s*)/g,'');
     if (script.indexOf('@implementation') == -1) {
-        ignoreClass = 1;
         if (script[0] != '-' && script[0] != '+') {
             script = '@implementation tmp \n -(void)tmp{' + script + '\n}\n@end'
-            ignoreMethod = 1;
         } else {
             script = '@implementation tmp \n' + script + '\n@end'
         }
     }
 
     var processor = require('./JPObjCProcessor').processor;
-    script = processor(script);
+    try {
+        script = processor(script);
+    }
+    catch(e) {
+        translateErrors.push({error:e, msg:'Script Preprocess Error'});
+    }
 
-    var translateErrors = [];
     var errorListener = new JPErrorListener(function(e) {
-        translateErrors.push(e);
+        translateErrors.push({error:e, msg:'Script Parse Listener Error'});
     });
     errorListener.lines = script.split("\n");
 
@@ -574,8 +658,6 @@ var convertor = function(script, cb) {
         var processor = new JPScriptProcessor(result)
         if (cb) cb(processor.finalScript(), className, translateErrors.length > 0 ? translateErrors : null);
     });
-    listener.ignoreClass = ignoreClass;
-    listener.ignoreMethod = ignoreMethod;
 
     try {
         antlr4.tree.ParseTreeWalker.DEFAULT.walk(listener, tree);
@@ -642,7 +724,11 @@ var JPCommonContext = c.JPCommonContext,
     JPArrayContentContext = c.JPArrayContentContext,
     JPDictionaryContext = c.JPDictionaryContext,
     JPDictionaryContentContext = c.JPDictionaryContentContext,
-    JPDictionaryObjContext = c.JPDictionaryObjContext
+    JPDictionaryObjContext = c.JPDictionaryObjContext,
+    JPSelectorContext = c.JPSelectorContext,
+    JPOperatorsContext = c.JPOperatorsContext,
+    JPOperatorsLeftContext = c.JPOperatorsLeftContext,
+    JPOperatorsRightContext = c.JPOperatorsRightContext
 
 var treeView = require('./HHTreeViewer')
 
@@ -663,8 +749,6 @@ var JPObjCListener = function(cb) {
     this.rootContext = new JPClassContext();
     this.currContext = this.rootContext;
     this.ocScript = '';
-    this.ignoreClass = 0;
-    this.ignoreMethod = 0;
     this.cb = cb;
     this.messageCtxStack = [];
     this.contextBinder = new JPContextBinder();
@@ -675,8 +759,8 @@ var JPObjCListener = function(cb) {
 JPObjCListener.prototype = Object.create(ObjCListener.prototype);
 
 JPObjCListener.prototype.buildScript = function() {
-    this.cb(this.rootContext.parse(), this.rootContext.className);
     // treeView.view(this.rootContext);
+    this.cb(this.rootContext.parse(), this.rootContext.className);
 }
 
 JPObjCListener.prototype.addStrContext = function(stop) {
@@ -691,7 +775,6 @@ exports.JPObjCListener = JPObjCListener;
 JPObjCListener.prototype.enterClassImplementation = function(ctx) {
     this.ocScript = ctx.start.source[1].strdata;
     this.currContext.className = ctx.genericTypeSpecifier().getText();
-    this.currContext.ignore = this.ignoreClass;
 };
 
 // Exit a parse tree produced by ObjectiveCParser#classImplementation.
@@ -702,7 +785,6 @@ JPObjCListener.prototype.exitClassImplementation = function(ctx) {
 // Enter a parse tree produced by ObjectiveCParser#classMethodDefinition.
 JPObjCListener.prototype.enterClassMethodDefinition = function(ctx) {
     var methodContext = new JPMethodContext();
-    methodContext.ignore = this.ignoreMethod;
     this.rootContext.classMethods.push(methodContext);
     this.currContext = methodContext;
 };
@@ -713,7 +795,6 @@ JPObjCListener.prototype.exitClassMethodDefinition = function(ctx) {};
 // Enter a parse tree produced by ObjectiveCParser#instanceMethodDefinition.
 JPObjCListener.prototype.enterInstanceMethodDefinition = function(ctx) {
     var methodContext = new JPMethodContext();
-    methodContext.ignore = this.ignoreMethod;
     this.rootContext.instanceMethods.push(methodContext);
     this.currContext = methodContext;
 };
@@ -724,7 +805,9 @@ JPObjCListener.prototype.exitInstanceMethodDefinition = function(ctx) {};
 // Enter a parse tree produced by ObjectiveCParser#methodDefinition.
 JPObjCListener.prototype.enterMethodDefinition = function(ctx) {
     var names = [],
-        params = [];
+        params = [],
+        types = [];
+    types.push(ctx.methodType().typeName().getText());
     var methodSelectorContext = ctx.methodSelector();
     for (var i in methodSelectorContext.children) {
         var keywordDeclaratorContext = methodSelectorContext.children[i];
@@ -732,11 +815,15 @@ JPObjCListener.prototype.enterMethodDefinition = function(ctx) {
         if (keywordDeclaratorContext.stop.start != keywordDeclaratorContext.start.start) {
             params.push(keywordDeclaratorContext.stop.text)
         }
+        // console.log(keywordDeclaratorContext.methodType)
+        if (keywordDeclaratorContext.methodType)
+            types.push(keywordDeclaratorContext.methodType()[0].typeName().getText());
     }
 
     //currContext is JPMethodContext
     this.currContext.names = names;
     this.currContext.params = params;
+    this.currContext.types = types;
     this.currContext.currIdx = ctx.compoundStatement().start.start + 1;
 };
 
@@ -795,10 +882,10 @@ JPObjCListener.prototype.enterBlockParameters = function(ctx) {
     if (this.currContext instanceof JPBlockContentContext) {
         var paramsCtxs = ctx.typeVariableDeclaratorOrName();
         for (var i = 0; i < paramsCtxs.length; i ++) {
-            var paramsCtx = paramsCtxs[i];
+            var paramsCtx = paramsCtxs[i].typeVariableDeclarator();
             var paramsString = paramsCtx.getText();
             var name = paramsCtx.stop.text;
-            var type = paramsCtx.getText().substring(0, paramsString.length - name.length);
+            var type = paramsString.substring(0, paramsString.length - name.length);
             this.currContext.parent.types.push(type);
             this.currContext.parent.names.push(name);
         }
@@ -919,8 +1006,22 @@ JPObjCListener.prototype.exitDeclaration = function(ctx) {
 
 // Enter a parse tree produced by ObjectiveCParser#expressions.
 JPObjCListener.prototype.enterExpression = function(ctx) {
-    this.contextBinder.bind(ctx, this.currContext);
-    if (ctx.assignmentOperator() && ctx.assignmentOperator().getText() == '=') {
+    if (ctx.children[1] && (ctx.children[1] == '==' || ctx.children[1] == '!=')) {
+        var operatorContext = new JPOperatorsContext();
+        if (this.currContext instanceof JPOperatorsLeftContext) {
+            operatorContext.parent = this.currContext.parent;
+        }
+        operatorContext.operator = ctx.children[1].getText();
+        var strContext = this.addStrContext(ctx.start.start);
+        strContext.setNext(operatorContext);
+
+        var leftOperatorContext = new JPOperatorsLeftContext();
+        operatorContext.left = leftOperatorContext;
+        leftOperatorContext.parent = operatorContext;
+        this.currContext = leftOperatorContext;
+        this.currContext.currIdx = ctx.start.start;
+    }
+    else if (ctx.assignmentOperator() && ctx.assignmentOperator().getText() == '=') {
             var assignContext = new JPAssignContext();
 
             var assignLeftContext = new JPAssignLeftContext();
@@ -932,6 +1033,16 @@ JPObjCListener.prototype.enterExpression = function(ctx) {
 
             this.currContext = assignLeftContext;
             this.currContext.currIdx = ctx.start.start;
+    }
+    else if (this.currContext instanceof JPForInVariableSetContext) {
+        this.contextBinder.bind(ctx, this.currContext);
+    }
+    else if (this.currContext instanceof JPOperatorsLeftContext) {
+        this.contextBinder.bind(ctx, this.currContext);
+    }
+    else if (this.currContext instanceof JPOperatorsRightContext) {
+        this.currContext.currIdx = ctx.start.start;
+        this.contextBinder.bind(ctx, this.currContext);
     }
 };
 
@@ -955,6 +1066,19 @@ JPObjCListener.prototype.exitExpression = function(ctx) {
         var forInContext = context.parent;
         this.currContext = forInContext.content;
         this.currContext.currIdx = ctx.stop.stop + 2;
+    }
+    else if (context instanceof JPOperatorsLeftContext) {
+        this.addStrContext(ctx.stop.stop + 1);
+        var operatorContext = context.parent;
+        var rightOperatorContext = new JPOperatorsRightContext();
+        operatorContext.right = rightOperatorContext;
+        rightOperatorContext.parent = operatorContext;
+        this.currContext = rightOperatorContext;
+    }
+    else if (context instanceof JPOperatorsRightContext) {
+        this.addStrContext(ctx.stop.stop + 1);
+        this.currContext = context.parent;
+        this.currContext.currIdx = ctx.stop.stop + 1;
     }
 };
 
@@ -1159,6 +1283,32 @@ JPObjCListener.prototype.exitDictionaryExpression = function(ctx) {
     }
     this.currContext = preContext.parent;
     this.currContext.currIdx = ctx.stop.stop + 1;
+};
+
+// Enter a parse tree produced by ObjectiveCParser#categoryInterface.
+JPObjCListener.prototype.enterCategoryInterface = function(ctx) {
+    this.rootContext.protocols = ctx.protocolList.getText();
+};
+
+// Exit a parse tree produced by ObjectiveCParser#categoryInterface.
+JPObjCListener.prototype.exitCategoryInterface = function(ctx) {
+};
+
+// Enter a parse tree produced by ObjectiveCParser#selectorExpression.
+JPObjCListener.prototype.enterSelectorExpression = function(ctx) {
+    var strContext = this.addStrContext(ctx.start.start);
+    this.currContext = strContext;
+
+    var context  = new JPSelectorContext();
+    context.selectorName = ctx.selectorName().getText();
+
+    this.currContext.setNext(context);
+    this.currContext = context;
+    this.currContext.currIdx = ctx.stop.stop + 1;
+};
+
+// Exit a parse tree produced by ObjectiveCParser#selectorExpression.
+JPObjCListener.prototype.exitSelectorExpression = function(ctx) {
 };
 
 //Helper Methods
@@ -1367,10 +1517,6 @@ JPScriptProcessor.prototype = {
         this.script = requires + this.script;
         return this;
     },
-    rectFormat: function() {
-        this.script = this.script.replace(/(frame|bounds).(size|origin)/gm, "$1");
-        return this;
-    },
     replace_with__: function() {
         var regex = /(\.{1}[a-zA-z_]{1}[a-zA-z_1-9]*)/g;
         var index = 0;
@@ -1388,7 +1534,7 @@ JPScriptProcessor.prototype = {
         return this;
     },
     finalScript: function() {
-        this.stripSymbolAt().replaceString().rectFormat().processPropertyGetter().restoreDot().replace_with__().restoreUnderline().dynamicPropertyGetter().requireClasses().replaceNil().replaceSuper().restoreString().beautify();
+        this.stripSymbolAt().replaceString().processPropertyGetter().restoreDot().replace_with__().restoreUnderline().dynamicPropertyGetter().requireClasses().replaceNil().replaceSuper().restoreString().beautify();
         return this.script;
     }
 }

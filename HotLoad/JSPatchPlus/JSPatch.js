@@ -68,14 +68,7 @@ var global = this
         }
       }
       if (slf[methodName] != undefined) {
-        if (typeof slf[methodName] === "function") {
-            return slf[methodName].bind(slf);
-        }
-        else {
-            return function() {
-                return slf[methodName];
-            }
-        }
+         return slf[methodName].bind(slf);
       }
 
       if (!slf.__obj && !slf.__clsName) {
@@ -84,32 +77,7 @@ var global = this
       if (slf.__isSuper && slf.__clsName) {
           slf.__clsName = _OC_superClsName(slf.__obj.__realClsName ? slf.__obj.__realClsName: slf.__clsName);
       }
-      var clsName = slf.__clsName
-      if (clsName && _ocCls[clsName]) {
-        var methodType = slf.__obj ? 'instMethods': 'clsMethods'
-        if (_ocCls[clsName][methodType][methodName]) {
-          slf.__isSuper = 0;
-          return _ocCls[clsName][methodType][methodName].bind(slf)
-        }
-      }
 
-  if (methodName == 'jp_element') {
-    if (slf.__clsName == '__NSArrayI' || slf.__clsName == '__NSArrayM') {
-        methodName = 'objectAtIndex';
-    }
-    else if (slf.__clsName == '__NSDictionaryI' || slf.__clsName == '__NSDictionaryM') {
-        methodName = 'objectForKey';
-    }
-  }
-  else if (methodName == 'setJp_element') {
-    if (slf.__clsName == '__NSArrayM') {
-        methodName = 'replaceObjectAtIndex_withObject';
-    }
-    else if (slf.__clsName == '__NSDictionaryM') {
-        methodName = 'setObject_forKey';
-    }
-  }
-  
       return function(){
         var args = Array.prototype.slice.call(arguments)
         return _methodFunc(slf.__obj, slf.__clsName, methodName, args, slf.__isSuper)
@@ -162,12 +130,12 @@ var global = this
     return lastRequire
   }
 
-  var _formatDefineMethods = function(methods, newMethods, realClsName) {
+  var _formatDefineMethods = function(methods, newMethods, realClsName, methodDeclarationInfo) {
     for (var methodName in methods) {
       if (!(methods[methodName] instanceof Function)) return;
       (function(){
         var originMethod = methods[methodName]
-        newMethods[methodName] = [originMethod.length, function() {
+        newMethods[methodName] = [originMethod.length, methodDeclarationInfo[methodName], function() {
           try {
             var args = _formatOCToJS(Array.prototype.slice.call(arguments))
             var lastSelf = global.self
@@ -234,14 +202,9 @@ var global = this
     };
   }
 
-  global.defineClass = function(declaration, properties, instMethods, clsMethods) {
+  global.defineClass = function(declaration, properties, instMethods, clsMethods, methodDeclarationInfo) {
     var newInstMethods = {}, newClsMethods = {}
-    if (!(properties instanceof Array)) {
-      clsMethods = instMethods
-      instMethods = properties
-      properties = null
-    }
-
+  
     if (properties) {
       properties.forEach(function(name){
         if (!instMethods[name]) {
@@ -256,8 +219,8 @@ var global = this
 
     var realClsName = declaration.split(':')[0].trim()
 
-    _formatDefineMethods(instMethods, newInstMethods, realClsName)
-    _formatDefineMethods(clsMethods, newClsMethods, realClsName)
+    _formatDefineMethods(instMethods, newInstMethods, realClsName, methodDeclarationInfo)
+    _formatDefineMethods(clsMethods, newClsMethods, realClsName, methodDeclarationInfo)
 
     var ret = _OC_defineClass(declaration, newInstMethods, newClsMethods)
     var className = ret['cls']
@@ -357,6 +320,14 @@ var global = this
     else {
         set.__c('enumerateObjectsUsingBlock')(block('void, id', body));
     }
+  }
+  
+  global.jp_equal = function(arg1, arg2) {
+    return _OC_equal(arg1, arg2);
+  }
+  
+  global.jp_notequal = function(arg1, arg2) {
+  return !jp_equal(arg1, arg2);
   }
   
   global.YES = 1
