@@ -180,13 +180,19 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		733B27A8219682D700427DB8 /* JPStruct */ = {
+			isa = PBXGroup;
+			children = (
+				D55ED8EA21440E1A00D5BC0A /* JPStruct.h */,
+				D55ED8EB21440E1A00D5BC0A /* JPStruct.m */,
+			);
+			path = JPStruct;
+			sourceTree = "<group>";
+		};
 		D5FAC0F4211DC9E30050596D /* HotLoad */ = {
 			isa = PBXGroup;
 			children = (
 				D5FAC13A211DC9E30050596D /* main.js */,
-				FCE14FF8213E80C700CFD22C /* user_macro.hr */,
-				D5FAC0F5211DC9E30050596D /* user_constant.hr */,
-				FC300B732142034600C58D66 /* macro_parser_hr.js */,
 				FCE14FFA213E812D00CFD22C /* HotReload */,
 				D5FAC0FF211DC9E30050596D /* JPConvertorPlus */,
 				D5FAC101211DC9E30050596D /* JSPatchPlus */,
@@ -195,23 +201,15 @@
 			path = HotLoad;
 			sourceTree = "<group>";
 		};
-		D5FAC0F6211DC9E30050596D /* Transportation */ = {
-			isa = PBXGroup;
-			children = (
-				D5FAC0F8211DC9E30050596D /* TransferDatas */,
-				D5FAC0F7211DC9E30050596D /* FileTransferServiceBrowser.h */,
-				D5FAC0FD211DC9E30050596D /* FileTransferServiceBrowser.m */,
-			);
-			path = Transportation;
-			sourceTree = "<group>";
-		};
-		D5FAC0F8211DC9E30050596D /* TransferDatas */ = {
+		D5FAC0F6211DC9E30050596D /* CodeTransportation */ = {
 			isa = PBXGroup;
 			children = (
 				D5FAC0F9211DC9E30050596D /* SourceCode.h */,
 				D5FAC0FC211DC9E30050596D /* SourceCode.m */,
+				D5FAC0F7211DC9E30050596D /* FileTransferServiceBrowser.h */,
+				D5FAC0FD211DC9E30050596D /* FileTransferServiceBrowser.m */,
 			);
-			path = TransferDatas;
+			path = CodeTransportation;
 			sourceTree = "<group>";
 		};
 		D5FAC0FF211DC9E30050596D /* JPConvertorPlus */ = {
@@ -225,6 +223,7 @@
 		D5FAC101211DC9E30050596D /* JSPatchPlus */ = {
 			isa = PBXGroup;
 			children = (
+				D5FAC12B211DC9E30050596D /* libffi */,
 				D5FAC106211DC9E30050596D /* Extensions */,
 				D5FAC11D211DC9E30050596D /* JPEngine.h */,
 				D5FAC102211DC9E30050596D /* JPEngine.m */,
@@ -236,8 +235,6 @@
 		D5FAC106211DC9E30050596D /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				FC300B9E21420F0F00C58D66 /* macro.hr */,
-				D5FAC10E211DC9E30050596D /* constants.hr */,
 				FCC08D03213F77B400E766B7 /* JPCleaner */,
 				D5FAC107211DC9E30050596D /* JPCFunction */,
 				D5FAC10F211DC9E30050596D /* JPBlock */,
@@ -246,8 +243,7 @@
 				D5FAC11A211DC9E30050596D /* JPCGFunction */,
 				FCAD449021424E6400B213BC /* JPWeakStrong */,
 				FCAD4496214262E100B213BC /* JPCollection */,
-				D55ED8EA21440E1A00D5BC0A /* JPStruct.h */,
-				D55ED8EB21440E1A00D5BC0A /* JPStruct.m */,
+				733B27A8219682D700427DB8 /* JPStruct */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -308,7 +304,6 @@
 			children = (
 				D5FAC120211DC9E30050596D /* FileWatcher */,
 				D5FAC125211DC9E30050596D /* AsyncSocket */,
-				D5FAC12B211DC9E30050596D /* libffi */,
 			);
 			path = ThridParty;
 			sourceTree = "<group>";
@@ -448,7 +443,12 @@
 		FCE14FFA213E812D00CFD22C /* HotReload */ = {
 			isa = PBXGroup;
 			children = (
-				D5FAC0F6211DC9E30050596D /* Transportation */,
+				D5FAC0F6211DC9E30050596D /* CodeTransportation */,
+				FCE14FF8213E80C700CFD22C /* user_macro.hr */,
+				D5FAC0F5211DC9E30050596D /* user_constant.hr */,
+				FC300B732142034600C58D66 /* macro_parser_hr.js */,
+				FC300B9E21420F0F00C58D66 /* macro.hr */,
+				D5FAC10E211DC9E30050596D /* constants.hr */,
 				D5FAC139211DC9E30050596D /* HotComplileEngine.h */,
 				D5FAC13B211DC9E30050596D /* HotComplileEngine.m */,
 				FCB3F831213E164F003C8BE0 /* HRIndicatorView.h */,
@@ -753,9 +753,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Demo/HotLoad/JSPatch/libffi",
-					"$(PROJECT_DIR)/Demo/HotLoad/JSPatch/Extensions/libffi",
-					"$(PROJECT_DIR)/Demo/HotLoad/ThridParty/libffi",
+					"$(PROJECT_DIR)/Demo/HotLoad/JSPatchPlus/libffi",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Essence.Demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -787,9 +785,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Demo/HotLoad/JSPatch/libffi",
-					"$(PROJECT_DIR)/Demo/HotLoad/JSPatch/Extensions/libffi",
-					"$(PROJECT_DIR)/Demo/HotLoad/ThridParty/libffi",
+					"$(PROJECT_DIR)/Demo/HotLoad/JSPatchPlus/libffi",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Essence.Demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";

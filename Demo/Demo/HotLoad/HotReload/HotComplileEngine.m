@@ -69,7 +69,7 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
 
 - (void)setupEngine {
     [JPEngine startEngine];
-    [self addExtensions:@[@"JPBlock", @"JPCFunction", @"JPCGFunction", @"JPMasonry", @"JPNSFunction", @"JPWeakStrong", @"JPDispatch"]];
+    [self addExtensions:@[@"JPBlock", @"JPCFunction", @"JPCGFunction", @"JPMasonry", @"JPNSFunction", @"JPWeakStrong"]];
     
     [JPEngine handleException:^(NSString *msg) {
         self.indicatorView.state = HRIndicatorViewError;

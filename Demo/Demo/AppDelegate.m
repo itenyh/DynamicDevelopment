@@ -11,6 +11,8 @@
 #import "ViewController.h"
 #import "TestViewController.h"
 
+#include <stdlib.h>
+
 @interface AppDelegate ()
 
 @end
@@ -26,6 +28,17 @@
     navController.navigationBar.hidden = YES;
     self.window.rootViewController = navController;
     [self.window makeKeyAndVisible];
+    
+    float init = 200;
+    int round = 1000000;
+    float fee = 1.5;
+    float award = 3;
+    while (round-- > 0 && init > fee) {
+        init -= fee;
+        int r = arc4random_uniform(2);
+        if (r > 0) init += award;
+        NSLog(@"round: %d, init: %f", 1000000 - round, init);
+    }
     
     return YES;
 }
