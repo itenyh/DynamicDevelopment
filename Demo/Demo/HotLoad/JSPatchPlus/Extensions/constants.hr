@@ -9,7 +9,6 @@ global.UITableViewCellStyleValue1 = 1;
 global.UITableViewCellStyleValue2 = 2;
 global.UITableViewCellStyleSubtitle = 3;
 
-global.CGRectZero = {x:0, y:0, width:0, height:0};
 global.CGPointZero = {x:0, y:0};
 global.CGSizeZero = {width:0, height:0};
 
@@ -36,5 +35,12 @@ global.UILayoutPriorityFittingSizeLevel = 50;
 global.UILayoutConstraintAxisHorizontal = 0,
 global.UILayoutConstraintAxisVertical = 1,
 
+global.UIStackViewAlignmentLastBaseline = 5,
+
 global.NSForegroundColorAttributeName = "NSColor",
-global.NSFontAttributeName = "NSFont"
+global.NSFontAttributeName = "NSFont",
+
+global.UITableViewCellSelectionStyleNone = 0,
+global.UITableViewCellSelectionStyleBlue = 1,
+global.UITableViewCellSelectionStyleGray = 2,
+global.UITableViewCellSelectionStyleDefault = 3

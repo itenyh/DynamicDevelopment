@@ -34,15 +34,19 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
 @property (nonatomic, strong) HRInfoViewController *infoController;
 @property (nonatomic, strong) HRMacroParser *macroParser;
 
+@property (nonatomic, assign) BOOL showIndicator;
+
 @end
 
 @implementation HotComplileEngine
 
 + (void)load {
     HotComplileEngine *engine = [HotComplileEngine sharedInstance];
-    engine.jsSavePath = @"/Users/iten/iten的文档/Code/HotFlight/HotFlight/HotLoad/";
-    [engine hotReloadProject];
     
+    engine.showIndicator = YES;
+    engine.jsSavePath = @"/Users/itenyh/Code/Working____/Demo/Demo/HotLoad/";
+    
+    [engine hotReloadProject];
     [engine performSelector:@selector(setupUI) withObject:nil afterDelay:1];
 }
 
@@ -53,7 +57,8 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
     self.window = [appDelegate valueForKey:@"window"];
     if (!self.window) { return; }
     
-    [self.window addSubview:self.indicatorView];
+    if (self.showIndicator)
+        [self.window addSubview:self.indicatorView];
 }
 
 
@@ -69,7 +74,7 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
 
 - (void)setupEngine {
     [JPEngine startEngine];
-    [self addExtensions:@[@"JPBlock", @"JPCFunction", @"JPCGFunction", @"JPMasonry", @"JPNSFunction", @"JPWeakStrong"]];
+    [self addExtensions:@[@"JPBlock", @"JPCFunction", @"JPCGFunction", @"JPMasonry", @"JPNSFunction", @"JPWeakStrong", @"JPDispatch"]];
     
     [JPEngine handleException:^(NSString *msg) {
         self.indicatorView.state = HRIndicatorViewError;

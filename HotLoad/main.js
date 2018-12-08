@@ -1,62 +1,48 @@
-require('SDSettingCell,SDWordPropertyExplainViewController,UITableView,UIColor');
-defineClass('SDSettingViewController', null, {
-    setupUI: function() {
-        self.setTitle("设置");
-        self.contentView().addSubview(self.tbView());
-    },
-    setupConstraints: function() {
-        self.tbView().mas__makeConstraints(block('void, MASConstraintMaker*', function(make) {
-            make.edges().equalTo()(self.contentView());
+require('AnnotatedPhotoCell,UIColor,PinterestLayout,UICollectionView,NSArray');
+defineClass('ViewController', null, {
+    viewDidLoad: function() {
+        self.view().addSubview(self.collectionView());
+        self.collectionView().mas__makeConstraints(block('void, MASConstraintMaker*', function(make) {
+            make.edges().equalTo()(self.view()).equalTo()(HRMASBoxValue((UIEdgeInsetsMake(0, 0, 0, 0))));
         }));
     },
-    tableView_cellForRowAtIndexPath: function(tableView, indexPath) {
-        var cell = tableView.dequeueReusableCellWithIdentifier(SDSettingCell.description());
-        switch (indexPath.row()) {
-            case 0:
-                cell.textLabel().setText("词性缩写对照表");
-                break;
-            case 1:
-                cell.textLabel().setText("关于");
-                break;
-            default:
-                break;
-        }
+    collectionView_heightForPhotoAtIndexPath: function(collectionView, indexPath) {
+        return self.photoHeight().jp__element(indexPath.row()).floatValue();
+    },
+    collectionView_numberOfItemsInSection: function(collectionView, section) {
+        return self.photoHeight().count();
+    },
+    collectionView_cellForItemAtIndexPath: function(collectionView, indexPath) {
+        var cell = collectionView.dequeueReusableCellWithReuseIdentifier_forIndexPath(NSStringFromClass(AnnotatedPhotoCell.class()), indexPath);
+        cell.setBackgroundColor(UIColor.purpleColor());
         return cell;
     },
-    tableView_numberOfRowsInSection: function(tableView, section) {
-        return 2;
-    },
-    tableView_heightForRowAtIndexPath: function(tableView, indexPath) {
-        return 44;
-    },
-    tableView_didSelectRowAtIndexPath: function(tableView, indexPath) {
-        switch (indexPath.row()) {
-            case 0:
-                self.navigationController().pushViewController_animated(SDWordPropertyExplainViewController.new(), YES);
-                break;
-
-            default:
-                break;
+    collectionView: function() {
+        if (!self.getProp('collectionView')) {
+            var layout = PinterestLayout.new();
+            layout.setDelegate(self);
+            self.setProp_forKey(UICollectionView.alloc().initWithFrame_collectionViewLayout(CGRectMake(0, 0, 0, 0), layout), 'collectionView');
+            self.getProp('collectionView').setDataSource(self);
+            self.getProp('collectionView').setBackgroundColor(UIColor.whiteColor());
+            self.getProp('collectionView').registerClass_forCellWithReuseIdentifier(AnnotatedPhotoCell.class(), NSStringFromClass(AnnotatedPhotoCell.class()));
         }
+        return self.getProp('collectionView');
     },
-    tbView: function() {
-        if (!self.getProp('tbView')) {
-            self.setProp_forKey(UITableView.new(), 'tbView');
-            self.getProp('tbView').setDataSource(self);
-            self.getProp('tbView').setDelegate(self);
-            self.getProp('tbView').setBackgroundColor(UIColor.clearColor());
-            self.getProp('tbView').setSeparatorStyle(UITableViewCellSelectionStyleNone);
-            self.getProp('tbView').registerClass_forCellReuseIdentifier(SDSettingCell.class(), SDSettingCell.description());
-            self.getProp('tbView').setShowsVerticalScrollIndicator(NO);
+    photoHeight: function() {
+        if (!self.getProp('photoHeight')) {
+            self.setProp_forKey(NSArray.arrayWithObjects(210, 90, 91, 9, 111, 67, 120, 119, 189, null), 'photoHeight');
         }
-        return self.getProp('tbView');
+        return self.getProp('photoHeight');
+    },
+    dealloc: function() {
+        NSLog("viewcontroller dealloc");
     },
 }, null, {
-    setupUI: 'void',
-    setupConstraints: 'void',
-    tableView_cellForRowAtIndexPath: 'UITableViewCell*,UITableView*,NSIndexPath*',
-    tableView_numberOfRowsInSection: 'NSInteger,UITableView*,NSInteger',
-    tableView_heightForRowAtIndexPath: 'CGFloat,UITableView*,NSIndexPath*',
-    tableView_didSelectRowAtIndexPath: 'void,UITableView*,NSIndexPath*',
-    tbView: 'UITableView*'
+    viewDidLoad: 'void',
+    collectionView_heightForPhotoAtIndexPath: 'CGFloat,UICollectionView*,NSIndexPath*',
+    collectionView_numberOfItemsInSection: 'NSInteger,UICollectionView*,NSInteger',
+    collectionView_cellForItemAtIndexPath: 'UICollectionViewCell*,UICollectionView*,NSIndexPath*',
+    collectionView: 'UICollectionView*',
+    photoHeight: 'NSArray*',
+    dealloc: 'void'
 });

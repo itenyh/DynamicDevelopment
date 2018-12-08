@@ -21,3 +21,5 @@ global.VERTICAL_PADDING = 7.5
 
 global.NewPagedFlowViewOrientationHorizontal = 0
 global.SCREEN_WIDTH = 320
+
+

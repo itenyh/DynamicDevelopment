@@ -9,7 +9,6 @@ global.UITableViewCellStyleValue1 = 1;
 global.UITableViewCellStyleValue2 = 2;
 global.UITableViewCellStyleSubtitle = 3;
 
-global.CGRectZero = {x:0, y:0, width:0, height:0};
 global.CGPointZero = {x:0, y:0};
 global.CGSizeZero = {width:0, height:0};
 
