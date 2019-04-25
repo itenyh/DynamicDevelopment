@@ -10,7 +10,8 @@ JSPatch的初衷是对线上产品进行热修复，该项目核心部分使用�
 ## 安装
 
 - 安装Xcode插件
-1. 编译Bonjour项目，重新启动Xcode
+1. 编译Bonjour项目，将生产的Product拖到Application，并启动一次
+2. 重新启动Xcode
 2. 打开你的项目，在菜单Editor中看到CodeTransport说明安装成功
 
 - 安装DynamicDevelopment Engine
@@ -20,5 +21,6 @@ JSPatch的初衷是对线上产品进行热修复，该项目核心部分使用�
 
 ## 其他
 
+- 支持Masonry
 - 通过Demo可体验热编译大部分能力
 - 为了不至于每次都会尝试热编译整个文件，可使用\#pragma )(  排除一个方法；使用\#pragma () 仅仅编译这个方法。
