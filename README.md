@@ -10,7 +10,7 @@ JSPatch的初衷是对线上产品进行热修复，该项目核心部分使用�
 ## 安装
 
 - 安装Xcode插件
-1. 编译Bonjour项目，将生产的Product拖到Application，并启动一次
+1. 编译Bonjour项目，在Product生成的.app拖到Application，并启动一次
 2. 重新启动Xcode
 2. 打开你的项目，在菜单Editor中看到CodeTransport说明安装成功
 
