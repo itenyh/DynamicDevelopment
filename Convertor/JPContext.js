@@ -379,8 +379,27 @@ class JPDictionaryContext extends JPContext {
         super()
         this.content = null;
     }
+    
+    swapPairs(arr) {
+      // 创建一个新数组以避免修改原数组（如果需要修改原数组，可以直接操作arr）
+      const result = [...arr];
+      
+      // 每次前进2步，处理每一对元素
+      for (let i = 0; i < result.length - 1; i += 2) {
+        // 交换当前位置和下一个位置的元素
+        [result[i], result[i + 1]] = [result[i + 1], result[i]];
+      }
+      
+      return result;
+    }
+    
     parse () {
-        return "NSDictionary|__dot__|dictionaryWithObjectsAndKeys(" + this.content.parse() + " null)";
+        
+        var a = this.content.parse().split(",")
+        a.pop()
+        a = this.swapPairs(a)
+        
+        return "NSDictionary|__dot__|dictionaryWithObjectsAndKeys(" + a.join(',') + " null)";
     }
 }
 
