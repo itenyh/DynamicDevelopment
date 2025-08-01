@@ -343,7 +343,7 @@ typedef void (^TranslateCallBack)(NSString *jsScript, NSString *className, JSVal
     
 - (JSValue *)translator {
     if (!_translator) {
-        _translator = [[self.translatorJSContext objectForKeyedSubscript:@"global"] objectForKeyedSubscript:@"convertor"];
+        _translator = [self.translatorJSContext objectForKeyedSubscript:@"convertor"];
     }
     return _translator;
 }
